@@ -50,6 +50,12 @@
   function renderBoard() { if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
   const enemyNodes=new Map();
   function renderDodge(){
+    let dustLayer=$('dodge-dust');if(!dustLayer){dustLayer=document.createElement('div');dustLayer.id='dodge-dust';$('dodge-field').appendChild(dustLayer);}
+    dustLayer.innerHTML=run.dust.map(s=>'<i style="left:'+s.x*100+'%;top:'+s.y/run.height*100+'%"></i>').join('');
+    $('dodge-player').classList.toggle('shielded',run.shield>0);$('dodge-player').classList.toggle('fiery',run.fire>0);
+    $('dodge-player').setAttribute('aria-label',run.fire>0?'Feuerstern aktiv':run.shield>0?'Schutzblase aktiv':'Gelber Stern');
+    let extras=$('dodge-pickups');if(!extras){extras=document.createElement('div');extras.id='dodge-pickups';$('dodge-field').appendChild(extras);}
+    extras.innerHTML=run.pickups.map(item=>'<span class="dodge-pickup '+item.kind+'" style="left:'+item.x*100+'%;top:'+item.y/run.height*100+'%">'+(item.kind==='fire'?'🔥':'◉')+'</span>').join('');
     const ids=new Set(run.enemies.map(e=>e.id));
     for(const [id,node]of enemyNodes)if(!ids.has(id)){node.remove();enemyNodes.delete(id);}
     for(const enemy of run.enemies){
@@ -86,7 +92,13 @@
       $('dodge-announcement').textContent=StarDodge.TYPES[event.type].name;pulse($('dodge-announcement'),'announce');
       $('encouragement').textContent=StarDodge.TYPES[event.type].name+' kommen hinzu';tone(440,.12,0,'sine',.04,1.5);tone(660,.18,.1,'sine',.035,1.1);return;
     }
+    if(event.kind==='destroy'){
+      const cloud=document.createElement('span');cloud.className='dust-cloud';cloud.style.left=event.x*100+'%';cloud.style.top=event.y/run.height*100+'%';
+      for(let i=0;i<12;i++){const dot=document.createElement('i'),angle=i*Math.PI/6;dot.style.setProperty('--dx',Math.cos(angle)*(22+i%3*9)+'px');dot.style.setProperty('--dy',Math.sin(angle)*(22+i%3*9)+'px');cloud.appendChild(dot);}
+      $('dodge-effects').appendChild(cloud);setTimeout(()=>cloud.remove(),700);tone(600,.08,0,'sine',.025,1.6);
+    }
     const ring=document.createElement('span');ring.className='dodge-impact '+event.kind;ring.style.left=event.x*100+'%';ring.style.top=event.y/run.height*100+'%';$('dodge-effects').appendChild(ring);setTimeout(()=>ring.remove(),650);
+    if(['shield','fire'].includes(event.kind)){tone(event.kind==='fire'?880:660,.25);$('encouragement').textContent=event.kind==='fire'?'Feuerstern: zehn Sekunden unbesiegbar':'Schutzblase: zwanzig Sekunden oder ein Treffer';}
     if(event.kind==='hit'){hearts();pulse($('lives'),'heart-hit');pulse($('dodge-field'),'field-hit');tone(150,.18,0,'triangle',.06,.45);$('encouragement').textContent='Ein Leben verloren';}
     else if(event.kind==='split')tone(500,.06,0,'sine',.022,1.5);
   }

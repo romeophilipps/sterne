@@ -8,7 +8,7 @@
   class Round {
     constructor(random=Math.random){
       this.random=random;this.elapsed=0;this.lives=3;this.height=1.6;this.player={x:.5,y:1.05};this.target={...this.player};
-      this.enemies=[];this.nextSpawn=300;this.id=0;this.available=1;this.bag=[];this.grace=0;this.ended=false;this.reason=null;
+      this.dust=[];this.nextShot=0;this.pickups=[];this.shield=0;this.fire=0;this.nextPickup=8000;this.enemies=[];this.nextSpawn=300;this.id=0;this.available=1;this.bag=[];this.grace=0;this.ended=false;this.reason=null;
     }
     get score(){return Math.floor(this.elapsed);}
     get level(){return 1+Math.floor(this.elapsed/15000);}
@@ -52,9 +52,27 @@
       const events=[];if(this.ended||!Number.isFinite(ms)||ms<=0)return events;
       let left=ms;
       while(left>0&&!this.ended){
-        const dt=Math.min(8,left),seconds=dt/1000;left-=dt;this.elapsed+=dt;this.grace=Math.max(0,this.grace-dt);
+        const dt=Math.min(8,left),seconds=dt/1000;left-=dt;this.elapsed+=dt;this.grace=Math.max(0,this.grace-dt);this.shield=Math.max(0,this.shield-dt);this.fire=Math.max(0,this.fire-dt);
+        this.nextPickup-=dt;if(this.nextPickup<=0){this.pickups.push({id:++this.id,kind:this.random()<.6?'shield':'fire',x:this.range(.15,.85),y:this.range(.15,this.height-.15),ttl:12000});this.nextPickup=this.range(14000,21000);}
+        for(const item of this.pickups){item.ttl-=dt;if(Math.hypot(item.x-this.player.x,item.y-this.player.y)<.085){item.ttl=0;if(item.kind==='shield')this.shield=20000;else this.fire=10000;events.push({kind:item.kind,x:item.x,y:item.y});}}
+        this.pickups=this.pickups.filter(item=>item.ttl>0);
         if(this.available<5&&this.elapsed>=TYPES[this.available].at){const type=this.available++;this.bag.unshift(type);events.push({kind:'unlock',type});}
         this.nextSpawn-=dt;if(this.nextSpawn<=0){this.spawn();this.nextSpawn+=this.interval*this.range(.88,1.12);}
+        this.nextShot-=dt;
+        if(this.nextShot<=0){
+          const target=this.enemies.filter(e=>!e.done&&e.warning<=0&&e.x>=0&&e.x<=1&&e.y>=0&&e.y<=this.height).sort((a,b)=>Math.hypot(a.x-this.player.x,a.y-this.player.y)-Math.hypot(b.x-this.player.x,b.y-this.player.y))[0];
+          if(target){this.dust.push({id:++this.id,x:this.player.x,y:this.player.y,target:target.id,ttl:1800});this.nextShot=180;}else this.nextShot=50;
+        }
+        for(const shot of this.dust){
+          shot.ttl-=dt;const target=this.enemies.find(e=>e.id===shot.target&&!e.done);
+          if(!target){shot.ttl=0;continue;}
+          const dx=target.x-shot.x,dy=target.y-shot.y,distance=Math.hypot(dx,dy),travel=1.65*seconds;
+          if(distance<=travel+target.radius){shot.ttl=0;target.hp=(target.hp??(target.shard?3:target.type===4?10:target.type===2?8:6))-1;
+            events.push({kind:'dust-hit',x:target.x,y:target.y});
+            if(target.hp<=0){target.done=true;events.push({kind:'destroy',x:target.x,y:target.y});}
+          }else{shot.x+=dx/distance*travel;shot.y+=dy/distance*travel;}
+        }
+        this.dust=this.dust.filter(s=>s.ttl>0);
         const previous={...this.player},dx=this.target.x-this.player.x,dy=this.target.y-this.player.y,dist=Math.hypot(dx,dy),step=Math.min(1,PLAYER_SPEED*seconds/(dist||1));
         this.player.x+=dx*step;this.player.y+=dy*step;
         for(const e of [...this.enemies]){
@@ -71,7 +89,10 @@
           e.x+=Math.cos(angle)*speed*this.speedFactor*seconds;e.y+=Math.sin(angle)*speed*this.speedFactor*seconds;
           e.rotation+=(e.type===1?40:e.type===4?90:18)*seconds*this.motionFactor;
           if(this.grace===0&&swept(ox-previous.x,oy-previous.y,e.x-this.player.x,e.y-this.player.y,PLAYER_RADIUS+e.radius)){
-            e.done=true;this.lives--;this.grace=1400;events.push({kind:'hit',x:this.player.x,y:this.player.y});if(!this.lives){this.end('lives');break;}
+            e.done=true;
+            if(this.fire>0){events.push({kind:'destroy',x:e.x,y:e.y});continue;}
+            if(this.shield>0){this.shield=0;this.grace=500;events.push({kind:'shield-pop',x:this.player.x,y:this.player.y});continue;}
+            this.lives--;this.grace=1400;events.push({kind:'hit',x:this.player.x,y:this.player.y});if(!this.lives){this.end('lives');break;}
           }
           if(e.x<-.24||e.x>1.24||e.y<-.24||e.y>this.height+.24||e.age>(e.type===2?11000:12500))e.done=true;
         }
