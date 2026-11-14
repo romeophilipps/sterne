@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Orbit',key:'stars-orbit-best',create:()=>StarOrbit.create()}];
+  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Sternenschlange',key:'stars-snake-best',create:()=>StarSnake.create()}];
   const records={tap:0,dodge:0,sling:0};let mode=0,sound=true;
   try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===(localStorage.getItem('stars-mode')==='catch'?'dodge':localStorage.getItem('stars-mode')))); } catch {}
   const slinging=()=>modes[mode].id==='sling';
@@ -130,7 +130,7 @@
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
-    renderHUD();$('encouragement').textContent=slinging()?'Tippen wechselt die Umlaufbahn. Böse Sterne meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    renderHUD();$('encouragement').textContent=slinging()?'Wischen lenkt die Sternenkette. Blaue Sterne sammeln, rote und eigenen Schweif meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -170,13 +170,15 @@
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   let slingAim=null;
   function renderSling(){
-    hearts();
-    const px=.5+Math.cos(run.angle)*run.radius,py=.5+Math.sin(run.angle)*run.radius;
-    $('sling-player').style.left=px*100+'%';$('sling-player').style.top=py*100+'%';$('sling-player').style.opacity=run.grace>0?.45:1;
-    $('sling-targets').innerHTML='<i class="orbit-track inner"></i><i class="orbit-track outer"></i><i class="orbit-planet"></i>'+run.obstacles.map(t=>'<svg class="sling-star evil '+(t.age<650?'incoming':'')+'" style="left:'+(.5+Math.cos(t.angle)*(t.lane?.36:.23))*100+'%;top:'+(.5+Math.sin(t.angle)*(t.lane?.36:.23))*100+'%"><use href="#evil-star"/></svg>').join('');
-    $('sling-shots').textContent=(run.elapsed/1000).toFixed(1)+' s';$('sling-shots').setAttribute('aria-label','Überlebenszeit');
+    hearts();$('sling-player').hidden=true;
+    const star=(p,cls)=>'<svg class="snake-star '+cls+'" style="left:'+((p.x+.5)/13*100)+'%;top:'+((p.y+.5)/13*100)+'%"><use href="'+(cls==='evil'?'#evil-star':'#star')+'"/></svg>';
+    $('sling-targets').innerHTML=run.snake.map((p,i)=>star(p,i===0?'head':'tail')).join('')+(run.food?star(run.food,run.gold?'gold':'food'):'')+run.hazards.map(p=>star(p,'evil')).join('');
+    $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
   }
-  $('sling-field').addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary){e.preventDefault();run.switch();tone(450+run.lane*200,.07,0,'sine',.035,1.15);}});
-  $('sling-field').addEventListener('keydown',e=>{if(slinging()&&state==='playing'&&[' ','Enter','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();if(!e.repeat)run.switch();}});
+  let snakeSwipe=null;
+  $('sling-field').addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary){e.preventDefault();snakeSwipe={id:e.pointerId,x:e.clientX,y:e.clientY};$('sling-field').setPointerCapture(e.pointerId);}});
+  $('sling-field').addEventListener('pointermove',e=>{if(!snakeSwipe||snakeSwipe.id!==e.pointerId)return;const dx=e.clientX-snakeSwipe.x,dy=e.clientY-snakeSwipe.y;if(Math.hypot(dx,dy)<14)return;run.turn(Math.abs(dx)>Math.abs(dy)?Math.sign(dx):0,Math.abs(dy)>=Math.abs(dx)?Math.sign(dy):0);snakeSwipe.x=e.clientX;snakeSwipe.y=e.clientY;});
+  for(const event of ['pointerup','pointercancel'])$('sling-field').addEventListener(event,()=>snakeSwipe=null);
+  document.addEventListener('keydown',e=>{if(!slinging()||state!=='playing')return;const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]};if(dirs[e.key]){e.preventDefault();run.turn(...dirs[e.key]);}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
 })();
