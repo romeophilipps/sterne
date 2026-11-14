@@ -169,6 +169,7 @@
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   let slingAim=null;
   function renderSling(){
+    hearts();
     const px=.5+Math.cos(run.angle)*run.radius,py=.5+Math.sin(run.angle)*run.radius;
     $('sling-player').style.left=px*100+'%';$('sling-player').style.top=py*100+'%';$('sling-player').style.opacity=run.grace>0?.45:1;
     $('sling-targets').innerHTML='<i class="orbit-track inner"></i><i class="orbit-track outer"></i><i class="orbit-planet"></i>'+run.obstacles.map(t=>'<svg class="sling-star evil '+(t.age<650?'incoming':'')+'" style="left:'+(.5+Math.cos(t.angle)*(t.lane?.36:.23))*100+'%;top:'+(.5+Math.sin(t.angle)*(t.lane?.36:.23))*100+'%"><use href="#evil-star"/></svg>').join('');
