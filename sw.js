@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='v8';
+const VERSION='v9';
 const CACHE='sternensammler-'+VERSION;
-const ASSETS=['./','./index.html','./style.css?v=8','./app.js?v=8','./game.js?v=8','./catch.js?v=8','./music.js?v=8','./offline.js?v=8','./manifest.webmanifest?v=8','./icon.svg?v=8','./icon-180.png?v=8','./icon-192.png?v=8','./icon-512.png?v=8'];
+const ASSETS=['./','./index.html','./style.css?v=9','./app.js?v=9','./game.js?v=9','./catch.js?v=9','./music.js?v=9','./offline.js?v=9','./manifest.webmanifest?v=9','./icon.svg?v=9','./icon-180.png?v=9','./icon-192.png?v=9','./icon-512.png?v=9'];
 const absolute=path=>new URL(path,self.registration.scope).href;
 async function complete(){const cache=await caches.open(CACHE);const entries=await Promise.all(ASSETS.map(path=>cache.match(absolute(path))));return entries.every(response=>response&&response.ok);}
 async function download(){const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(path=>new Request(absolute(path),{cache:'reload'})));if(!await complete())throw new Error('Incomplete download');}
