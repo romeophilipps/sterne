@@ -1,7 +1,7 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Schleudern',key:'stars-sling-best',create:()=>StarSling.create()}];
+  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Orbit',key:'stars-orbit-best',create:()=>StarOrbit.create()}];
   const records={tap:0,dodge:0,sling:0};let mode=0,sound=true;
   try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===(localStorage.getItem('stars-mode')==='catch'?'dodge':localStorage.getItem('stars-mode')))); } catch {}
   const slinging=()=>modes[mode].id==='sling';
@@ -128,8 +128,8 @@
     $('sling-field').hidden=!slinging();$('sling-hint').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
-    if(slinging()){const box=$('sling-field').getBoundingClientRect();run.resize(box.width,box.height);}
-    renderHUD();$('encouragement').textContent=slinging()?'Zurückziehen, zielen und loslassen. Blaue Sterne treffen, rote meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    
+    renderHUD();$('encouragement').textContent=slinging()?'Tippen wechselt die Umlaufbahn. Böse Sterne meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -169,13 +169,12 @@
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   let slingAim=null;
   function renderSling(){
-    $('sling-player').style.left=run.player.x*100+'%';$('sling-player').style.top=run.player.y/run.height*100+'%';
-    $('sling-targets').innerHTML=run.targets.map(t=>'<svg class="sling-star" style="left:'+t.x*100+'%;top:'+t.y/run.height*100+'%"><use href="#star"/></svg>').join('')+run.hazards.map(t=>'<svg class="sling-star evil" style="left:'+t.x*100+'%;top:'+t.y/run.height*100+'%"><use href="#evil-star"/></svg>').join('');
-    $('sling-shots').textContent='●'.repeat(Math.max(0,run.shots));$('sling-shots').setAttribute('aria-label',run.shots+' Schüsse übrig');
+    const px=.5+Math.cos(run.angle)*run.radius,py=.5+Math.sin(run.angle)*run.radius;
+    $('sling-player').style.left=px*100+'%';$('sling-player').style.top=py*100+'%';$('sling-player').style.opacity=run.grace>0?.45:1;
+    $('sling-targets').innerHTML='<i class="orbit-track inner"></i><i class="orbit-track outer"></i><i class="orbit-planet"></i>'+run.obstacles.map(t=>'<svg class="sling-star evil '+(t.age<650?'incoming':'')+'" style="left:'+(.5+Math.cos(t.angle)*(t.lane?.36:.23))*100+'%;top:'+(.5+Math.sin(t.angle)*(t.lane?.36:.23))*100+'%"><use href="#evil-star"/></svg>').join('');
+    $('sling-shots').textContent=(run.elapsed/1000).toFixed(1)+' s';$('sling-shots').setAttribute('aria-label','Überlebenszeit');
   }
-  $('sling-field').addEventListener('pointerdown',e=>{if(!slinging()||state!=='playing'||run.moving||!e.isPrimary)return;e.preventDefault();slingAim={id:e.pointerId,x:e.clientX,y:e.clientY};$('sling-field').setPointerCapture(e.pointerId);});
-  $('sling-field').addEventListener('pointermove',e=>{if(!slingAim||slingAim.id!==e.pointerId)return;const box=$('sling-field').getBoundingClientRect(),dx=(slingAim.x-e.clientX)/box.width,dy=(slingAim.y-e.clientY)/box.width,line=$('sling-aim');line.hidden=false;line.style.left=run.player.x*100+'%';line.style.top=run.player.y/run.height*100+'%';line.style.width=Math.min(130,Math.hypot(dx,dy)*300)+'px';line.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';});
-  $('sling-field').addEventListener('pointerup',e=>{if(!slingAim||slingAim.id!==e.pointerId)return;const box=$('sling-field').getBoundingClientRect();if(state==='playing')run.launch((slingAim.x-e.clientX)/box.width,(slingAim.y-e.clientY)/box.width);slingAim=null;$('sling-aim').hidden=true;renderSling();});
-  $('sling-field').addEventListener('pointercancel',()=>{slingAim=null;$('sling-aim').hidden=true;});
+  $('sling-field').addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary){e.preventDefault();run.switch();tone(450+run.lane*200,.07,0,'sine',.035,1.15);}});
+  $('sling-field').addEventListener('keydown',e=>{if(slinging()&&state==='playing'&&[' ','Enter','ArrowLeft','ArrowRight'].includes(e.key)){e.preventDefault();if(!e.repeat)run.switch();}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
 })();
