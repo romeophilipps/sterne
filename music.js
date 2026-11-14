@@ -8,6 +8,10 @@
     const energy=1-Math.exp(-(Math.max(1,level)-1)/8), urgent=remaining<=5000;
     return {bpm:138+42*energy+(urgent?6:0),energy,urgent,hats:level>=2,arp:level>=4,chords:level>=6,fill:level>=8};
   }
+  function dodgeIntensity(elapsed=0){
+    const seconds=Math.max(0,elapsed)/1000,energy=1-Math.exp(-seconds/95),ramp=(from,length)=>Math.max(0,Math.min(1,(seconds-from)/length));
+    return {bpm:108+64*energy,energy,seconds,hats:ramp(8,20),snare:ramp(14,18),arp:ramp(28,30),chords:ramp(40,35),fill:ramp(58,35),pulse:ramp(20,25)};
+  }
   class Track {
     constructor(context,timers={setInterval:(fn,ms)=>setInterval(fn,ms),clearInterval:id=>clearInterval(id)}){
       this.ctx=context;this.timers=timers;this.voices=new Set();this.playing=false;this.timer=null;this.step=0;this.settings=intensity();
@@ -15,8 +19,8 @@
       const samples=this.noise.getChannelData(0);let seed=5731;
       for(let i=0;i<samples.length;i++){seed=(seed*16807)%2147483647;samples[i]=seed/1073741823.5-1;}
     }
-    update(level,remaining){this.settings=intensity(level,remaining);}
-    reset(level=1){this.pause();this.step=0;this.update(level,20000);}
+    update(level,remaining,elapsed=0){this.settings=this.mode==='dodge'?dodgeIntensity(elapsed):intensity(level,remaining);}
+    reset(level=1,mode='tap'){this.pause();this.mode=mode;this.step=0;this.update(level,20000,0);}
     play(){
       if(this.playing)return;
       try{
@@ -56,12 +60,31 @@
     hiss(time,duration,volume,hz=7000,type='highpass'){
       const source=this.ctx.createBufferSource();source.buffer=this.noise;this.voice(source,time,duration,volume,{type,hz});
     }
-    kick(time){
-      const o=this.ctx.createOscillator();o.frequency.setValueAtTime(155,time);o.frequency.exponentialRampToValueAtTime(48,time+.12);this.voice(o,time,.23,.62);
-      this.hiss(time,.018,.08,2200);
+    kick(time,volume=1){
+      const o=this.ctx.createOscillator();o.frequency.setValueAtTime(155,time);o.frequency.exponentialRampToValueAtTime(48,time+.12);this.voice(o,time,.23,.62*volume);
+      this.hiss(time,.018,.08*volume,2200);
     }
     snare(time,volume=1){this.hiss(time,.15,.22*volume,1400);this.note(50,time,.09,.13*volume);}
+    dodgeSequence(step,time,beat){
+      const s=step%16,bar=Math.floor(step/16),root=[38,34,41,36][Math.floor(bar/2)%4],p=this.settings;
+      // An original D-minor pulse: drums, syncopation and melody fade in as survival time grows.
+      if(s===0||s===8)this.kick(time,.68);else if(s%4===0&&p.pulse>0)this.kick(time,.68*p.pulse);
+      if((s===4||s===12)&&p.snare>0)this.snare(time,.65*p.snare);
+      if(s===0||s===6||s===10){this.note(root+(s===10?7:0),time,beat*.7,.16,'triangle',{hz:400+p.energy*700,end:110});this.note(root-12,time,beat*.55,.1,'sine');}
+      if(p.hats>0&&s%2===0)this.hiss(time,.035,(s%4===2?.075:.04)*p.hats,7500);
+      if(p.fill>0&&s%2===1)this.hiss(time,.026,.035*p.fill,9000);
+      if(p.arp>0&&s%2===0){
+        const melody=[12,19,15,22,19,15,10,7],note=root+12+melody[(s/2+bar)%8];
+        this.note(note,time,beat*.34,.07*p.arp,'triangle',null,-.22);
+        this.note(note,time+beat*.75,beat*.4,.024*p.arp,'sine',null,.28);
+      }
+      if(p.chords>0&&s===0)for(const n of [0,root===38?3:4,7])this.note(root+12+n,time,beat*2,.035*p.chords,'sawtooth',{hz:950+p.energy*800,end:250},n===0?-.3:.3);
+      if(p.fill>0&&bar%4===3&&s>=13)this.note(45+(15-s)*3,time,.08,.09*p.fill,'sine');
+      if(p.pulse>0&&s===14)this.note(root+12,time,beat*.2,.09*p.pulse,'sawtooth',{hz:1000,end:150});
+      if(s===0&&bar%8===0)this.hiss(time,.5,.06,5000);
+    }
     sequence(step,time,beat){
+      if(this.mode==='dodge'){this.dodgeSequence(step,time,beat);return;}
       const s=step%16,bar=Math.floor(step/16),root=ROOTS[Math.floor(bar/2)%4],p=this.settings;
       // Four-on-the-floor kick, offbeat bass and a two-bar hook keep even level one driving.
       if(s%4===0)this.kick(time);
@@ -89,5 +112,5 @@
       if(s===0&&bar%8===0)this.hiss(time,.65,.12,4500);
     }
   }
-  return {create:context=>new Track(context),Track,intensity};
+  return {create:context=>new Track(context),Track,intensity,dodgeIntensity};
 });

@@ -1,10 +1,12 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'catch',name:'Fangen',key:'stars-catch-best',create:()=>StarCatch.create()}];
-  const records={tap:0,catch:0};let mode=0,sound=true;
-  try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===localStorage.getItem('stars-mode'))); } catch {}
-  const catching=()=>modes[mode].id==='catch';
+  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()}];
+  const records={tap:0,dodge:0};let mode=0,sound=true;
+  try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===(localStorage.getItem('stars-mode')==='catch'?'dodge':localStorage.getItem('stars-mode')))); } catch {}
+  const dodging=()=>modes[mode].id==='dodge';
+  const duration=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+','+Math.floor(ms%1000/100);
+  const keys=new Set();let pointerAnchor=null;
   let state = 'home', run = StarGame.create(), lastFrame = 0, shownLevel = 1, audio, music;
   const cells = Array.from({length:9}, (_, i) => {
     const button = document.createElement('button'); button.className = 'cell'; button.setAttribute('aria-label', 'Leerer Sternenplatz');
@@ -15,7 +17,7 @@
   });
   function screen(name) { ['home','game','result'].forEach(id => $(id).hidden = id !== name); }
   function homeUI(){
-    const current=modes[mode];$('home-best').textContent=records[current.id];$('mode-name').textContent=current.name;
+    const current=modes[mode];$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
     $('mode-art').dataset.mode=current.id;$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
   }
@@ -45,47 +47,48 @@
   function clearCell(i) { const cell=cells[i];cell.classList.remove('active','bonus','evil');cell.querySelector('.star-art').setAttribute('hidden','');cell.setAttribute('aria-label','Leerer Sternenplatz'); }
   function clearTarget() { cells.forEach((_,i)=>clearCell(i)); }
   function showStar(i, kind) { const cell=cells[i], svg=cell.querySelector('.star-art');cell.classList.add('active');if(kind!=='good')cell.classList.add(kind);svg.querySelector('use').setAttribute('href',kind==='evil'?'#evil-star':'#star');svg.removeAttribute('hidden');cell.setAttribute('aria-label',kind==='evil'?'Böser Stern: kostet ein Leben':kind==='bonus'?'Gelber Stern: vier Sekunden extra':'Stern fangen: ein Punkt'); }
-  function renderBoard() { if(catching()){renderCatch();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
-  const fallingNodes=new Map();
-  function renderCatch(){
-    const visible=new Set(run.stars.map(star=>star.id));
-    for(const [id,node]of fallingNodes)if(!visible.has(id)){node.remove();fallingNodes.delete(id);}
-    for(const star of run.stars){
-      let node=fallingNodes.get(star.id);
-      if(!node){node=document.createElementNS('http://www.w3.org/2000/svg','svg');node.classList.add('falling-star',star.kind);node.setAttribute('aria-hidden','true');node.innerHTML='<use href="'+(star.kind==='bad'?'#evil-star':'#star')+'"/>';$('falling-stars').appendChild(node);fallingNodes.set(star.id,node);}
-      node.hidden=star.age<0;node.style.left=star.x*100+'%';node.style.top=star.y*100+'%';node.style.width=star.size*100+'%';node.style.setProperty('--turn',(star.rotation+star.spin*Math.max(0,star.age)/star.duration)+'deg');
+  function renderBoard() { if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
+  const enemyNodes=new Map();
+  function renderDodge(){
+    const ids=new Set(run.enemies.map(e=>e.id));
+    for(const [id,node]of enemyNodes)if(!ids.has(id)){node.remove();enemyNodes.delete(id);}
+    for(const enemy of run.enemies){
+      let node=enemyNodes.get(enemy.id);
+      if(!node){node=document.createElement('div');node.className='dodge-enemy type-'+enemy.type;node.innerHTML='<span class="enemy-orbit"></span><span class="dash-ray"></span><svg aria-hidden="true"><use href="#evil-star"/></svg>';$('dodge-enemies').appendChild(node);enemyNodes.set(enemy.id,node);}
+      const warning=enemy.warning>0,aiming=enemy.type===3&&enemy.age<1200;
+      node.classList.toggle('warning',warning);node.classList.toggle('aiming',aiming&&!warning);node.classList.toggle('locked',enemy.locked);node.classList.toggle('splitting',enemy.type===4&&!enemy.shard&&enemy.age>1200);node.classList.toggle('shard',enemy.shard);
+      const x=warning||aiming?Math.max(.055,Math.min(.945,enemy.x)):enemy.x;
+      const y=warning||aiming?Math.max(.055,Math.min(run.height-.055,enemy.y)):enemy.y;
+      node.style.left=x*100+'%';node.style.top=y/run.height*100+'%';node.style.setProperty('--rotation',enemy.rotation+'deg');node.style.setProperty('--heading',enemy.angle+'rad');
     }
-    $('catcher').style.left=run.player*100+'%';$('catcher').style.setProperty('--tilt',run.tilt+'deg');$('catch-field').setAttribute('aria-valuenow',Math.round(run.player*100));
-    $('catch-field').classList.toggle('rushing',run.rush>0);$('catcher').classList.toggle('protected',run.grace>0);
-    $('catch-chain').setAttribute('aria-label',run.rush>0?'Sternenrausch: Magnet und doppelte Punkte':run.combo+' von 6 Treffern bis zum Sternenrausch');
-    $('catch-chain').classList.toggle('rushing',run.rush>0);$('catch-chain').style.setProperty('--rush-left',run.rush/StarCatch.RUSH_MS);
-    $('catch-chain').querySelectorAll('i').forEach((dot,i)=>dot.classList.toggle('lit',i<run.combo));
+    $('dodge-player').style.left=run.player.x*100+'%';$('dodge-player').style.top=run.player.y/run.height*100+'%';$('dodge-player').classList.toggle('protected',run.grace>0);
+    $('dodge-types').querySelectorAll('svg').forEach((icon,i)=>icon.classList.toggle('unlocked',i<run.available));
+    $('dodge-types').setAttribute('aria-label',run.available+' von 5 Gegnerarten aktiv');
   }
   function renderHUD() {
-    music?.update(run.level,run.remaining);
-    $('score').textContent=run.score;$('time').textContent=Math.ceil(run.remaining/1000);
-    $('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';
-    $('game').classList.toggle('urgent',run.remaining<=5000);
+    music?.update(run.level,run.remaining,run.elapsed);
+    $('score').textContent=dodging()?duration(run.elapsed):run.score;
+    if(!dodging()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
+    $('game').classList.toggle('urgent',!dodging()&&run.remaining<=5000);
     $('level').textContent='Lv. '+run.level;$('level').setAttribute('aria-label','Schwierigkeitsstufe '+run.level);
     if(run.level>shownLevel){pulse($('level'),'level-up');shownLevel=run.level;}
   }
   function advance(now) {
-    const previousTarget=run.target,events=run.tick(Math.max(0,now-lastFrame));lastFrame=now;renderHUD();
-    if(catching()){for(const event of events)catchFeedback(event);renderCatch();}
-    if(run.ended){finish(run.reason);return false;}if(!catching()&&previousTarget!==run.target)renderBoard();return true;
+    const dt=Math.max(0,now-lastFrame),previousTarget=run.target;
+    if(dodging()&&keys.size){let x=Number(keys.has('ArrowRight')||keys.has('d'))-Number(keys.has('ArrowLeft')||keys.has('a')),y=Number(keys.has('ArrowDown')||keys.has('s'))-Number(keys.has('ArrowUp')||keys.has('w'));const norm=Math.hypot(x,y)||1;run.move(run.player.x+x/norm*dt/1000*2,run.player.y+y/norm*dt/1000*2);}
+    const events=run.tick(dt);lastFrame=now;renderHUD();
+    if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
+    if(run.ended){if(dodging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
+    if(!dodging()&&previousTarget!==run.target)renderBoard();return true;
   }
-  function catchFeedback(event){
-    if(event.kind==='miss')return;
-    const field=$('catch-effects'),effect=document.createElement('span');effect.className='catch-pop '+event.kind;effect.style.left=event.x*100+'%';effect.setAttribute('aria-hidden','true');
-    effect.textContent=event.kind==='gold'?'+4 s':event.kind==='bad'?'−1 ♥':event.kind==='rush'?'✦ ×2':'+'+event.points;field.appendChild(effect);setTimeout(()=>effect.remove(),750);
-    const splash=document.createElement('span');splash.className='catch-splash '+event.kind;splash.style.left=event.x*100+'%';
-    const ring=document.createElement('i');ring.className='catch-ring';splash.appendChild(ring);
-    for(let i=0;i<8;i++){const dot=document.createElement('i'),angle=i*Math.PI/4;dot.style.setProperty('--dx',Math.cos(angle)*(25+i%3*10)+'px');dot.style.setProperty('--dy',(Math.sin(angle)*30-15)+'px');dot.style.setProperty('--delay',i%3*15+'ms');splash.appendChild(dot);}
-    field.appendChild(splash);setTimeout(()=>splash.remove(),650);
-    if(event.kind==='bad'){hearts();pulse($('lives'),'heart-hit');pulse($('catcher'),'catcher-hit');pulse($('catch-field'),'field-hit');tone(190,.2,0,'triangle',.065,.5);$('encouragement').textContent='Ein Leben verloren';}
-    else if(event.kind==='rush'){tone(660,.12);tone(990,.15,.07);tone(1320,.24,.15);$('encouragement').textContent='Sternenrausch! Magnet und doppelte Punkte';}
-    else if(event.kind==='dodge'){tone(1100,.07,0,'sine',.035,1.25);pulse($('score'),'score-pop');}
-    else{tone(460*Math.pow(1.122,event.boosted?7:Math.min(6,event.combo)),.13,0,'sine',.075,1.04);tone(180,.06,0,'sine',.07,.5);if(event.kind==='gold')catchSound(true);pulse($('score'),'score-pop');pulse($('catcher'),'catcher-pop');if(event.kind==='gold'){pulse($('time'),'time-gain');$('encouragement').textContent='Vier Sekunden dazu';}}
+  function dodgeFeedback(event){
+    if(event.kind==='unlock'){
+      $('dodge-announcement').textContent=StarDodge.TYPES[event.type].name;pulse($('dodge-announcement'),'announce');
+      $('encouragement').textContent=StarDodge.TYPES[event.type].name+' kommen hinzu';tone(440,.12,0,'sine',.04,1.5);tone(660,.18,.1,'sine',.035,1.1);return;
+    }
+    const ring=document.createElement('span');ring.className='dodge-impact '+event.kind;ring.style.left=event.x*100+'%';ring.style.top=event.y/run.height*100+'%';$('dodge-effects').appendChild(ring);setTimeout(()=>ring.remove(),650);
+    if(event.kind==='hit'){hearts();pulse($('lives'),'heart-hit');pulse($('dodge-field'),'field-hit');tone(150,.18,0,'triangle',.06,.45);$('encouragement').textContent='Ein Leben verloren';}
+    else if(event.kind==='split')tone(500,.06,0,'sine',.022,1.5);
   }
   function burst(i, points, isBonus, evil=false) {
     const effect=document.createElement('span');effect.className='burst'+(evil?' danger-burst':isBonus?' gold-burst':'');effect.setAttribute('aria-hidden','true');
@@ -96,7 +99,7 @@
     cells[i].appendChild(effect);setTimeout(()=>effect.remove(),750);
   }
   function hit(i) {
-    if(catching()||state!=='playing'||!advance(performance.now()))return;
+    if(dodging()||state!=='playing'||!advance(performance.now()))return;
     const event=run.hit(i);if(event.kind==='none')return;
     const gold=event.kind==='gold',evil=event.kind==='bad';
     burst(i,event.points,gold,evil);renderHUD();hearts();
@@ -106,19 +109,21 @@
     if(run.ended){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},550);}
   }
   function start() {
-    unlockAudio();run=modes[mode].create();music?.reset();shownLevel=1;hearts();
-    cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));fallingNodes.clear();$('falling-stars').replaceChildren();$('catch-effects').replaceChildren();
-    $('catch-chain').hidden=!catching();$('board').hidden=catching();$('catch-field').hidden=!catching();$('catch-hint').hidden=!catching();$('game').classList.toggle('catch-mode',catching());
-    $('catch-hint').classList.remove('learned');renderHUD();$('encouragement').textContent=catching()?'Fänger nach links und rechts ziehen. Rote Sterne meiden.':'Gelbe Sterne verlängern die Zeit';screen('game');state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    unlockAudio();run=modes[mode].create();music?.reset(1,modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
+    cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
+    $('board').hidden=dodging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
+    $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
+    screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
+    renderHUD();$('encouragement').textContent=dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
-    state='result';music?.pause();clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
-    homeUI();$('final-score').textContent=run.score;
-    $('result-title').textContent=reason==='lives'?'Alle Herzen verbraucht':reason==='time'?'Zeit abgelaufen':record?'Neuer Rekord':'Runde beendet';
-    $('record-message').textContent=record?'Neuer Rekord · '+current.name:'Rekord '+records[current.id]+' · '+current.name;
+    state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
+    homeUI();$('final-score').textContent=dodging()?duration(run.score):run.score;$('final-score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Gesammelte Sterne');$('result').classList.toggle('dodge-result',dodging());
+    $('result-title').textContent=dodging()?'Überlebt':reason==='lives'?'Alle Herzen verbraucht':reason==='time'?'Zeit abgelaufen':record?'Neuer Rekord':'Runde beendet';
+    $('record-message').textContent=record?'Neuer Rekord · '+current.name:'Rekord '+(dodging()?duration(records[current.id]):records[current.id])+' · '+current.name;
     screen('result');if(reason!=='lives')tone(850,.25);$('again').focus({preventScroll:true});
   }
-  function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';music?.pause();$('pause-dialog').showModal(); }
+  function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';keys.clear();pointerAnchor=null;music?.pause();$('pause-dialog').showModal(); }
   function resume() { $('pause-dialog').close();if(state==='paused'){unlockAudio();state='playing';if(sound)music?.play();lastFrame=performance.now();} }
   function frame(now) { if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
   $('start').addEventListener('click',start);$('again').addEventListener('click',start);
@@ -136,10 +141,16 @@
   $('home').addEventListener('pointercancel',()=>swipe=null);
   $('home').addEventListener('click',e=>{if(e.detail!==0&&performance.now()<suppressClickUntil){suppressClickUntil=0;e.preventDefault();e.stopImmediatePropagation();}},true);
   $('home').addEventListener('keydown',e=>{if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&state==='home'){e.preventDefault();chooseMode(mode+(e.key==='ArrowRight'?1:-1));}});
-  function steer(e){if(!catching()||state!=='playing'||!advance(performance.now()))return;const box=$('catch-field').getBoundingClientRect();run.move((e.clientX-box.left)/box.width);$('catch-hint').classList.add('learned');renderCatch();}
-  $('catch-field').addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0)return;e.preventDefault();dragging=e.pointerId;$('catch-field').setPointerCapture(e.pointerId);steer(e);});
-  $('catch-field').addEventListener('pointermove',e=>{if(e.pointerId===dragging)steer(e);});
-  for(const name of ['pointerup','pointercancel','lostpointercapture'])$('catch-field').addEventListener(name,()=>dragging=null);
-  $('catch-field').addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key)||!catching()||state!=='playing')return;e.preventDefault();if(!advance(performance.now()))return;run.move(e.key==='Home'?.1:e.key==='End'?.9:run.player+(e.key==='ArrowRight'?.16:-.16));$('catch-hint').classList.add('learned');renderCatch();});
+  function steer(e){
+    if(!pointerAnchor||!dodging()||state!=='playing'||!advance(performance.now()))return;
+    const box=$('dodge-field').getBoundingClientRect();run.move(pointerAnchor.x+(e.clientX-pointerAnchor.clientX)/box.width,pointerAnchor.y+(e.clientY-pointerAnchor.clientY)/box.width);$('dodge-hint').classList.add('learned');
+  }
+  $('dodge-field').addEventListener('pointerdown',e=>{if(!e.isPrimary||e.button!==0||!dodging()||state!=='playing')return;e.preventDefault();if(!advance(performance.now()))return;dragging=e.pointerId;pointerAnchor={clientX:e.clientX,clientY:e.clientY,x:run.player.x,y:run.player.y};$('dodge-field').setPointerCapture(e.pointerId);});
+  $('dodge-field').addEventListener('pointermove',e=>{if(e.pointerId===dragging)steer(e);});
+  for(const name of ['pointerup','pointercancel','lostpointercapture'])$('dodge-field').addEventListener(name,()=>{dragging=null;pointerAnchor=null;});
+  const controls=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'];
+  document.addEventListener('keydown',e=>{if(dodging()&&state==='playing'&&controls.includes(e.key)){e.preventDefault();keys.add(e.key);$('dodge-hint').classList.add('learned');}});
+  document.addEventListener('keyup',e=>{keys.delete(e.key);});window.addEventListener('blur',()=>keys.clear());
+  window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
 })();
