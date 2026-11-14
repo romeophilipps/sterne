@@ -18,6 +18,7 @@
   });
   function screen(name) { ['home','game','result'].forEach(id => $(id).hidden = id !== name); }
   function homeUI(){
+    document.dispatchEvent(new CustomEvent('stars-mode',{detail:{mode:modes[mode].id}}));
     const current=modes[mode];$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
     $('mode-art').dataset.mode=current.id;$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
@@ -133,7 +134,7 @@
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
-    homeUI();$('final-score').textContent=dodging()?duration(run.score):run.score;$('final-score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Gesammelte Sterne');$('result').classList.toggle('dodge-result',dodging());
+    document.dispatchEvent(new CustomEvent('stars-result',{detail:{mode:current.id,score:run.score}}));homeUI();$('final-score').textContent=dodging()?duration(run.score):run.score;$('final-score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Gesammelte Sterne');$('result').classList.toggle('dodge-result',dodging());
     $('result-title').textContent=dodging()?'Überlebt':reason==='lives'?'Alle Herzen verbraucht':reason==='time'?'Zeit abgelaufen':record?'Neuer Rekord':'Runde beendet';
     $('record-message').textContent=record?'Neuer Rekord · '+current.name:'Rekord '+(dodging()?duration(records[current.id]):records[current.id])+' · '+current.name;
     screen('result');if(reason!=='lives')tone(850,.25);$('again').focus({preventScroll:true});

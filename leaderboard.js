@@ -1,0 +1,15 @@
+'use strict';
+(()=>{
+ const $=id=>document.getElementById(id);let current='tap',result=null,lastResult=null,busy=false;
+ const names={tap:'Tippen',dodge:'Ausweichen',orbit:'Orbit'};
+ const fmt=(n,mode)=>mode==='dodge'?Math.floor(n/60000)+':'+String(Math.floor(n/1000)%60).padStart(2,'0')+','+Math.floor(n%1000/100):String(n);
+ async function rpc(name,data){const c=window.STAR_BOARD;if(!c?.url||!c?.key)throw Error('Bestenliste wird eingerichtet.');const response=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Gerade nicht erreichbar. Bitte später erneut versuchen.');const text=await response.text();return text?JSON.parse(text):null;}
+ function message(text){$('leaderboard-status').textContent=text;}
+ async function load(){const mode=current;$('leaderboard-title').textContent='Bestenliste · '+names[mode];$('leaderboard-rows').replaceChildren();message('Wird geladen …');try{const rows=await rpc('star_top',{p_mode:mode});if(mode!==current)return;message(rows.length?'':'Noch keine Einträge. Sei der Erste!');rows.forEach((row,i)=>{const li=document.createElement('li'),rank=document.createElement('span'),name=document.createElement('span'),score=document.createElement('strong');rank.textContent=i+1;name.textContent=row.player_name;score.textContent=fmt(row.best_score,mode);li.append(rank,name,score);$('leaderboard-rows').append(li);});}catch(e){message(navigator.onLine?e.message:'Die Bestenliste braucht Internet.');}}
+ function open(mode,score=null){current=mode;result=score;$('leaderboard-entry').hidden=score===null;$('leaderboard-score').textContent=score===null?'':fmt(score,mode);try{$('player-name').value=localStorage.getItem('stars-player-name')||'';}catch{}$('leaderboard-dialog').showModal();load();}
+ document.addEventListener('stars-mode',e=>{current=e.detail.mode==='sling'?'orbit':e.detail.mode;});
+ document.addEventListener('stars-result',e=>{lastResult=e.detail;$('submit-score').hidden=false;});
+ $('open-leaderboard').addEventListener('click',()=>open(current));$('close-leaderboard').addEventListener('click',()=>$('leaderboard-dialog').close());$('leaderboard-retry').addEventListener('click',load);
+ $('submit-score').addEventListener('click',()=>{if(lastResult)open(lastResult.mode==='sling'?'orbit':lastResult.mode,lastResult.score);});
+ $('leaderboard-entry').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;const name=$('player-name').value.trim();if(!name)return;busy=true;$('leaderboard-save').disabled=true;message('Wird gespeichert …');try{let player=localStorage.getItem('stars-player-id');if(!player){player=crypto.randomUUID();localStorage.setItem('stars-player-id',player);}localStorage.setItem('stars-player-name',name);await rpc('star_submit',{p_player:player,p_mode:current,p_name:name,p_score:result});$('leaderboard-entry').hidden=true;await load();}catch(error){message(error.message);}finally{busy=false;$('leaderboard-save').disabled=false;}});
+})();
