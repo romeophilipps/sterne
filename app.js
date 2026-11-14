@@ -55,7 +55,7 @@
     $('dodge-player').classList.toggle('shielded',run.shield>0);$('dodge-player').classList.toggle('fiery',run.fire>0);
     $('dodge-player').setAttribute('aria-label',run.fire>0?'Feuerstern aktiv':run.shield>0?'Schutzblase aktiv':'Gelber Stern');
     let extras=$('dodge-pickups');if(!extras){extras=document.createElement('div');extras.id='dodge-pickups';$('dodge-field').appendChild(extras);}
-    extras.innerHTML=run.pickups.map(item=>'<span class="dodge-pickup '+item.kind+'" style="left:'+item.x*100+'%;top:'+item.y/run.height*100+'%">'+(item.kind==='fire'?'🔥':'◉')+'</span>').join('');
+    extras.innerHTML=run.pickups.map(item=>'<span class="dodge-pickup '+item.kind+'" style="left:'+item.x*100+'%;top:'+item.y/run.height*100+'%">'+'<svg viewBox="0 0 40 40" aria-hidden="true"><path class="power-core" d="'+(item.kind==='fire'?'M22 5c2 8-6 10-3 16 2-2 4-5 4-8 7 6 10 11 7 17-3 7-16 8-20 0-3-6 1-12 6-17-1 6 0 9 2 10-2-8 4-12 4-18Z':'M20 6c7 0 13 6 13 13s-6 14-13 15C13 33 7 26 7 19S13 6 20 6Z')+'"/><path class="power-detail" d="'+(item.kind==='fire'?'M20 24c4 4 5 7 0 9-5-2-4-5 0-9Z':'M12 19a8 8 0 0 1 8-8M28 21a8 8 0 0 1-5 7')+'"/><path class="power-spark" d="m32 5 1 3 3 1-3 1-1 3-1-3-3-1 3-1Z"/></svg>'+'</span>').join('');
     const ids=new Set(run.enemies.map(e=>e.id));
     for(const [id,node]of enemyNodes)if(!ids.has(id)){node.remove();enemyNodes.delete(id);}
     for(const enemy of run.enemies){
