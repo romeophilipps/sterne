@@ -1,9 +1,10 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()}];
-  const records={tap:0,dodge:0};let mode=0,sound=true;
+  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Schleudern',key:'stars-sling-best',create:()=>StarSling.create()}];
+  const records={tap:0,dodge:0,sling:0};let mode=0,sound=true;
   try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===(localStorage.getItem('stars-mode')==='catch'?'dodge':localStorage.getItem('stars-mode')))); } catch {}
+  const slinging=()=>modes[mode].id==='sling';
   const dodging=()=>modes[mode].id==='dodge';
   const duration=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+','+Math.floor(ms%1000/100);
   const keys=new Set();let pointerAnchor=null;
@@ -47,7 +48,7 @@
   function clearCell(i) { const cell=cells[i];cell.classList.remove('active','bonus','evil');cell.querySelector('.star-art').setAttribute('hidden','');cell.setAttribute('aria-label','Leerer Sternenplatz'); }
   function clearTarget() { cells.forEach((_,i)=>clearCell(i)); }
   function showStar(i, kind) { const cell=cells[i], svg=cell.querySelector('.star-art');cell.classList.add('active');if(kind!=='good')cell.classList.add(kind);svg.querySelector('use').setAttribute('href',kind==='evil'?'#evil-star':'#star');svg.removeAttribute('hidden');cell.setAttribute('aria-label',kind==='evil'?'Böser Stern: kostet ein Leben':kind==='bonus'?'Gelber Stern: vier Sekunden extra':'Stern fangen: ein Punkt'); }
-  function renderBoard() { if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
+  function renderBoard() { if(slinging()){renderSling();return;} if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
   const enemyNodes=new Map();
   function renderDodge(){
     let dustLayer=$('dodge-dust');if(!dustLayer){dustLayer=document.createElement('div');dustLayer.id='dodge-dust';$('dodge-field').appendChild(dustLayer);}
@@ -74,7 +75,7 @@
   function renderHUD() {
     music?.update(run.level,run.remaining,run.elapsed);
     $('score').textContent=dodging()?duration(run.elapsed):run.score;
-    if(!dodging()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
+    if(!dodging()&&!slinging()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
     $('game').classList.toggle('urgent',!dodging()&&run.remaining<=5000);
     $('level').textContent='Lv. '+run.level;$('level').setAttribute('aria-label','Schwierigkeitsstufe '+run.level);
     if(run.level>shownLevel){pulse($('level'),'level-up');shownLevel=run.level;}
@@ -84,8 +85,9 @@
     if(dodging()&&keys.size){let x=Number(keys.has('ArrowRight')||keys.has('d'))-Number(keys.has('ArrowLeft')||keys.has('a')),y=Number(keys.has('ArrowDown')||keys.has('s'))-Number(keys.has('ArrowUp')||keys.has('w'));const norm=Math.hypot(x,y)||1;run.move(run.player.x+x/norm*dt/1000*2,run.player.y+y/norm*dt/1000*2);}
     const events=run.tick(dt);lastFrame=now;renderHUD();
     if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
-    if(run.ended){if(dodging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
-    if(!dodging()&&previousTarget!==run.target)renderBoard();return true;
+    if(run.ended){if(dodging()||slinging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
+    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
+    if(!dodging()&&!slinging()&&previousTarget!==run.target)renderBoard();return true;
   }
   function dodgeFeedback(event){
     if(event.kind==='unlock'){
@@ -111,7 +113,7 @@
     cells[i].appendChild(effect);setTimeout(()=>effect.remove(),750);
   }
   function hit(i) {
-    if(dodging()||state!=='playing'||!advance(performance.now()))return;
+    if(dodging()||slinging()||state!=='playing'||!advance(performance.now()))return;
     const event=run.hit(i);if(event.kind==='none')return;
     const gold=event.kind==='gold',evil=event.kind==='bad';
     burst(i,event.points,gold,evil);renderHUD();hearts();
@@ -121,12 +123,13 @@
     if(run.ended){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},550);}
   }
   function start() {
-    unlockAudio();run=modes[mode].create();music?.reset(1,modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
+    unlockAudio();run=modes[mode].create();music?.reset(1,slinging()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
-    $('board').hidden=dodging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
+    $('sling-field').hidden=!slinging();$('sling-hint').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
-    renderHUD();$('encouragement').textContent=dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    if(slinging()){const box=$('sling-field').getBoundingClientRect();run.resize(box.width,box.height);}
+    renderHUD();$('encouragement').textContent=slinging()?'Zurückziehen, zielen und loslassen. Blaue Sterne treffen, rote meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -164,5 +167,15 @@
   document.addEventListener('keydown',e=>{if(dodging()&&state==='playing'&&controls.includes(e.key)){e.preventDefault();keys.add(e.key);$('dodge-hint').classList.add('learned');}});
   document.addEventListener('keyup',e=>{keys.delete(e.key);});window.addEventListener('blur',()=>keys.clear());
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
+  let slingAim=null;
+  function renderSling(){
+    $('sling-player').style.left=run.player.x*100+'%';$('sling-player').style.top=run.player.y/run.height*100+'%';
+    $('sling-targets').innerHTML=run.targets.map(t=>'<svg class="sling-star" style="left:'+t.x*100+'%;top:'+t.y/run.height*100+'%"><use href="#star"/></svg>').join('')+run.hazards.map(t=>'<svg class="sling-star evil" style="left:'+t.x*100+'%;top:'+t.y/run.height*100+'%"><use href="#evil-star"/></svg>').join('');
+    $('sling-shots').textContent='●'.repeat(Math.max(0,run.shots));$('sling-shots').setAttribute('aria-label',run.shots+' Schüsse übrig');
+  }
+  $('sling-field').addEventListener('pointerdown',e=>{if(!slinging()||state!=='playing'||run.moving||!e.isPrimary)return;e.preventDefault();slingAim={id:e.pointerId,x:e.clientX,y:e.clientY};$('sling-field').setPointerCapture(e.pointerId);});
+  $('sling-field').addEventListener('pointermove',e=>{if(!slingAim||slingAim.id!==e.pointerId)return;const box=$('sling-field').getBoundingClientRect(),dx=(slingAim.x-e.clientX)/box.width,dy=(slingAim.y-e.clientY)/box.width,line=$('sling-aim');line.hidden=false;line.style.left=run.player.x*100+'%';line.style.top=run.player.y/run.height*100+'%';line.style.width=Math.min(130,Math.hypot(dx,dy)*300)+'px';line.style.transform='rotate('+Math.atan2(dy,dx)+'rad)';});
+  $('sling-field').addEventListener('pointerup',e=>{if(!slingAim||slingAim.id!==e.pointerId)return;const box=$('sling-field').getBoundingClientRect();if(state==='playing')run.launch((slingAim.x-e.clientX)/box.width,(slingAim.y-e.clientY)/box.width);slingAim=null;$('sling-aim').hidden=true;renderSling();});
+  $('sling-field').addEventListener('pointercancel',()=>{slingAim=null;$('sling-aim').hidden=true;});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
 })();
