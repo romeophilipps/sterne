@@ -169,10 +169,23 @@
   document.addEventListener('keyup',e=>{keys.delete(e.key);});window.addEventListener('blur',()=>keys.clear());
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   let slingAim=null;
+  const snakeNodes=[];
   function renderSling(){
     hearts();$('sling-player').hidden=true;
-    const star=(p,cls)=>'<svg class="snake-star '+cls+'" style="left:'+((p.x+.5)/13*100)+'%;top:'+((p.y+.5)/13*100)+'%"><use href="'+(cls==='evil'?'#evil-star':'#star')+'"/></svg>';
-    $('sling-targets').innerHTML=run.snake.map((p,i)=>star(p,i===0?'head':'tail')).join('')+(run.food?star(run.food,run.gold?'gold':'food'):'')+run.hazards.map(p=>star(p,'evil')).join('');
+    const items=[];
+    run.positions.forEach((p,i)=>{
+      const cls=i===0?'head':'tail';items.push({...p,cls});
+      // Mirror at the seam so a star slides out and reappears without crossing the board.
+      if(p.x<0)items.push({...p,x:p.x+13,cls});if(p.x>12)items.push({...p,x:p.x-13,cls});
+      if(p.y<0)items.push({...p,y:p.y+13,cls});if(p.y>12)items.push({...p,y:p.y-13,cls});
+    });
+    if(run.food)items.push({...run.food,cls:run.gold?'gold':'food'});
+    run.hazards.forEach(p=>items.push({...p,cls:'evil'}));
+    items.forEach((item,i)=>{
+      let node=snakeNodes[i];if(!node||!node.isConnected){node=document.createElementNS('http://www.w3.org/2000/svg','svg');node.innerHTML='<use/>';$('sling-targets').appendChild(node);snakeNodes[i]=node;}
+      node.removeAttribute('hidden');node.setAttribute('class','snake-star '+item.cls);node.style.left=(item.x+.5)/13*100+'%';node.style.top=(item.y+.5)/13*100+'%';node.firstElementChild.setAttribute('href',item.cls==='evil'?'#evil-star':'#star');
+    });
+    for(let i=items.length;i<snakeNodes.length;i++)snakeNodes[i].setAttribute('hidden','');
     $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
   }
   let snakeSwipe=null;
