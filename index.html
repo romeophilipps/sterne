@@ -7,8 +7,8 @@
   <meta name="apple-mobile-web-app-title" content="Sterne">
   <meta name="description" content="Ein kleines Spiel für große Sternensammler. Sterne antippen, Spaß haben und deinen Rekord knacken.">
   <title>Sterne</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=7"><link rel="icon" href="./icon.svg?v=7" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon-180.png?v=7"><link rel="stylesheet" href="./style.css?v=7">
+  <link rel="manifest" href="./manifest.webmanifest?v=8"><link rel="icon" href="./icon.svg?v=8" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-180.png?v=8"><link rel="stylesheet" href="./style.css?v=8">
 </head>
 <body>
 <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -29,9 +29,14 @@
 <section id="home" class="screen">
   <h1 class="sr-only">Sterne</h1>
   <div class="home-main">
-    <svg class="solo-star" aria-hidden="true"><use href="#star"/></svg>
+    <div id="mode-art" class="mode-art" data-mode="tap" aria-hidden="true">
+      <svg class="solo-star tap-preview"><use href="#star"/></svg>
+      <div class="catch-preview"><svg class="preview-blue"><use href="#star"/></svg><svg class="preview-gold"><use href="#star"/></svg><svg class="preview-red"><use href="#evil-star"/></svg><span class="preview-catcher"></span></div>
+    </div>
+    <h2 id="mode-name" class="mode-name" aria-live="polite">Tippen</h2>
     <div class="minimal-record" aria-label="Dein Rekord"><svg class="ui-icon" aria-hidden="true"><use href="#trophy"/></svg><span id="home-best">0</span></div>
     <button id="start" class="primary round-action" aria-label="Endlos spielen"><svg class="ui-icon" aria-hidden="true"><use href="#play"/></svg></button>
+    <div id="mode-picker" class="mode-picker" role="group" aria-label="Spielmodus. Nach rechts wischen zum Wechseln."><button aria-label="Modus Tippen" aria-pressed="true"><span></span></button><button aria-label="Modus Fangen" aria-pressed="false"><span></span></button></div>
   </div>
   <div class="home-download"><button id="install" class="install"><svg class="ui-icon" aria-hidden="true"><use href="#download"/></svg>App laden</button><div id="offline-status" class="offline-status" role="status" aria-live="polite">Wird gespeichert …</div></div>
 </section>
@@ -41,6 +46,10 @@
   <div class="time-track"><div id="time-bar"></div></div>
   <div id="encouragement" class="sr-only"></div>
   <div id="board" class="board" aria-label="Sterne antippen. Rote, böse Sterne kosten ein Leben."></div>
+  <div id="catch-field" class="catch-field" role="slider" tabindex="0" aria-label="Fänger nach links oder rechts bewegen" aria-valuemin="12" aria-valuemax="88" aria-valuenow="50" aria-orientation="horizontal" aria-describedby="catch-instructions" hidden>
+    <div class="fall-lanes" aria-hidden="true"><span></span><span></span></div><div id="falling-stars" aria-hidden="true"></div><div id="catch-effects" aria-hidden="true"></div><div id="catcher" class="catcher" aria-hidden="true"><span></span></div>
+  </div>
+  <div id="catch-hint" class="catch-hint" hidden>← Fänger ziehen →</div><p id="catch-instructions" class="sr-only">Fänger mit dem Finger bewegen. Alternativ Pfeiltasten. Blaue Sterne fangen, gelbe geben vier Sekunden. Rote Sterne kosten ein Leben. Verpasste blaue Sterne kosten eine Sekunde.</p>
 </section>
 <section id="result" class="screen result" hidden>
   <h1 id="result-title" class="sr-only">Runde beendet</h1>
@@ -52,5 +61,5 @@
 </main>
 <dialog id="pause-dialog"><h2>Pause</h2><button id="resume" class="primary round-action" aria-label="Weiterspielen"><svg class="ui-icon" aria-hidden="true"><use href="#play"/></svg></button><button id="quit" class="text-button danger">Beenden</button></dialog>
 <dialog id="install-dialog"><div class="dialog-mark"><svg class="ui-icon" aria-hidden="true"><use href="#download"/></svg></div><h2>App laden</h2><p id="download-status" role="status" aria-live="polite">Wird gespeichert …</p><div id="install-steps"><ol><li>In <strong>Safari</strong>: <strong>Teilen</strong> öffnen.</li><li><strong>Zum Home-Bildschirm</strong> wählen.</li><li><strong>Als Web-App öffnen</strong> aktivieren und <strong>Hinzufügen</strong> tippen.</li></ol><p class="small-note">Die App einmal öffnen, bis „Offline bereit“ erscheint. Danach geht’s auch im Flugmodus.</p></div><button id="download-retry" class="primary" hidden>Erneut laden</button><button id="native-install" class="primary" hidden>Installieren</button><button id="close-install" class="text-button">Fertig</button></dialog>
-<script src="./game.js?v=7" defer></script><script src="./music.js?v=7" defer></script><script src="./app.js?v=7" defer></script><script src="./offline.js?v=7" defer></script>
+<script src="./game.js?v=8" defer></script><script src="./catch.js?v=8" defer></script><script src="./music.js?v=8" defer></script><script src="./app.js?v=8" defer></script><script src="./offline.js?v=8" defer></script>
 </body></html>
