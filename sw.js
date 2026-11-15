@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='v23';
+const VERSION='v24';
 const CACHE='sternensammler-'+VERSION;
-const ASSETS=['./','./index.html','./style.css?v=23','./app.js?v=23','./game.js?v=23','./snake.js?v=23','./leaderboard.js?v=23','./leaderboard-config.js?v=23','./dodge.js?v=23','./music.js?v=23','./offline.js?v=23','./manifest.webmanifest?v=23','./icon.svg?v=23','./icon-180.png?v=23','./icon-192.png?v=23','./icon-512.png?v=23'];
+const ASSETS=['./','./index.html','./style.css?v=24','./app.js?v=24','./game.js?v=24','./snake.js?v=24','./leaderboard.js?v=24','./leaderboard-config.js?v=24','./dodge.js?v=24','./music.js?v=24','./offline.js?v=24','./manifest.webmanifest?v=24','./icon.svg?v=24','./icon-180.png?v=24','./icon-192.png?v=24','./icon-512.png?v=24'];
 const absolute=path=>new URL(path,self.registration.scope).href;
 async function complete(){const cache=await caches.open(CACHE);const entries=await Promise.all(ASSETS.map(path=>cache.match(absolute(path))));return entries.every(response=>response&&response.ok);}
 async function download(){const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(path=>new Request(absolute(path),{cache:'reload'})));if(!await complete())throw new Error('Incomplete download');}

@@ -1,22 +1,29 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarSnake=api;})(globalThis,()=>{
- const SIZE=13;
+ const SIZE=13,wrap=n=>(n+SIZE)%SIZE;
+ const initial=()=>[{x:6,y:8},{x:6,y:9},{x:6,y:10},{x:5,y:10},{x:4,y:10},{x:3,y:10},{x:3,y:9},{x:3,y:8}];
+ function polygon(chain){const points=[{...chain[0]}];for(let i=1;i<chain.length;i++){const a=points[i-1],b=chain[i];let dx=b.x-chain[i-1].x,dy=b.y-chain[i-1].y;if(dx>6.5)dx-=13;if(dx<-6.5)dx+=13;if(dy>6.5)dy-=13;if(dy<-6.5)dy+=13;points.push({x:a.x+dx,y:a.y+dy});}return points;}
+ function area(p){return Math.abs(p.reduce((v,a,i)=>{const b=p[(i+1)%p.length];return v+a.x*b.y-b.x*a.y;},0)/2);}
+ function inside(p,point){for(const dx of [-13,0,13])for(const dy of [-13,0,13]){const x=point.x+dx,y=point.y+dy;let hit=false;for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],b=p[j];if((a.y>y)!==(b.y>y)&&x<(b.x-a.x)*(y-a.y)/(b.y-a.y)+a.x)hit=!hit;}if(hit)return true;}return false;}
  class Round{
- constructor(random=Math.random){this.random=random;this.elapsed=0;this.score=0;this.lives=3;this.ended=false;this.reason=null;this.snake=[{x:6,y:8},{x:6,y:9},{x:6,y:10}];this.direction={x:0,y:-1};this.queued=null;this.previous=this.snake.map(p=>({...p}));this.clock=0;this.eaten=0;this.hazards=[];this.food=this.free();this.gold=false;this.grace=0;this.rush=0;this.constellation=0;this.formation=0;}
+ constructor(random=Math.random){this.random=random;this.elapsed=0;this.score=0;this.lives=3;this.ended=false;this.reason=null;this.snake=initial();this.direction={x:0,y:-1};this.queued=null;this.previous=this.snake.map(p=>({...p}));this.clock=0;this.eaten=0;this.hazards=[];this.food=this.free();this.bonuses=[];this.refill();this.gold=false;this.grace=0;this.rush=0;this.constellation=0;this.formation=0;this.loops=0;this.spawnAt=5000;this.echo=null;this.combo=0;this.lastLoop=-30000;}
  get positions(){const alpha=Math.min(1,this.clock/this.interval),previous=this.previous||this.snake;return this.snake.map((p,i)=>{const a=previous[Math.min(i,previous.length-1)]||p;let dx=p.x-a.x,dy=p.y-a.y;if(dx>SIZE/2)dx-=SIZE;if(dx<-SIZE/2)dx+=SIZE;if(dy>SIZE/2)dy-=SIZE;if(dy<-SIZE/2)dy+=SIZE;return {x:((a.x+dx*alpha+.5+SIZE)%SIZE)-.5,y:((a.y+dy*alpha+.5+SIZE)%SIZE)-.5};});}
- get level(){return 1+Math.floor(this.eaten/4);}get interval(){return 95+185*Math.pow(.94,this.eaten);}
- free(){const cells=[];for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++)if(!this.snake.some(p=>p.x===x&&p.y===y)&&!this.hazards.some(p=>p.x===x&&p.y===y))cells.push({x,y});return cells[Math.min(cells.length-1,Math.floor(this.random()*cells.length))]||null;}
+ get level(){return 1+Math.floor(this.elapsed/20000);}get interval(){return 135+125*Math.exp(-this.elapsed/140000);}
+ free(){const cells=[];for(let y=0;y<SIZE;y++)for(let x=0;x<SIZE;x++)if(!this.snake.some(p=>p.x===x&&p.y===y)&&!this.hazards.some(p=>p.x===x&&p.y===y)&&!this.bonuses?.some(p=>p.x===x&&p.y===y)&&!(this.food?.x===x&&this.food?.y===y))cells.push({x,y});return cells[Math.min(cells.length-1,Math.floor(this.random()*cells.length))]||null;}
+ refill(){while(this.bonuses.length<2){const p=this.free();if(!p)break;this.bonuses.push(p);}}
  turn(x,y){if(this.ended||this.queued||Math.abs(x)+Math.abs(y)!==1||x===-this.direction.x&&y===-this.direction.y)return;this.queued={x,y};}
  tick(ms){const events=[];if(this.ended||!Number.isFinite(ms)||ms<=0)return events;this.elapsed+=ms;this.clock+=ms;this.grace=Math.max(0,this.grace-ms);this.rush=Math.max(0,this.rush-ms);
- while(this.clock>=this.interval&&!this.ended){this.clock-=this.interval;if(this.queued){this.direction=this.queued;this.queued=null;}const head=this.snake[0],next={x:(head.x+this.direction.x+SIZE)%SIZE,y:(head.y+this.direction.y+SIZE)%SIZE};const eat=this.food&&next.x===this.food.x&&next.y===this.food.y;const body=eat?this.snake:this.snake.slice(0,-1);
- const danger=this.hazards.find(p=>p.x===next.x&&p.y===next.y);
+ this.hazards=this.hazards.filter(h=>!h.expires||h.expires>this.elapsed);
+ // Every drifting enemy announces its next cell before moving into it.
+ for(const h of this.hazards){if(!h.moveAt||this.elapsed<h.moveAt)continue;if(h.target){const t=h.target;if(![this.food,...this.bonuses].some(p=>p&&p.x===t.x&&p.y===t.y)&&!this.hazards.some(p=>p!==h&&p.x===t.x&&p.y===t.y)){h.x=t.x;h.y=t.y;}h.target=null;h.moveAt=this.elapsed+Math.max(800,2200-this.level*90);}else{const dirs=[{x:1,y:0},{x:-1,y:0},{x:0,y:1},{x:0,y:-1}],d=dirs[Math.floor(this.random()*4)%4];h.target={x:wrap(h.x+d.x),y:wrap(h.y+d.y)};h.moveAt=this.elapsed+850;}}
+ if(this.elapsed>=this.spawnAt){this.spawnAt=this.elapsed+Math.max(2000,6200-this.level*350);if(this.hazards.length<Math.min(8,2+this.level)){const h=this.free(),head=this.snake[0];if(h&&Math.min(Math.abs(h.x-head.x),13-Math.abs(h.x-head.x))+Math.min(Math.abs(h.y-head.y),13-Math.abs(h.y-head.y))>3)this.hazards.push({...h,wake:this.elapsed+1100,expires:this.elapsed+20000,moveAt:this.elapsed+2600});}}
+ while(this.clock>=this.interval&&!this.ended){this.clock-=this.interval;if(this.queued){this.direction=this.queued;this.queued=null;}const head=this.snake[0],next={x:wrap(head.x+this.direction.x),y:wrap(head.y+this.direction.y)};const all=[this.food,...this.bonuses],meal=all.find(p=>p&&next.x===p.x&&next.y===p.y),eat=!!meal;
+ const danger=this.hazards.find(p=>p.x===next.x&&p.y===next.y&&(!p.wake||p.wake<=this.elapsed));
+ const crossing=this.snake.findIndex((p,i)=>i>2&&p.x===next.x&&p.y===next.y);
+ if(crossing>=0){const points=polygon([next,...this.snake.slice(0,crossing+1)]),size=area(points);if(size>=3&&points[0].x===points.at(-1).x&&points[0].y===points.at(-1).y){const captured=this.hazards.filter(p=>inside(points,p));this.hazards=this.hazards.filter(p=>!captured.includes(p));this.combo=this.elapsed-this.lastLoop<14000?Math.min(4,this.combo+1):1;this.lastLoop=this.elapsed;const gained=(5+Math.floor(size)+captured.length*8)*this.combo;this.score+=gained;this.loops++;this.rush=Math.max(this.rush,2500);this.echo={points,until:this.elapsed+1100,score:gained,captured:captured.length};this.previous=this.snake.map(p=>({...p}));this.snake=[next,...this.snake.slice(0,5)];events.push({kind:'loop',score:gained,captured:captured.length});continue;}}
  if(this.rush>0&&danger){this.hazards=this.hazards.filter(p=>p!==danger);this.score+=2;events.push({kind:'burn'});}
- if(this.rush===0&&(body.some(p=>p.x===next.x&&p.y===next.y)||danger)){
- this.constellation=0;this.lives--;events.push({kind:'bad'});if(!this.lives){this.ended=true;this.reason='lives';break;}
- this.snake=[{x:6,y:8},{x:6,y:9},{x:6,y:10}];this.direction={x:0,y:-1};this.queued=null;this.hazards=[];this.food=this.free();this.previous=this.snake.map(p=>({...p}));this.clock=0;break;}
- this.previous=this.snake.map(p=>({...p}));this.snake.unshift(next);if(!eat)this.snake.pop();else{this.score+=(this.gold?3:1)*(this.rush>0?2:1);this.eaten++;this.constellation++;if(this.constellation===3){this.constellation=0;this.formation++;this.score+=5;this.rush=6000;events.push({kind:'comet'});}events.push({kind:'hit'});this.gold=this.eaten%4===3;
- if(this.eaten%4===0&&this.hazards.length<14){const h=this.free();if(h&&Math.abs(h.x-next.x)+Math.abs(h.y-next.y)>3)this.hazards.push(h);}
- this.food=this.free();if(!this.food){this.score+=25;this.snake=this.snake.slice(0,3);this.hazards=[];this.food=this.free();}}
+ if(this.rush===0&&this.grace===0&&danger){this.lives--;events.push({kind:'bad'});if(!this.lives){this.ended=true;this.reason='lives';break;}this.grace=1800;this.hazards=this.hazards.filter(p=>p!==danger);}
+ this.previous=this.snake.map(p=>({...p}));this.snake.unshift(next);if(!eat)this.snake.pop();else{this.score+=(this.gold?3:1)*(this.rush>0?2:1);this.eaten++;events.push({kind:'hit'});this.gold=this.eaten%4===3;if(meal===this.food){this.food=null;this.food=this.free();}else this.bonuses=this.bonuses.filter(p=>p!==meal);this.refill();}
  }return events;}
  }
  return {create:random=>new Round(random),Round,SIZE};

@@ -87,7 +87,7 @@
     const events=run.tick(dt);lastFrame=now;renderHUD();
     if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
     if(run.ended){if(dodging()||slinging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
-    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='comet'){tone(660,.15);tone(990,.2,.08);tone(1320,.3,.16);$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')tone(280,.1,0,'sine',.04,2);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
+    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='loop'){tone(523,.15);tone(784,.2,.07);tone(1047,.32,.14);$('encouragement').textContent='Schleife! '+event.score+' Punkte und '+event.captured+' rote Sterne eingefangen';}if(event.kind==='comet'){tone(660,.15);tone(990,.2,.08);tone(1320,.3,.16);$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')tone(280,.1,0,'sine',.04,2);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
     if(!dodging()&&!slinging()&&previousTarget!==run.target)renderBoard();return true;
   }
   function dodgeFeedback(event){
@@ -130,7 +130,7 @@
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
-    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen zum Lenken. Drei Sterne vollenden ein Sternbild: sechs Sekunden Kometenrausch mit Schutz und doppelten Punkten.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen. Sterne sammeln und die eigene Kette kreuzen: Schleifen fangen rote Sterne. Große Schleifen geben mehr Punkte.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -177,8 +177,12 @@
     for(let i=1;i<points.length;i++){const a={x:points[i-1].x+.5,y:points[i-1].y+.5},b={x:points[i].x+.5,y:points[i].y+.5};if(b.x-a.x>6.5)b.x-=13;if(b.x-a.x<-6.5)b.x+=13;if(b.y-a.y>6.5)b.y-=13;if(b.y-a.y<-6.5)b.y+=13;for(const dx of [-13,0,13])for(const dy of [-13,0,13])paths.push('M'+(a.x+dx)+','+(a.y+dy)+'L'+(b.x+dx)+','+(b.y+dy));}
     ribbon.firstElementChild.setAttribute('d',paths.join(' '));$('sling-field').classList.toggle('comet-rush',run.rush>0);
     let constellation=$('snake-constellation');if(!constellation){constellation=document.createElement('div');constellation.id='snake-constellation';constellation.setAttribute('aria-label','Sternbild-Fortschritt');$('sling-shots').after(constellation);}
-    constellation.innerHTML='<svg viewBox="0 0 100 34" aria-hidden="true"><path d="M12 25 50 8 88 25"/>'+[0,1,2].map((_,i)=>'<circle class="'+(i<run.constellation?'lit':'')+'" cx="'+[12,50,88][i]+'" cy="'+[25,8,25][i]+'" r="4"/>').join('')+'</svg><span>'+(run.rush>0?'Komet · '+Math.ceil(run.rush/1000)+' s':run.constellation+' / 3')+'</span>';
-    constellation.setAttribute('aria-label',run.rush>0?'Kometenrausch noch '+Math.ceil(run.rush/1000)+' Sekunden':run.constellation+' von 3 Sternen zum Sternbild');
+    const echo=run.echo&&run.echo.until>run.elapsed?run.echo:null;
+    constellation.textContent=echo?'+'+echo.score+(echo.captured?' · '+echo.captured+' eingefangen':' · Sternbild'):run.rush>0?'Sternenrausch':run.combo>1&&run.elapsed-run.lastLoop<14000?'Schleifen ×'+run.combo:'Schließe eine Schleife';
+    constellation.setAttribute('aria-label',constellation.textContent);
+    let bloom=$('snake-bloom');if(!bloom){bloom=document.createElementNS('http://www.w3.org/2000/svg','svg');bloom.id='snake-bloom';bloom.setAttribute('viewBox','0 0 13 13');bloom.innerHTML='<path/>';$('sling-field').append(bloom);}
+    const d=echo?'M'+echo.points.map(p=>(p.x+.5)+','+(p.y+.5)).join('L')+'Z':'';
+    bloom.firstElementChild.setAttribute('d',d);bloom.style.opacity=echo?Math.min(1,(echo.until-run.elapsed)/700):0;
     const items=[];
     run.positions.forEach((p,i)=>{
       const cls=i===0?'head':'tail';items.push({...p,cls});
@@ -186,14 +190,14 @@
       if(p.x<0)items.push({...p,x:p.x+13,cls});if(p.x>12)items.push({...p,x:p.x-13,cls});
       if(p.y<0)items.push({...p,y:p.y+13,cls});if(p.y>12)items.push({...p,y:p.y-13,cls});
     });
-    if(run.food)items.push({...run.food,cls:run.gold?'gold':'food'});
-    run.hazards.forEach(p=>items.push({...p,cls:'evil'}));
+    if(run.food)items.push({...run.food,cls:run.gold?'gold':'food'});run.bonuses.forEach(p=>items.push({...p,cls:'food'}));
+    run.hazards.forEach(p=>{items.push({...p,cls:'evil'+(p.wake>run.elapsed?' waking':'')});if(p.target)items.push({...p.target,cls:'warning'});});
     items.forEach((item,i)=>{
       let node=snakeNodes[i];if(!node||!node.isConnected){node=document.createElementNS('http://www.w3.org/2000/svg','svg');node.innerHTML='<use/>';$('sling-targets').appendChild(node);snakeNodes[i]=node;}
-      node.removeAttribute('hidden');node.setAttribute('class','snake-star '+item.cls);node.style.left=(item.x+.5)/13*100+'%';node.style.top=(item.y+.5)/13*100+'%';node.firstElementChild.setAttribute('href',item.cls==='evil'?'#evil-star':'#star');
+      node.removeAttribute('hidden');node.setAttribute('class','snake-star '+item.cls);node.style.left=(item.x+.5)/13*100+'%';node.style.top=(item.y+.5)/13*100+'%';node.firstElementChild.setAttribute('href',item.cls.startsWith('evil')||item.cls==='warning'?'#evil-star':'#star');
     });
     for(let i=items.length;i<snakeNodes.length;i++)snakeNodes[i].setAttribute('hidden','');
-    $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
+    $('sling-shots').textContent=run.loops+' ◌';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
   }
   let snakeSwipe=null;
   document.addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary&&!e.target.closest('button,dialog,input')){e.preventDefault();snakeSwipe={id:e.pointerId,x:e.clientX,y:e.clientY};document.body.setPointerCapture(e.pointerId);}});
