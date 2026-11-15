@@ -87,7 +87,7 @@
     const events=run.tick(dt);lastFrame=now;renderHUD();
     if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
     if(run.ended){if(dodging()||slinging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
-    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
+    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='comet'){tone(660,.15);tone(990,.2,.08);tone(1320,.3,.16);$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')tone(280,.1,0,'sine',.04,2);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
     if(!dodging()&&!slinging()&&previousTarget!==run.target)renderBoard();return true;
   }
   function dodgeFeedback(event){
@@ -130,7 +130,7 @@
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
-    renderHUD();$('encouragement').textContent=slinging()?'Wischen lenkt die Sternenkette. Blaue Sterne sammeln, rote und eigenen Schweif meiden.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen zum Lenken. Drei Sterne vollenden ein Sternbild: sechs Sekunden Kometenrausch mit Schutz und doppelten Punkten.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -141,7 +141,7 @@
   }
   function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';keys.clear();pointerAnchor=null;music?.pause();$('pause-dialog').showModal(); }
   function resume() { $('pause-dialog').close();if(state==='paused'){unlockAudio();state='playing';if(sound)music?.play();lastFrame=performance.now();} }
-  function frame(now) { if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
+  function frame(now) { document.body.classList.toggle('snake-playing',slinging()&&state==='playing');if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
   $('start').addEventListener('click',start);$('again').addEventListener('click',start);
   $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);
   $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();resume();});
@@ -171,7 +171,14 @@
   let slingAim=null;
   const snakeNodes=[];
   function renderSling(){
-    hearts();$('sling-player').hidden=true;
+    hearts();$('sling-player').setAttribute('hidden','');
+    let ribbon=$('snake-ribbon');if(!ribbon){ribbon=document.createElementNS('http://www.w3.org/2000/svg','svg');ribbon.id='snake-ribbon';ribbon.setAttribute('viewBox','0 0 13 13');ribbon.setAttribute('aria-hidden','true');ribbon.innerHTML='<path/>';$('sling-field').prepend(ribbon);}
+    const points=run.positions,paths=[];
+    for(let i=1;i<points.length;i++){const a={x:points[i-1].x+.5,y:points[i-1].y+.5},b={x:points[i].x+.5,y:points[i].y+.5};if(b.x-a.x>6.5)b.x-=13;if(b.x-a.x<-6.5)b.x+=13;if(b.y-a.y>6.5)b.y-=13;if(b.y-a.y<-6.5)b.y+=13;for(const dx of [-13,0,13])for(const dy of [-13,0,13])paths.push('M'+(a.x+dx)+','+(a.y+dy)+'L'+(b.x+dx)+','+(b.y+dy));}
+    ribbon.firstElementChild.setAttribute('d',paths.join(' '));$('sling-field').classList.toggle('comet-rush',run.rush>0);
+    let constellation=$('snake-constellation');if(!constellation){constellation=document.createElement('div');constellation.id='snake-constellation';constellation.setAttribute('aria-label','Sternbild-Fortschritt');$('sling-shots').after(constellation);}
+    constellation.innerHTML='<svg viewBox="0 0 100 34" aria-hidden="true"><path d="M12 25 50 8 88 25"/>'+[0,1,2].map((_,i)=>'<circle class="'+(i<run.constellation?'lit':'')+'" cx="'+[12,50,88][i]+'" cy="'+[25,8,25][i]+'" r="4"/>').join('')+'</svg><span>'+(run.rush>0?'Komet · '+Math.ceil(run.rush/1000)+' s':run.constellation+' / 3')+'</span>';
+    constellation.setAttribute('aria-label',run.rush>0?'Kometenrausch noch '+Math.ceil(run.rush/1000)+' Sekunden':run.constellation+' von 3 Sternen zum Sternbild');
     const items=[];
     run.positions.forEach((p,i)=>{
       const cls=i===0?'head':'tail';items.push({...p,cls});
@@ -189,9 +196,10 @@
     $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
   }
   let snakeSwipe=null;
-  $('sling-field').addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary){e.preventDefault();snakeSwipe={id:e.pointerId,x:e.clientX,y:e.clientY};$('sling-field').setPointerCapture(e.pointerId);}});
-  $('sling-field').addEventListener('pointermove',e=>{if(!snakeSwipe||snakeSwipe.id!==e.pointerId)return;const dx=e.clientX-snakeSwipe.x,dy=e.clientY-snakeSwipe.y;if(Math.hypot(dx,dy)<14)return;run.turn(Math.abs(dx)>Math.abs(dy)?Math.sign(dx):0,Math.abs(dy)>=Math.abs(dx)?Math.sign(dy):0);snakeSwipe.x=e.clientX;snakeSwipe.y=e.clientY;});
-  for(const event of ['pointerup','pointercancel'])$('sling-field').addEventListener(event,()=>snakeSwipe=null);
+  document.addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary&&!e.target.closest('button,dialog,input')){e.preventDefault();snakeSwipe={id:e.pointerId,x:e.clientX,y:e.clientY};document.body.setPointerCapture(e.pointerId);}});
+  document.addEventListener('pointermove',e=>{if(!slinging()||state!=='playing'||!snakeSwipe||snakeSwipe.id!==e.pointerId)return;const dx=e.clientX-snakeSwipe.x,dy=e.clientY-snakeSwipe.y;if(Math.hypot(dx,dy)<14)return;run.turn(Math.abs(dx)>Math.abs(dy)?Math.sign(dx):0,Math.abs(dy)>=Math.abs(dx)?Math.sign(dy):0);snakeSwipe.x=e.clientX;snakeSwipe.y=e.clientY;});
+  for(const event of ['pointerup','pointercancel'])document.addEventListener(event,()=>snakeSwipe=null);
+  document.addEventListener('touchmove',e=>{if(slinging()&&state==='playing')e.preventDefault();},{passive:false});
   document.addEventListener('keydown',e=>{if(!slinging()||state!=='playing')return;const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]};if(dirs[e.key]){e.preventDefault();run.turn(...dirs[e.key]);}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
 })();
