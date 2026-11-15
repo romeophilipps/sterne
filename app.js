@@ -123,16 +123,24 @@
     renderBoard();
     if(run.ended){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},550);}
   }
-  let snakeHelpSeen=false;try{snakeHelpSeen=localStorage.getItem('stars-snake-help-v25')==='yes';}catch{}
-  let snakeHelpAction=null;
-  function showSnakeHelp(first=false){const active=state==='playing';if(active){state='help';music?.pause();}snakeHelpAction=first?()=>start():active?()=>{state='playing';lastFrame=performance.now();if(sound)music?.play();}:null;$('snake-help-play').textContent=first?'Los geht’s':'Weiterspielen';$('snake-help-dialog').showModal();}
-  function closeSnakeHelp(){snakeHelpSeen=true;try{localStorage.setItem('stars-snake-help-v25','yes');}catch{}$('snake-help-dialog').close();const action=snakeHelpAction;snakeHelpAction=null;action?.();}
-  $('snake-help-play').addEventListener('click',closeSnakeHelp);$('snake-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeSnakeHelp();});$('sling-hint').addEventListener('click',()=>showSnakeHelp());
+  let helpWasPlaying=false;
+  const instructions={
+    tap:{steps:['<strong>Tippe die hellen Sterne</strong> an, bevor sie verschwinden.','<strong>Gold gibt 4 Sekunden dazu.</strong> Sammle weiter, damit die Zeit nicht abläuft.','<strong>Meide Rot.</strong> Jeder rote Stern kostet ein Herz.'],note:'Drei Herzen. Das Spiel endet, wenn die Zeit oder alle Herzen aufgebraucht sind. Es wird immer schneller.'},
+    dodge:{steps:['<strong>Ziehe den gelben Stern</strong> mit dem Finger frei durch das Spielfeld.','<strong>Weiche Rot aus.</strong> Überlebe so lange wie möglich; nach und nach kommen fünf Gegnerarten hinzu.','<strong>Nutze Power-ups.</strong> Die Blase schützt bis zu 20 Sekunden vor einem Treffer. Feuer macht dich 10 Sekunden unbesiegbar.'],note:'Dein Stern schießt automatisch Sternenstaub auf den nächsten Gegner. Rote Treffer kosten ein Herz; die Blase platzt beim ersten Treffer. Drei Herzen.'},
+    sling:{steps:['<strong>Wische</strong>, um den gelben Kopf zu lenken.','<strong>Sammle Gelb.</strong> Dein Schweif wird länger und leuchtet stärker.','<strong>Kreise Rot ein</strong> und berühre deinen eigenen Schweif, um die Schleife zu schließen.'],note:'Rot berühren kostet ein Herz. Leere Schleifen geben nur 1 Punkt und keinen Schutz. Erfolgreiche Fänge hintereinander bringen eine Kombo.'}
+  };
+  function openHelp(){
+    if(state==='playing'&&!advance(performance.now()))return;
+    helpWasPlaying=state==='playing';if(helpWasPlaying){state='help';keys.clear();pointerAnchor=null;music?.pause();}
+    const info=instructions[modes[mode].id];$('game-help-title').textContent=modes[mode].name;
+    $('game-help-rules').innerHTML=info.steps.map(step=>'<li>'+step+'</li>').join('');$('game-help-note').textContent=info.note;$('game-help-demo').hidden=!slinging();$('game-help-close').textContent=helpWasPlaying?'Weiterspielen':'Fertig';$('game-help-dialog').showModal();
+  }
+  function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();if(sound)music?.play();}helpWasPlaying=false; }
+  $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
   function start() {
-    if(slinging()&&!snakeHelpSeen){showSnakeHelp(true);return;}
     unlockAudio();run=modes[mode].create();music?.reset(1,slinging()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
-    $('sling-field').hidden=!slinging();$('sling-hint').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
+    $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
