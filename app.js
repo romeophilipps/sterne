@@ -136,7 +136,7 @@
     $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
-    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen. Sterne sammeln und die eigene Kette kreuzen: Schleifen fangen rote Sterne. Große Schleifen geben mehr Punkte.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen. Sterne sammeln und den eigenen Schweif berühren: Schleifen fangen rote Sterne. Große Schleifen geben mehr Punkte.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -175,23 +175,22 @@
   document.addEventListener('keyup',e=>{keys.delete(e.key);});window.addEventListener('blur',()=>keys.clear());
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
   let slingAim=null;
-  const snakeNodes=[];
+  const snakeNodes=[];let cometTrail=null;
   function renderSling(){
     hearts();$('sling-player').setAttribute('hidden','');
-    let ribbon=$('snake-ribbon');if(!ribbon){ribbon=document.createElementNS('http://www.w3.org/2000/svg','svg');ribbon.id='snake-ribbon';ribbon.setAttribute('viewBox','0 0 13 13');ribbon.setAttribute('aria-hidden','true');ribbon.innerHTML='<path/>';$('sling-field').prepend(ribbon);}
-    const points=run.positions,paths=[];
-    for(let i=1;i<points.length;i++){const a={x:points[i-1].x+.5,y:points[i-1].y+.5},b={x:points[i].x+.5,y:points[i].y+.5};if(b.x-a.x>6.5)b.x-=13;if(b.x-a.x<-6.5)b.x+=13;if(b.y-a.y>6.5)b.y-=13;if(b.y-a.y<-6.5)b.y+=13;for(const dx of [-13,0,13])for(const dy of [-13,0,13])paths.push('M'+(a.x+dx)+','+(a.y+dy)+'L'+(b.x+dx)+','+(b.y+dy));}
-    ribbon.firstElementChild.setAttribute('d',paths.join(' '));$('sling-field').classList.toggle('snake-hurt',run.grace>0);$('sling-field').classList.toggle('comet-rush',run.rush>0);
+    if(!cometTrail)cometTrail=new StarTrail($('sling-field'));
+    cometTrail.render(run.positions,run.elapsed,run.snake.length,run.rush);
+    $('sling-field').classList.toggle('snake-hurt',run.grace>0);$('sling-field').classList.toggle('comet-rush',run.rush>0);
     let constellation=$('snake-constellation');if(!constellation){constellation=document.createElement('div');constellation.id='snake-constellation';constellation.setAttribute('aria-label','Sternbild-Fortschritt');$('sling-shots').after(constellation);}
     const echo=run.echo&&run.echo.until>run.elapsed?run.echo:null;
-    constellation.textContent=echo?'+'+echo.score+(echo.captured?' · '+echo.captured+' eingefangen':' · Schleife war leer'):run.rush>0?'Kurz geschützt':run.combo>1&&run.elapsed-run.lastLoop<10000?'Fang-Kombo ×'+run.combo:'Rot einkreisen · Kette schließen';
+    constellation.textContent=echo?'+'+echo.score+(echo.captured?' · '+echo.captured+' eingefangen':' · Schleife war leer'):run.rush>0?'Kurz geschützt':run.combo>1&&run.elapsed-run.lastLoop<10000?'Fang-Kombo ×'+run.combo:'Rot einkreisen · Schweif berühren';
     constellation.setAttribute('aria-label',constellation.textContent);
     let bloom=$('snake-bloom');if(!bloom){bloom=document.createElementNS('http://www.w3.org/2000/svg','svg');bloom.id='snake-bloom';bloom.setAttribute('viewBox','0 0 13 13');bloom.innerHTML='<path/>';$('sling-field').append(bloom);}
     const d=echo?'M'+echo.points.map(p=>(p.x+.5)+','+(p.y+.5)).join('L')+'Z':'';
     bloom.firstElementChild.setAttribute('d',d);bloom.style.opacity=echo?Math.min(1,(echo.until-run.elapsed)/700):0;
     const items=[];
-    run.positions.forEach((p,i)=>{
-      const cls=i===0?'head':'tail';items.push({...p,cls});
+    run.positions.slice(0,1).forEach(p=>{
+      const cls='head';items.push({...p,cls});
       // Mirror at the seam so a star slides out and reappears without crossing the board.
       if(p.x<0)items.push({...p,x:p.x+13,cls});if(p.x>12)items.push({...p,x:p.x-13,cls});
       if(p.y<0)items.push({...p,y:p.y+13,cls});if(p.y>12)items.push({...p,y:p.y-13,cls});
@@ -203,7 +202,7 @@
       node.removeAttribute('hidden');node.setAttribute('class','snake-star '+item.cls);node.style.left=(item.x+.5)/13*100+'%';node.style.top=(item.y+.5)/13*100+'%';node.firstElementChild.setAttribute('href',item.cls.startsWith('evil')||item.cls==='warning'?'#evil-star':'#star');
     });
     for(let i=items.length;i<snakeNodes.length;i++)snakeNodes[i].setAttribute('hidden','');
-    $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Sternenkette mit '+run.snake.length+' Sternen');
+    $('sling-shots').textContent=run.snake.length+' ✦';$('sling-shots').setAttribute('aria-label','Schweiflänge '+run.snake.length);
   }
   let snakeSwipe=null;
   document.addEventListener('pointerdown',e=>{if(slinging()&&state==='playing'&&e.isPrimary&&!e.target.closest('button,dialog,input')){e.preventDefault();snakeSwipe={id:e.pointerId,x:e.clientX,y:e.clientY};document.body.setPointerCapture(e.pointerId);}});
