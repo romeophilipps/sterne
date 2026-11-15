@@ -1,10 +1,11 @@
 'use strict';
 (() => {
   const $ = id => document.getElementById(id);
-  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Sternenschlange',key:'stars-snake-best',create:()=>StarSnake.create()}];
-  const records={tap:0,dodge:0,sling:0};let mode=0,sound=true;
+  const modes=[{id:'tap',name:'Tippen',key:'stars-best',create:()=>StarGame.create()},{id:'dodge',name:'Ausweichen',key:'stars-dodge-best-ms',create:()=>StarDodge.create()},{id:'sling',name:'Sternenschlange',key:'stars-snake-best',create:()=>StarSnake.create()},{id:'nova',name:'Supernova',key:'stars-nova-best',create:()=>StarNova.create()}];
+  const records={tap:0,dodge:0,sling:0,nova:0};let mode=0,sound=true;
   try { modes.forEach(m=>records[m.id]=Math.max(0,Number(localStorage.getItem(m.key))||0));sound=localStorage.getItem('stars-sound')!=='off';mode=Math.max(0,modes.findIndex(m=>m.id===(localStorage.getItem('stars-mode')==='catch'?'dodge':localStorage.getItem('stars-mode')))); } catch {}
   const slinging=()=>modes[mode].id==='sling';
+  const shooting=()=>modes[mode].id==='nova';
   const dodging=()=>modes[mode].id==='dodge';
   const duration=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+','+Math.floor(ms%1000/100);
   const keys=new Set();let pointerAnchor=null;
@@ -49,7 +50,7 @@
   function clearCell(i) { const cell=cells[i];cell.classList.remove('active','bonus','evil');cell.querySelector('.star-art').setAttribute('hidden','');cell.setAttribute('aria-label','Leerer Sternenplatz'); }
   function clearTarget() { cells.forEach((_,i)=>clearCell(i)); }
   function showStar(i, kind) { const cell=cells[i], svg=cell.querySelector('.star-art');cell.classList.add('active');if(kind!=='good')cell.classList.add(kind);svg.querySelector('use').setAttribute('href',kind==='evil'?'#evil-star':'#star');svg.removeAttribute('hidden');cell.setAttribute('aria-label',kind==='evil'?'Böser Stern: kostet ein Leben':kind==='bonus'?'Gelber Stern: vier Sekunden extra':'Stern fangen: ein Punkt'); }
-  function renderBoard() { if(slinging()){renderSling();return;} if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
+  function renderBoard() { if(shooting()){renderNova();return;} if(slinging()){renderSling();return;} if(dodging()){renderDodge();return;}clearTarget();if(run.ended)return;showStar(run.target,run.bonus?'bonus':'good');run.badStars.forEach(i=>showStar(i,'evil')); }
   const enemyNodes=new Map();
   function renderDodge(){
     let dustLayer=$('dodge-dust');if(!dustLayer){dustLayer=document.createElement('div');dustLayer.id='dodge-dust';$('dodge-field').appendChild(dustLayer);}
@@ -76,7 +77,7 @@
   function renderHUD() {
     music?.update(run.level,run.remaining,run.elapsed);
     $('score').textContent=dodging()?duration(run.elapsed):run.score;
-    if(!dodging()&&!slinging()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
+    if(!dodging()&&!slinging()&&!shooting()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
     $('game').classList.toggle('urgent',!dodging()&&run.remaining<=5000);
     $('level').textContent='Lv. '+run.level;$('level').setAttribute('aria-label','Schwierigkeitsstufe '+run.level);
     if(run.level>shownLevel){pulse($('level'),'level-up');shownLevel=run.level;}
@@ -84,11 +85,13 @@
   function advance(now) {
     const dt=Math.max(0,now-lastFrame),previousTarget=run.target;
     if(dodging()&&keys.size){let x=Number(keys.has('ArrowRight')||keys.has('d'))-Number(keys.has('ArrowLeft')||keys.has('a')),y=Number(keys.has('ArrowDown')||keys.has('s'))-Number(keys.has('ArrowUp')||keys.has('w'));const norm=Math.hypot(x,y)||1;run.move(run.player.x+x/norm*dt/1000*2,run.player.y+y/norm*dt/1000*2);}
+    if(shooting()&&keys.size){const x=Number(keys.has('ArrowRight')||keys.has('d'))-Number(keys.has('ArrowLeft')||keys.has('a')),y=Number(keys.has('ArrowDown')||keys.has('s'))-Number(keys.has('ArrowUp')||keys.has('w')),n=Math.hypot(x,y)||1;run.move(run.player.x+x/n*dt*.0008,run.player.y+y/n*dt*.0008);}
     const events=run.tick(dt);lastFrame=now;renderHUD();
+    if(shooting()){novaFeedback(events);renderNova();if(run.pendingUpgrade&&state==='playing')showNovaUpgrade();}
     if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
-    if(run.ended){if(dodging()||slinging()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
+    if(run.ended){if(dodging()||slinging()||shooting()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
     if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='loop'){tone(523,.15);tone(784,.2,.07);tone(1047,.32,.14);$('encouragement').textContent='Schleife! '+event.score+' Punkte und '+event.captured+' rote Sterne eingefangen';}if(event.kind==='comet'){tone(660,.15);tone(990,.2,.08);tone(1320,.3,.16);$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')tone(280,.1,0,'sine',.04,2);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
-    if(!dodging()&&!slinging()&&previousTarget!==run.target)renderBoard();return true;
+    if(!dodging()&&!slinging()&&!shooting()&&previousTarget!==run.target)renderBoard();return true;
   }
   function dodgeFeedback(event){
     if(event.kind==='unlock'){
@@ -114,7 +117,7 @@
     cells[i].appendChild(effect);setTimeout(()=>effect.remove(),750);
   }
   function hit(i) {
-    if(dodging()||slinging()||state!=='playing'||!advance(performance.now()))return;
+    if(dodging()||slinging()||shooting()||state!=='playing'||!advance(performance.now()))return;
     const event=run.hit(i);if(event.kind==='none')return;
     const gold=event.kind==='gold',evil=event.kind==='bad';
     burst(i,event.points,gold,evil);renderHUD();hearts();
@@ -127,6 +130,7 @@
   const instructions={
     tap:{steps:['<strong>Tippe die hellen Sterne</strong> an, bevor sie verschwinden.','<strong>Gold gibt 4 Sekunden dazu.</strong> Sammle weiter, damit die Zeit nicht abläuft.','<strong>Meide Rot.</strong> Jeder rote Stern kostet ein Herz.'],note:'Drei Herzen. Das Spiel endet, wenn die Zeit oder alle Herzen aufgebraucht sind. Es wird immer schneller.'},
     dodge:{steps:['<strong>Ziehe den gelben Stern</strong> mit dem Finger frei durch das Spielfeld.','<strong>Weiche Rot aus.</strong> Überlebe so lange wie möglich; nach und nach kommen fünf Gegnerarten hinzu.','<strong>Nutze Power-ups.</strong> Die Blase schützt bis zu 20 Sekunden vor einem Treffer. Feuer macht dich 10 Sekunden unbesiegbar.'],note:'Dein Stern schießt automatisch Sternenstaub auf den nächsten Gegner. Rote Treffer kosten ein Herz; die Blase platzt beim ersten Treffer. Drei Herzen.'},
+    nova:{steps:['<strong>Ziehe deinen Stern</strong> frei durch die Arena. Er feuert automatisch auf den nächsten Gegner.','<strong>Drücke Nova</strong>, wenn es eng wird: Der Puls sprengt Gegner in deiner Nähe und räumt Geschosse weg. Danach lädt er 9 Sekunden auf.','<strong>Wähle Waffen-Upgrades.</strong> Abschüsse geben Erfahrung. Bei jedem Waffenlevel pausiert die Runde für deine Auswahl.'],note:'Drei Leben. Alle 30 Sekunden erscheint ein Boss. Mehr Gegner, schnellere Schüsse und neue Gegnertypen machen jede Welle extremer. Tastatur: Pfeiltasten oder WASD, Leertaste für Nova.'},
     sling:{steps:['<strong>Wische</strong>, um den gelben Kopf zu lenken.','<strong>Sammle Gelb.</strong> Dein Schweif wird länger und leuchtet stärker.','<strong>Kreise Rot ein</strong> und berühre deinen eigenen Schweif, um die Schleife zu schließen.'],note:'Rot berühren kostet ein Herz. Leere Schleifen geben nur 1 Punkt und keinen Schutz. Erfolgreiche Fänge hintereinander bringen eine Kombo.'}
   };
   function openHelp(){
@@ -138,13 +142,13 @@
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();if(sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
   function start() {
-    unlockAudio();run=modes[mode].create();music?.reset(1,slinging()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
+    unlockAudio();run=modes[mode].create();music?.reset(1,slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
-    $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging();$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
-    $('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
+    $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging()||shooting();$('nova-field').hidden=!shooting();$('nova-hud').hidden=!shooting();$('nova-pulse').hidden=!shooting();$('game').classList.toggle('nova-mode',shooting());$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
+    novaBossUntil=0;$('dodge-instructions').hidden=!dodging();$('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
     screen('game');if(dodging()){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);}
     
-    renderHUD();$('encouragement').textContent=slinging()?'Überall wischen. Sterne sammeln und den eigenen Schweif berühren: Schleifen fangen rote Sterne. Große Schleifen geben mehr Punkte.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
+    renderHUD();$('encouragement').textContent=shooting()?'Frei bewegen. Dein Stern feuert automatisch. Nova drücken, um Gegner wegzusprengen.':slinging()?'Überall wischen. Sterne sammeln und den eigenen Schweif berühren: Schleifen fangen rote Sterne. Große Schleifen geben mehr Punkte.':dodging()?'Gelben Stern frei bewegen und ausweichen.':'Gelbe Sterne verlängern die Zeit';state='playing';if(sound)music?.play();lastFrame=performance.now();renderBoard();
   }
   function finish(reason='time') {
     state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
@@ -155,7 +159,7 @@
   }
   function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';keys.clear();pointerAnchor=null;music?.pause();$('pause-dialog').showModal(); }
   function resume() { $('pause-dialog').close();if(state==='paused'){unlockAudio();state='playing';if(sound)music?.play();lastFrame=performance.now();} }
-  function frame(now) { document.body.classList.toggle('snake-playing',slinging()&&state==='playing');if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
+  function frame(now) { document.body.classList.toggle('snake-playing',(slinging()||shooting())&&state==='playing');if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
   $('start').addEventListener('click',start);$('again').addEventListener('click',start);
   $('pause').addEventListener('click',pause);$('resume').addEventListener('click',resume);
   $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();resume();});
@@ -179,9 +183,20 @@
   $('dodge-field').addEventListener('pointermove',e=>{if(e.pointerId===dragging)steer(e);});
   for(const name of ['pointerup','pointercancel','lostpointercapture'])$('dodge-field').addEventListener(name,()=>{dragging=null;pointerAnchor=null;});
   const controls=['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','w','a','s','d'];
-  document.addEventListener('keydown',e=>{if(dodging()&&state==='playing'&&controls.includes(e.key)){e.preventDefault();keys.add(e.key);$('dodge-hint').classList.add('learned');}});
+  document.addEventListener('keydown',e=>{if((dodging()||shooting())&&state==='playing'&&controls.includes(e.key)){e.preventDefault();keys.add(e.key);$('dodge-hint').classList.add('learned');}});
   document.addEventListener('keyup',e=>{keys.delete(e.key);});window.addEventListener('blur',()=>keys.clear());
   window.addEventListener('resize',()=>{if(dodging()&&['playing','paused'].includes(state)){const box=$('dodge-field').getBoundingClientRect();run.resize(box.width,box.height);pointerAnchor=null;}});
+  let novaRenderer=null,lastBoom=0,novaBossUntil=0;
+  function renderNova(){if(!novaRenderer)novaRenderer=new StarNova.Renderer($('nova-canvas'));novaRenderer.draw(run);hearts();$('nova-announcement').textContent=run.elapsed<novaBossUntil?'BOSS':'';$('nova-xp-fill').style.width=Math.min(100,run.xp/run.needed*100)+'%';$('nova-rank').textContent='Waffe '+run.rank+' · Welle '+run.wave;$('nova-pulse').disabled=run.cooldown>0;$('nova-pulse').textContent=run.cooldown>0?'Nova · '+Math.ceil(run.cooldown/1000)+' s':'Nova';$('nova-field').setAttribute('aria-label','Supernova: '+run.lives+' Leben, '+run.kills+' Abschüsse');}
+  function novaFeedback(events){for(const e of events){if(e.kind==='hurt'){hearts();pulse($('nova-field'),'field-hit');tone(100,.2,0,'triangle',.05,.35);}if(e.kind==='explode'&&performance.now()-lastBoom>130){lastBoom=performance.now();tone(e.boss?55:110,e.boss?.4:.15,0,'sawtooth',.025,.2);tone(440,.09,0,'sine',.015,2);}if(e.kind==='boss'){novaBossUntil=run.elapsed+2200;tone(150,.25,0,'sawtooth',.025,.65);$('encouragement').textContent='Boss erscheint';}}}
+  function novaPulse(){if(shooting()&&state==='playing'&&run.nova()){pulse($('nova-field'),'field-hit');tone(80,.4,0,'sawtooth',.045,4);renderNova();}}
+  function showNovaUpgrade(){state='upgrade';keys.clear();music?.pause();$('nova-upgrade-options').replaceChildren();for(const key of run.choices){const info=StarNova.UPGRADES[key],button=document.createElement('button');button.className='nova-upgrade';const icon=document.createElement('span'),name=document.createElement('strong'),text=document.createElement('small');icon.textContent=info.icon;icon.setAttribute('aria-hidden','true');name.textContent=info.name;text.textContent=info.text;button.append(icon,name,text);button.addEventListener('click',()=>{if(!run.upgrade(key))return;$('nova-upgrade-dialog').close();state='playing';lastFrame=performance.now();if(sound)music?.play();tone(880,.15);renderNova();});$('nova-upgrade-options').append(button);}$('nova-upgrade-dialog').showModal();}
+  $('nova-upgrade-dialog').addEventListener('cancel',e=>e.preventDefault());$('nova-pulse').addEventListener('click',novaPulse);
+  document.addEventListener('keydown',e=>{if(shooting()&&state==='playing'&&e.code==='Space'){e.preventDefault();novaPulse();}});
+  let novaPointer=null,novaAnchor=null;
+  document.addEventListener('pointerdown',e=>{if(!shooting()||state!=='playing'||!e.isPrimary||e.target.closest('button,dialog,input'))return;e.preventDefault();novaPointer=e.pointerId;novaAnchor={x:e.clientX,y:e.clientY,px:run.player.x,py:run.player.y};document.body.setPointerCapture(e.pointerId);});
+  document.addEventListener('pointermove',e=>{if(!shooting()||state!=='playing'||e.pointerId!==novaPointer||!novaAnchor)return;const box=$('nova-field').getBoundingClientRect();run.move(novaAnchor.px+(e.clientX-novaAnchor.x)/box.width*1.35,novaAnchor.py+(e.clientY-novaAnchor.y)/box.height*1.35);});
+  for(const name of ['pointerup','pointercancel'])document.addEventListener(name,()=>{novaPointer=null;novaAnchor=null;});
   let slingAim=null;
   const snakeNodes=[];let cometTrail=null;
   function renderSling(){

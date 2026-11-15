@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const $=id=>document.getElementById(id);let current='tap',result=null,lastResult=null,busy=false;
- const names={tap:'Tippen',dodge:'Ausweichen',snake:'Sternenschlange'};
+ const names={tap:'Tippen',dodge:'Ausweichen',snake:'Sternenschlange',nova:'Supernova'};
  const fmt=(n,mode)=>mode==='dodge'?Math.floor(n/60000)+':'+String(Math.floor(n/1000)%60).padStart(2,'0')+','+Math.floor(n%1000/100):String(n);
  async function rpc(name,data){const c=window.STAR_BOARD;if(!c?.url||!c?.key)throw Error('Bestenliste wird eingerichtet.');const response=await fetch(c.url+'/rest/v1/rpc/'+name,{method:'POST',headers:{apikey:c.key,'Content-Type':'application/json'},body:JSON.stringify(data),signal:AbortSignal.timeout(10000)});if(!response.ok)throw Error('Gerade nicht erreichbar. Bitte später erneut versuchen.');const text=await response.text();return text?JSON.parse(text):null;}
  function message(text){$('leaderboard-status').textContent=text;}
