@@ -227,3 +227,5 @@ html.storm-viewport:has(dialog[open]),html.storm-viewport:has(dialog[open]) body
 #storm-jokes{position:relative;flex:1;min-width:0;height:14px;line-height:14px;overflow:hidden;border-left:1px solid #76677e66;padding:0;contain:layout paint}
 #storm-joke-text{position:absolute;left:0;top:0;display:block;width:max-content;white-space:nowrap;color:#d5c7e1;will-change:transform}
 @media(prefers-reduced-motion:reduce){#storm-joke-text{transform:none!important;position:relative;width:auto;overflow:hidden;text-overflow:ellipsis;will-change:auto}}
+
+#storm-continue{max-width:320px;margin:8px auto 18px;min-height:48px;font-size:15px;border-color:#cadcf399;background:linear-gradient(145deg,#5b709c,#343954)}
