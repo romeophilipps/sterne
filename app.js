@@ -256,4 +256,5 @@
   document.addEventListener('touchmove',e=>{if(slinging()&&state==='playing')e.preventDefault();},{passive:false});
   document.addEventListener('keydown',e=>{if(!slinging()||state!=='playing')return;const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]};if(dirs[e.key]){e.preventDefault();run.turn(...dirs[e.key]);}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
+  const story=StarIntro.mount({onEnd:()=>$('start').focus({preventScroll:true})});$('intro-replay').addEventListener('click',()=>story.play());story.play();
 })();
