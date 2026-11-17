@@ -220,3 +220,10 @@ html.storm-viewport body.storm-layout .app{position:fixed;overflow:hidden;min-wi
 html.storm-viewport #game,html.storm-viewport #storm-market,html.storm-viewport #storm-market *,html.storm-viewport header,html.storm-viewport header *{touch-action:none}
 html.storm-viewport dialog[open]{touch-action:pan-y;overscroll-behavior:contain}
 html.storm-viewport:has(dialog[open]),html.storm-viewport:has(dialog[open]) body.storm-layout{touch-action:pan-y}
+
+/* Income stays fixed; the clipped joke track never changes the page width. */
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #storm-tactics{display:flex;align-items:center;gap:9px;min-width:0;text-overflow:clip;font-size:10px}
+#storm-income{flex:none;white-space:nowrap;color:#e4b77e;font-variant-numeric:tabular-nums}
+#storm-jokes{position:relative;flex:1;min-width:0;height:14px;line-height:14px;overflow:hidden;border-left:1px solid #76677e66;padding:0;contain:layout paint}
+#storm-joke-text{position:absolute;left:0;top:0;display:block;width:max-content;white-space:nowrap;color:#d5c7e1;will-change:transform}
+@media(prefers-reduced-motion:reduce){#storm-joke-text{transform:none!important;position:relative;width:auto;overflow:hidden;text-overflow:ellipsis;will-change:auto}}
