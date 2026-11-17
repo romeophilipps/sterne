@@ -5,5 +5,10 @@
   let blocked=null,resumePending=false;
   return {update(){const enabled=active(),{width,height}=viewport(),next=enabled&&!isLandscape(width,height);if(next&&playing()){resumePending=true;pause();}if(!next&&blocked&&resumePending&&enabled)resume();if(!enabled||!next)resumePending=false;if(next!==blocked){blocked=next;show(next);}return next;},get blocked(){return !!blocked;}};
  }
- return {isLandscape,create};
+ function bindPurchase(button,purchase){
+  const activate=e=>{if(button.disabled)return;e.preventDefault();purchase();};
+  button.addEventListener('click',activate);
+  return ()=>button.removeEventListener('click',activate);
+ }
+ return {isLandscape,create,bindPurchase};
 });
