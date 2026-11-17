@@ -1,0 +1,10 @@
+Sternensturm – original adaptive battle score
+Composition, arrangement and in-game sequencing created for Sterne.
+Instrument recordings: VSCO 2 Community Edition, Versilian Studios.
+Recorded by Sam Gossner & Simon Dalzell; sample cutting by Elan Hickler / Soundemote.
+Source: https://github.com/sgossner/VSCO-2-CE
+https://versilian-studios.com/vsco-community/
+Samples licensed CC0 1.0 Universal (public domain):
+https://creativecommons.org/publicdomain/zero/1.0/
+Edits: selected orchestral recordings, peak normalization, limited tails, stereo 32 kHz AAC conversion.
+The melody and adaptive arrangement are original; this is not a copied film or game soundtrack.

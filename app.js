@@ -80,7 +80,7 @@
     $('dodge-types').setAttribute('aria-label',run.available+' von 5 Gegnerarten aktiv');
   }
   function renderHUD() {
-    music?.update(run.level,run.remaining,run.elapsed);
+    const musicBoss=modes[mode].id==='storm'?run.enemies.find(e=>e.boss&&e.hp>0):null;music?.update(run.level,run.remaining,run.elapsed,{boss:!!musicBoss,phase:musicBoss?.combatPhase||1,rest:run.rest>0});
     $('score').textContent=dodging()?duration(run.elapsed):run.score;
     if(!dodging()&&!slinging()&&!shooting()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
     $('game').classList.toggle('urgent',!dodging()&&run.remaining<=5000);
@@ -148,7 +148,7 @@
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();if(sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
   function start() {
-    unlockAudio();run=modes[mode].create();music?.reset(1,slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
+    unlockAudio();run=modes[mode].create();music?.reset(1,modes[mode].id==='storm'?'storm':slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
     $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging()||shooting();$('nova-field').hidden=!shooting();$('nova-hud').hidden=!shooting();$('nova-pulse').hidden=!shooting()||modes[mode].id==='storm';$('storm-market').hidden=modes[mode].id!=='storm';$('game').classList.toggle('storm-mode',modes[mode].id==='storm');$('game').classList.toggle('nova-mode',shooting());$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
     novaRenderer=null;novaBossUntil=0;novaNoticeUntil=0;$('dodge-instructions').hidden=!dodging();$('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
