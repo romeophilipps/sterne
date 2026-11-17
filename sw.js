@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='v37';
+const VERSION='v38';
 const CACHE='sternensammler-'+VERSION;
-const ASSETS=['./','./index.html','./style.css?v=37','./app.js?v=37','./game.js?v=37','./snake.js?v=37','./trail.js?v=37','./nova.js?v=37','./storm.js?v=37','./storm-art.js?v=37','./storm-battlefield.jpg?v=37','./storm-sword.png?v=37','./storm-shield.png?v=37','./storm-sniper.png?v=37','./storm-rocket.png?v=37','./storm-plasma.png?v=37','./leaderboard.js?v=37','./leaderboard-config.js?v=37','./dodge.js?v=37','./music.js?v=37','./offline.js?v=37','./manifest.webmanifest?v=37','./icon.svg?v=37','./icon-180.png?v=37','./icon-192.png?v=37','./icon-512.png?v=37'];
+const ASSETS=['./','./index.html','./style.css?v=38','./app.js?v=38','./game.js?v=38','./snake.js?v=38','./trail.js?v=38','./nova.js?v=38','./storm.js?v=38','./storm-art.js?v=38','./storm-battlefield.jpg?v=38','./storm-core.png?v=38','./storm-sword.png?v=38','./storm-shield.png?v=38','./storm-sniper.png?v=38','./storm-rocket.png?v=38','./storm-plasma.png?v=38','./leaderboard.js?v=38','./leaderboard-config.js?v=38','./dodge.js?v=38','./music.js?v=38','./offline.js?v=38','./manifest.webmanifest?v=38','./icon.svg?v=38','./icon-180.png?v=38','./icon-192.png?v=38','./icon-512.png?v=38'];
 const absolute=path=>new URL(path,self.registration.scope).href;
 async function complete(){const cache=await caches.open(CACHE);const entries=await Promise.all(ASSETS.map(path=>cache.match(absolute(path))));return entries.every(response=>response&&response.ok);}
 async function download(){const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(path=>new Request(absolute(path),{cache:'reload'})));if(!await complete())throw new Error('Incomplete download');}
