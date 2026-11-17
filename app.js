@@ -26,8 +26,10 @@
   });
   function screen(name) { ['home','game','result'].forEach(id => $(id).hidden = id !== name);document.body.classList.toggle('storm-layout',name==='game'&&modes[mode].id==='storm');syncStormViewport(); }
   let stormViewportKey='';
+  const lockStormViewport=StarStormLayout.createViewportLock(window,document);
   function syncStormViewport(){
     const active=modes[mode].id==='storm'&&!$('game').hidden,view=window.visualViewport;
+    lockStormViewport(active);
     const width=Math.round(view&&Math.abs(view.scale-1)<.02?Math.min(innerWidth,view.width):innerWidth),height=Math.round(view&&Math.abs(view.scale-1)<.02?Math.min(innerHeight,view.height):innerHeight);
     const size=StarStormLayout.portraitViewport(width,height,window.screen.orientation?.angle??window.orientation??0),key=[active,size.width,size.height,size.rotation].join();
     if(key===stormViewportKey)return;stormViewportKey=key;
