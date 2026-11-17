@@ -1,13 +1,13 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarLegion=api;})(globalThis,()=>{
  const regular=[
- {id:'shadow',name:'Schattenkrieger',type:0,sheet:0,row:0,unlock:1,hp:3,damage:1,range:.055,speed:.023,cooldown:1100,stars:0,role:'melee',weak:[1.3,.9,1,1.3,1.2]},
- {id:'guard',name:'Kolosswächter',type:1,sheet:0,row:1,unlock:2,hp:13,damage:.65,range:.06,speed:.018,cooldown:1600,stars:1,role:'guard',weak:[.75,.8,1.65,1.25,1.5]},
- {id:'hunter',name:'Schattenjäger',type:2,sheet:0,row:2,unlock:3,hp:5,damage:1.8,range:.34,speed:.018,cooldown:3300,stars:0,role:'ranged',weak:[1.5,1,1.3,1.25,1.1]},
- {id:'runner',name:'Schattenläufer',type:3,sheet:0,row:3,unlock:4,hp:4,damage:1,range:.055,speed:.037,cooldown:1200,stars:0,role:'pounce',weak:[1.4,1.3,.8,1.35,1.4]},
- {id:'brood',name:'Schattenbrut',type:0,sheet:0,row:4,unlock:2,hp:1.8,damage:.45,range:.04,speed:.027,cooldown:850,stars:0,role:'swarm',weak:[1.1,.9,.7,1.7,1.6]},
- {id:'skyrazor',name:'Himmelsatze',type:3,sheet:0,row:5,unlock:6,hp:6,damage:1.15,range:.11,speed:.031,cooldown:1800,stars:1,role:'dive',flying:true,weak:[.8,1,1.6,1.2,1.5]},
- {id:'nexusling',name:'Nexusbrut',type:4,sheet:0,row:6,unlock:8,hp:9,damage:1.2,range:.22,speed:.019,cooldown:2200,stars:1,role:'reactor',weak:[1.15,.9,1.6,1.25,1.1]}
+ {id:'shadow',name:'Schattenkrieger',type:0,sheet:0,row:0,unlock:1,hp:6,damage:2,range:.055,speed:.023,cooldown:1100,stars:0,role:'melee',weak:[1.3,.9,1,1.3,1.2]},
+ {id:'guard',name:'Kolosswächter',type:1,sheet:0,row:1,unlock:2,hp:26,damage:1.3,range:.06,speed:.018,cooldown:1600,stars:1,role:'guard',weak:[.75,.8,1.65,1.25,1.5]},
+ {id:'hunter',name:'Schattenjäger',type:2,sheet:0,row:2,unlock:3,hp:10,damage:3.6,range:.34,speed:.018,cooldown:3300,stars:0,role:'ranged',weak:[1.5,1,1.3,1.25,1.1]},
+ {id:'runner',name:'Schattenläufer',type:3,sheet:0,row:3,unlock:4,hp:8,damage:2,range:.055,speed:.037,cooldown:1200,stars:0,role:'pounce',weak:[1.4,1.3,.8,1.35,1.4]},
+ {id:'brood',name:'Schattenbrut',type:0,sheet:0,row:4,unlock:2,hp:3.6,damage:0.9,range:.04,speed:.027,cooldown:850,stars:0,role:'swarm',weak:[1.1,.9,.7,1.7,1.6]},
+ {id:'skyrazor',name:'Himmelsatze',type:3,sheet:0,row:5,unlock:6,hp:12,damage:2.3,range:.11,speed:.031,cooldown:1800,stars:1,role:'dive',flying:true,weak:[.8,1,1.6,1.2,1.5]},
+ {id:'nexusling',name:'Nexusbrut',type:4,sheet:0,row:6,unlock:8,hp:18,damage:2.4,range:.22,speed:.019,cooldown:2200,stars:1,role:'reactor',weak:[1.15,.9,1.6,1.25,1.1]}
  ];
  const elite=[
  {id:'ravager',name:'Schattenravager',sheet:0,row:7,type:0,role:'slam',hp:35,damage:2.8,range:.09,speed:.021,stars:3,weak:[1.1,.8,1.45,1.15,1.4],skill:'shock',hint:'Schilde + Sniper oder Plasma + Nahkampf'},
