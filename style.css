@@ -152,3 +152,39 @@ body:has(.storm-mode:not([hidden])){background:#171722;color:#e9e9f2}body:has(.s
 
 /* Purchase taps must never invoke Safari's double-tap/pinch zoom. */
 .storm-mode #storm-market,.storm-mode #storm-market *{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.storm-mode .army-buy{overflow:hidden;min-width:0}
+/* Sternensturm is a full-width landscape battlefield; the shared menu and other modes keep their layout. */
+body.storm-layout{position:fixed;inset:0;width:100%;height:100dvh;min-height:0;overflow:hidden;overscroll-behavior:none;background:#171722}
+html:has(body.storm-layout){overflow:hidden;overscroll-behavior:none}
+body.storm-layout .app{position:relative;width:100%;max-width:none;height:100%;min-height:0;margin:0;padding:max(6px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));border:0;border-radius:0;box-shadow:none;display:block;background:#171722}
+body.storm-layout header{position:absolute;top:max(6px,env(safe-area-inset-top));right:calc(max(12px,env(safe-area-inset-right)) + 46px);height:40px;gap:6px;margin:0;z-index:3}
+body.storm-layout header .icon-button,body.storm-layout .pause{width:40px;height:40px;min-height:40px;padding:9px;border-radius:10px}
+body.storm-layout .army-wallet{min-height:40px;min-width:90px;font-size:13px;padding:0 5px}
+body.storm-layout .screen#game.storm-mode{position:relative;display:grid;grid-template-rows:40px minmax(0,1fr) 86px;gap:5px;width:100%;height:100%;min-height:0;padding:0;justify-content:stretch}
+body.storm-layout .game-top{grid-row:1;margin:0;padding:0;min-height:0;height:40px;align-items:center;gap:4px}
+body.storm-layout .score{font-size:20px;line-height:1;gap:3px}
+body.storm-layout .score>span:first-child{font-size:20px}
+body.storm-layout .score-star{font-size:14px}
+body.storm-layout .life-row{position:absolute;top:10px;left:64px;margin:0;z-index:2}
+body.storm-layout .lives{font-size:16px;gap:4px}
+body.storm-layout #level{display:none}
+body.storm-layout #nova-hud{position:absolute;top:5px;left:135px;right:242px;margin:0;padding:0;color:#d0bfdc;font-size:10px;pointer-events:none}
+body.storm-layout #nova-rank{display:block;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;line-height:16px}
+body.storm-layout .nova-xp{height:2px;margin-top:4px}
+body.storm-layout .storm-mode .nova-field{grid-row:2;width:100%;height:100%;min-height:0;max-height:none;margin:0;border:1px solid #676078;border-radius:10px;flex:none}
+body.storm-layout #storm-market{grid-row:3;display:grid;grid-template-rows:12px minmax(0,1fr);gap:3px;min-width:0;padding:0}
+body.storm-layout #storm-tactics{font-size:9px;line-height:12px;min-height:0;margin:0 2px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+body.storm-layout #storm-shop-items{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;min-width:0;min-height:0}
+body.storm-layout .army-buy-row{gap:4px;margin:0;min-width:0;min-height:0}
+body.storm-layout .storm-mode .army-buy{min-height:0;height:100%;padding:3px 1px;display:grid;grid-template-rows:24px 11px 12px 9px;gap:1px;align-content:center;justify-items:center;border-radius:8px}
+body.storm-layout .storm-mode .army-buy strong{font-size:9px;line-height:11px}
+body.storm-layout .storm-mode .army-buy span{font-size:10px;line-height:12px}
+body.storm-layout .storm-mode .army-buy small{font-size:8px;line-height:9px}
+body.storm-layout .storm-mode .army-buy .army-portrait{width:34px;height:24px}
+#storm-rotate{width:min(320px,calc(100vw - 40px));padding:30px 24px 20px;text-align:center;border:1px solid #70677f;border-radius:28px;background:#211f2e;color:#efe9f5;box-shadow:0 20px 80px #0008}
+#storm-rotate::backdrop{background:#171722fa}
+#storm-rotate svg{width:86px;height:86px;color:#d6c4ed;margin-bottom:8px}
+#storm-rotate h2{font-size:23px;margin:8px 0}
+#storm-rotate p{font-size:14px;color:#beb2c9;line-height:1.5;margin:8px 0 20px}
+#storm-rotate button{min-height:44px;padding:10px 18px;border:1px solid #70677f;border-radius:13px;background:#373044;color:#e9dff4;font-size:14px}
+@media(orientation:landscape) and (max-height:340px){body.storm-layout .screen#game.storm-mode{grid-template-rows:36px minmax(0,1fr) 75px;gap:3px}body.storm-layout header,body.storm-layout .game-top{height:36px}body.storm-layout header .icon-button,body.storm-layout .pause{height:36px;width:36px;min-height:36px;padding:7px}body.storm-layout .army-wallet{min-height:36px}body.storm-layout .storm-mode .army-buy{grid-template-rows:19px 10px 11px 8px}body.storm-layout .storm-mode .army-buy .army-portrait{height:19px;width:29px}}
+body.storm-layout .army-wallet{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}body.storm-layout #nova-hud{right:270px}
