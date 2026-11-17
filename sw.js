@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='v38';
+const VERSION='v39';
 const CACHE='sternensammler-'+VERSION;
-const ASSETS=['./','./index.html','./style.css?v=38','./app.js?v=38','./game.js?v=38','./snake.js?v=38','./trail.js?v=38','./nova.js?v=38','./storm.js?v=38','./storm-art.js?v=38','./storm-battlefield.jpg?v=38','./storm-core.png?v=38','./storm-sword.png?v=38','./storm-shield.png?v=38','./storm-sniper.png?v=38','./storm-rocket.png?v=38','./storm-plasma.png?v=38','./leaderboard.js?v=38','./leaderboard-config.js?v=38','./dodge.js?v=38','./music.js?v=38','./offline.js?v=38','./manifest.webmanifest?v=38','./icon.svg?v=38','./icon-180.png?v=38','./icon-192.png?v=38','./icon-512.png?v=38'];
+const ASSETS=['./','./index.html','./style.css?v=39','./app.js?v=39','./game.js?v=39','./snake.js?v=39','./trail.js?v=39','./nova.js?v=39','./storm.js?v=39','./storm-art.js?v=39','./storm-battlefield.jpg?v=39','./storm-core.png?v=39','./storm-hero-solaris.png?v=39','./storm-hero-volt.png?v=39','./storm-hero-polaris.png?v=39','./storm-hero-aegis.png?v=39','./storm-hero-phoenix.png?v=39','./storm-sword.png?v=39','./storm-shield.png?v=39','./storm-sniper.png?v=39','./storm-rocket.png?v=39','./storm-plasma.png?v=39','./leaderboard.js?v=39','./leaderboard-config.js?v=39','./dodge.js?v=39','./music.js?v=39','./offline.js?v=39','./manifest.webmanifest?v=39','./icon.svg?v=39','./icon-180.png?v=39','./icon-192.png?v=39','./icon-512.png?v=39'];
 const absolute=path=>new URL(path,self.registration.scope).href;
 async function complete(){const cache=await caches.open(CACHE);const entries=await Promise.all(ASSETS.map(path=>cache.match(absolute(path))));return entries.every(response=>response&&response.ok);}
 async function download(){const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(path=>new Request(absolute(path),{cache:'reload'})));if(!await complete())throw new Error('Incomplete download');}

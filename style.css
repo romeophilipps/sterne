@@ -145,3 +145,7 @@ body:has(.storm-mode:not([hidden])){background:#171722;color:#e9e9f2}body:has(.s
 
 /* More room for the defended outpost; smaller troops supply the sense of scale. */
 .screen#game.storm-mode{padding-bottom:8px}.storm-mode .nova-field{width:calc(100% + 28px);margin-left:-14px;max-height:none;min-height:250px;border-radius:10px}.storm-mode .score>span:first-child{font-size:25px}.storm-mode .life-row{margin:3px 0}.storm-mode .lives{font-size:20px}.storm-mode #nova-hud{padding-bottom:6px}.storm-mode #storm-market{padding-top:4px}.storm-mode .army-buy[data-kind="warriors"]{min-height:78px;grid-template-rows:30px 11px 12px 10px}.storm-mode .army-portrait{height:30px;width:40px}.storm-mode .army-buy[data-kind="heroes"]{min-height:43px}.storm-mode #storm-tactics{margin-top:4px;margin-bottom:5px}@media(max-height:740px){.storm-mode .nova-field{min-height:210px}}
+
+.storm-mode .army-buy[data-kind="heroes"]{min-height:70px;display:grid;grid-template-rows:24px 11px 12px 10px;justify-items:center;align-content:center;border-color:color-mix(in srgb,var(--class-color) 40%,#464152)}.storm-mode .army-buy[data-kind="heroes"] .army-portrait{width:36px;height:24px}.storm-mode .army-buy[data-kind="heroes"] strong{color:var(--class-color);font-size:9px}@media(max-height:740px){.storm-mode .army-buy[data-kind="heroes"]{min-height:66px;grid-template-rows:22px 10px 11px 9px}.storm-mode .army-buy[data-kind="heroes"] .army-portrait{height:22px;width:32px}}
+
+.storm-mode .army-buy[data-kind="heroes"]:disabled{opacity:.62;filter:saturate(.8)}
