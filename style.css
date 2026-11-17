@@ -211,3 +211,5 @@ html:has(#game.storm-mode:not([hidden])){overflow:hidden;overscroll-behavior:non
  :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy{grid-template-rows:24px 12px 13px 10px}
  :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy .army-portrait{height:24px;width:34px}
 }
+
+@media(orientation:landscape){:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #nova-hud{left:70px}}
