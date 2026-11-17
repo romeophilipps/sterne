@@ -125,3 +125,5 @@ header{gap:10px}#game-help{color:var(--secondary)}
 #nova-announcement{position:absolute;left:0;right:0;top:22%;text-align:center;color:#edbaff;font-size:26px;letter-spacing:9px;font-weight:750;text-shadow:0 0 18px #dc71ff;pointer-events:none}#nova-announcement:empty{display:none}
 
 #nova-upgrade-notice{position:absolute;left:10px;right:10px;top:14px;text-align:center;font-size:13px;font-weight:600;color:#b8f6ff;pointer-events:none;text-shadow:0 0 10px #6bdbff80}#nova-upgrade-notice:empty{display:none}.nova-home-rank{font-size:13px;color:var(--secondary);margin-top:-8px}.nova-pulse{box-shadow:0 0 22px #6bdbff12}
+
+.home-main:has([data-mode="storm"]) .nova-preview{display:block}.home-main:has([data-mode="storm"]) .mode-art{display:none}
