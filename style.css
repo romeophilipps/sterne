@@ -229,3 +229,10 @@ html.storm-viewport:has(dialog[open]),html.storm-viewport:has(dialog[open]) body
 @media(prefers-reduced-motion:reduce){#storm-joke-text{transform:none!important;position:relative;width:auto;overflow:hidden;text-overflow:ellipsis;will-change:auto}}
 
 #storm-continue{max-width:320px;margin:8px auto 18px;min-height:48px;font-size:15px;border-color:#cadcf399;background:linear-gradient(145deg,#5b709c,#343954)}
+
+/* Separate round wallets and manual silver upgrades. */
+#storm-shop{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 9px;min-width:112px;max-width:150px;min-height:40px;padding:4px 8px;font-size:12px;text-align:right;border-radius:12px}
+#storm-shop[hidden]{display:none}#storm-shop [data-wallet="coins"]{color:#d19a70}#storm-shop [data-wallet="silver"]{color:#d8e6f5}#storm-shop [data-wallet="gold"]{color:#ffd065}#storm-shop [data-wallet="stars"]{color:#bfa8ff}
+#storm-market{position:relative}#storm-upgrades-open{position:absolute;right:0;top:-25px;z-index:2;padding:4px 9px;min-height:24px;font-size:10px;border:1px solid #bacfe66b;border-radius:8px;background:#202537;color:#d8e6f5;touch-action:manipulation}
+#storm-upgrades-dialog{width:min(94vw,440px);max-height:85dvh;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#storm-upgrades-wallet{color:#d8e6f5;font-weight:700}#storm-upgrades-note{font-size:12px;line-height:1.5}.storm-upgrade-card{display:grid;gap:8px;padding:12px;margin:8px 0;border:1px solid #a5b8d33a;border-radius:12px;background:#242536}.storm-upgrade-card small{font-size:11px;line-height:1.5;color:#b8bbce}.storm-upgrade-card button{padding:10px;color:#d8e6f5;background:#333c50;border:1px solid #aabdd75c;border-radius:8px;touch-action:manipulation}.storm-upgrade-card button:disabled{opacity:.45}#storm-upgrades-close{position:sticky;bottom:0}
+.army-buy[data-currency="coins"] span{color:#d19a70}
