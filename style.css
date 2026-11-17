@@ -188,3 +188,26 @@ html:has(#game.storm-mode:not([hidden])){overflow:hidden;overscroll-behavior:non
 #storm-rotate button{min-height:44px;padding:10px 18px;border:1px solid #70677f;border-radius:13px;background:#373044;color:#e9dff4;font-size:14px}
 @media(orientation:landscape) and (max-height:340px){:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .screen#game.storm-mode{grid-template-rows:36px minmax(0,1fr) 75px;gap:3px}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) header,:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .game-top{height:36px}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) header .icon-button,:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .pause{height:36px;width:36px;min-height:36px;padding:7px}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .army-wallet{min-height:36px}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy{grid-template-rows:19px 10px 11px 8px}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy .army-portrait{height:19px;width:29px}}
 :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .army-wallet{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #nova-hud{right:270px}
+
+/* Portrait uses two purchase rows and a separate HUD row; landscape retains its wide battlefield. */
+@media(orientation:portrait){
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .screen#game.storm-mode{grid-template-rows:80px minmax(0,1fr) 198px;gap:7px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #nova-hud{top:47px;left:0;right:0;font-size:11px;padding:0 2px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #storm-shop-items{grid-template-columns:minmax(0,1fr);grid-template-rows:repeat(2,minmax(0,1fr));gap:6px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #storm-market{grid-template-rows:14px minmax(0,1fr);gap:5px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy{grid-template-rows:32px 13px 14px 11px;border-radius:10px;padding:4px 1px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy .army-portrait{width:43px;height:32px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy strong{font-size:10px;line-height:13px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy span{font-size:11px;line-height:14px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy small{font-size:9px;line-height:11px}
+}
+@media(orientation:portrait) and (max-width:360px){
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .army-wallet{min-width:72px;max-width:86px;font-size:11px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) header{gap:4px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .lives{font-size:13px;gap:2px}
+}
+@media(orientation:portrait) and (max-height:620px){
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .screen#game.storm-mode{grid-template-rows:72px minmax(0,1fr) 174px;gap:5px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy{grid-template-rows:24px 12px 13px 10px}
+ :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .storm-mode .army-buy .army-portrait{height:24px;width:34px}
+}
