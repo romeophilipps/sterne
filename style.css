@@ -149,3 +149,6 @@ body:has(.storm-mode:not([hidden])){background:#171722;color:#e9e9f2}body:has(.s
 .storm-mode .army-buy[data-kind="heroes"]{min-height:70px;display:grid;grid-template-rows:24px 11px 12px 10px;justify-items:center;align-content:center;border-color:color-mix(in srgb,var(--class-color) 40%,#464152)}.storm-mode .army-buy[data-kind="heroes"] .army-portrait{width:36px;height:24px}.storm-mode .army-buy[data-kind="heroes"] strong{color:var(--class-color);font-size:9px}@media(max-height:740px){.storm-mode .army-buy[data-kind="heroes"]{min-height:66px;grid-template-rows:22px 10px 11px 9px}.storm-mode .army-buy[data-kind="heroes"] .army-portrait{height:22px;width:32px}}
 
 .storm-mode .army-buy[data-kind="heroes"]:disabled{opacity:.62;filter:saturate(.8)}
+
+/* Purchase taps must never invoke Safari's double-tap/pinch zoom. */
+.storm-mode #storm-market,.storm-mode #storm-market *{touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.storm-mode .army-buy{overflow:hidden;min-width:0}
