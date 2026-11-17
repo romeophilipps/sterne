@@ -1,14 +1,12 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarStormLayout=api;})(globalThis,()=>{
  const isLandscape=(width,height)=>Number.isFinite(width)&&Number.isFinite(height)&&width>height;
- function create({viewport,active,playing,pause,resume,show,landscapeOnly=false}){
-  let blocked=null,resumePending=false;
-  return {update(){const enabled=active(),{width,height}=viewport(),next=enabled&&landscapeOnly&&!isLandscape(width,height);if(next&&playing()){resumePending=true;pause();}if(!next&&blocked&&resumePending&&enabled)resume();if(!enabled||!next)resumePending=false;if(next!==blocked){blocked=next;show(next);}return next;},get blocked(){return !!blocked;}};
- }
+ const isPortrait=(width,height)=>Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>=width;
+ function portraitViewport(width,height,angle=0){width=Math.max(1,Number.isFinite(width)?width:1);height=Math.max(1,Number.isFinite(height)?height:1);const a=((angle%360)+360)%360,landscape=width>height;return {width:Math.min(width,height),height:Math.max(width,height),rotation:landscape?(a===90?-90:90):a===180?-180:0};}
  function bindPurchase(button,purchase){
   const activate=e=>{if(button.disabled)return;e.preventDefault();purchase();};
   button.addEventListener('click',activate);
   return ()=>button.removeEventListener('click',activate);
  }
- return {isLandscape,create,bindPurchase};
+ return {isLandscape,isPortrait,portraitViewport,bindPurchase};
 });
