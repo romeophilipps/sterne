@@ -34,7 +34,8 @@
  const all=[...regular,...elite,...mid,...major],byId=Object.fromEntries(all.map(e=>[e.id,e]));
  function unlocked(wave){return regular.filter(e=>e.unlock<=wave);}
  function encounter(wave){if(wave%12===0)return major[(wave/12-1)%major.length];if(wave%8===0)return mid[(wave/8-Math.floor(wave/24)-1)%mid.length];if(wave%4===0)return elite[(wave/4-Math.floor(wave/8)-Math.floor(wave/12)+Math.floor(wave/24)-1)%elite.length];return null;}
+ function bossWaveMultiplier(wave=1){return 1+.5*Math.floor(Math.max(1,Number.isFinite(wave)?wave:1)/5);}
  function scaling(wave,elapsed,tier=0){return {hp:(.65+(1-Math.exp(-elapsed/420000))*1.65)*(1+Math.max(0,Math.log(wave/30))*.4)*(1+Math.max(0,wave-20)*.012)*5**tier,damage:(1+(1-Math.exp(-elapsed/420000))*1.1)*(1+Math.max(0,wave-24)*.008)*Math.pow(5,tier*.72),speed:1+Math.min(.65,(wave-1)*.008),rank:1+Math.floor((wave-1)/12)};}
  const MODIFIERS=[{id:'corrupt',name:'Korruptiert',color:'#ff527e',hp:1,damage:1.3},{id:'frozen',name:'Gefroren',color:'#8bdcff',hp:1.1,damage:1,slow:true},{id:'armored',name:'Verstärkt',color:'#ffd377',hp:1.4,damage:1},{id:'elite',name:'Elite',color:'#ed79ff',hp:1.2,damage:1.15}];
- return {regular,elite,mid,major,all,byId,unlocked,encounter,scaling,MODIFIERS};
+ return {regular,elite,mid,major,all,byId,unlocked,encounter,scaling,bossWaveMultiplier,MODIFIERS};
 });
