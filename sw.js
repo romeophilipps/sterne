@@ -1,7 +1,7 @@
 'use strict';
-const VERSION='v33';
+const VERSION='v34';
 const CACHE='sternensammler-'+VERSION;
-const ASSETS=['./','./index.html','./style.css?v=33','./app.js?v=33','./game.js?v=33','./snake.js?v=33','./trail.js?v=33','./nova.js?v=33','./storm.js?v=33','./leaderboard.js?v=33','./leaderboard-config.js?v=33','./dodge.js?v=33','./music.js?v=33','./offline.js?v=33','./manifest.webmanifest?v=33','./icon.svg?v=33','./icon-180.png?v=33','./icon-192.png?v=33','./icon-512.png?v=33'];
+const ASSETS=['./','./index.html','./style.css?v=34','./app.js?v=34','./game.js?v=34','./snake.js?v=34','./trail.js?v=34','./nova.js?v=34','./storm.js?v=34','./leaderboard.js?v=34','./leaderboard-config.js?v=34','./dodge.js?v=34','./music.js?v=34','./offline.js?v=34','./manifest.webmanifest?v=34','./icon.svg?v=34','./icon-180.png?v=34','./icon-192.png?v=34','./icon-512.png?v=34'];
 const absolute=path=>new URL(path,self.registration.scope).href;
 async function complete(){const cache=await caches.open(CACHE);const entries=await Promise.all(ASSETS.map(path=>cache.match(absolute(path))));return entries.every(response=>response&&response.ok);}
 async function download(){const cache=await caches.open(CACHE);await cache.addAll(ASSETS.map(path=>new Request(absolute(path),{cache:'reload'})));if(!await complete())throw new Error('Incomplete download');}
