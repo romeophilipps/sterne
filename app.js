@@ -45,7 +45,7 @@
   $('storm-rotate-home').addEventListener('click',()=>{for(const id of ['pause-dialog','game-help-dialog'])if($(id).open)$(id).close();helpWasPlaying=false;state='home';music?.pause();keys.clear();pointerAnchor=null;screen('home');homeUI();});
   function homeUI(){
     document.dispatchEvent(new CustomEvent('stars-mode',{detail:{mode:modes[mode].id}}));
-    const current=modes[mode];$('intro-replay').hidden=current.id!=='storm';$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
+    const current=modes[mode];$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
     $('nova-home-rank').hidden=modes[mode].id!=='nova';$('nova-home-rank').textContent='Arsenal '+Math.max(1,Math.floor(Number(novaProgress.rank)||1));$('storm-shop').hidden=current.id!=='storm';$('storm-shop').textContent='10 ◉ · 0 ✦';$('storm-shop').dataset.tier='0';$('storm-shop').setAttribute('aria-label','10 Bronzemünzen, 0 Sterne');$('mode-art').dataset.mode=current.id;$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('start').disabled=current.id==='storm'&&!stormArtReady;$('start').classList.toggle('loading-art',current.id==='storm'&&!stormArtReady);$('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
   }
@@ -167,9 +167,7 @@
   }
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();stormOrientation.update();if(state==='playing'&&sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
-  let storyPendingStart=false;
-  function start(){if(modes[mode].id==='storm'&&state==='home'){storyPendingStart=true;music?.pause();story.play();return;}startRound();}
-  function startRound() {
+  function start() {
     unlockAudio();run=modes[mode].create();music?.reset(1,modes[mode].id==='storm'?'storm':slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
     $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging()||shooting();$('nova-field').hidden=!shooting();$('nova-hud').hidden=!shooting();$('nova-pulse').hidden=!shooting()||modes[mode].id==='storm';$('storm-market').hidden=modes[mode].id!=='storm';$('game').classList.toggle('storm-mode',modes[mode].id==='storm');$('game').classList.toggle('nova-mode',shooting());$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
@@ -275,5 +273,4 @@
   document.addEventListener('touchmove',e=>{if(slinging()&&state==='playing')e.preventDefault();},{passive:false});
   document.addEventListener('keydown',e=>{if(!slinging()||state!=='playing')return;const dirs={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1],a:[-1,0],d:[1,0],w:[0,-1],s:[0,1]};if(dirs[e.key]){e.preventDefault();run.turn(...dirs[e.key]);}});
   homeUI();soundUI();hearts();requestAnimationFrame(frame);
-  const story=StarIntro.mount({onEnd:()=>{if(storyPendingStart){storyPendingStart=false;startRound();}else $('start').focus({preventScroll:true});}});$('intro-replay').addEventListener('click',()=>{if(modes[mode].id==='storm'){storyPendingStart=false;story.play();}});
 })();

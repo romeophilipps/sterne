@@ -7,9 +7,8 @@
   <meta name="apple-mobile-web-app-title" content="Sterne">
   <meta name="description" content="Ein kleines Spiel für große Sternensammler. Sterne antippen oder frei ausweichen und möglichst lange überleben.">
   <title>Sterne</title>
-  <link rel="manifest" href="./manifest.webmanifest?v=54"><link rel="icon" href="./icon.svg?v=54" type="image/svg+xml">
-  <link rel="apple-touch-icon" href="./icon-180.png?v=54"><link rel="stylesheet" href="./style.css?v=54">
-  <link rel="preload" as="image" href="./intro-world.jpg?v=54"><link rel="stylesheet" href="./intro.css?v=54">
+  <link rel="manifest" href="./manifest.webmanifest?v=55"><link rel="icon" href="./icon.svg?v=55" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icon-180.png?v=55"><link rel="stylesheet" href="./style.css?v=55">
 </head>
 <body>
 <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
@@ -37,7 +36,6 @@
     <div class="sling-preview"><svg class="home-comet" viewBox="0 0 180 174" aria-hidden="true"><defs><linearGradient id="home-comet-color" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#ffcf65"/><stop offset=".55" stop-color="#ff699e"/><stop offset="1" stop-color="#906bff" stop-opacity=".15"/></linearGradient></defs><path d="M60 118C125 150 163 93 126 72S83 27 136 15" fill="none" stroke="url(#home-comet-color)" stroke-width="5" stroke-linecap="round"/><path d="M60 118C125 150 163 93 126 72S83 27 136 15" fill="none" stroke="#fff2ca" stroke-opacity=".6" stroke-width="1"/><use href="#star" transform="translate(15 84) scale(.65)"/></svg></div><h2 id="mode-name" class="mode-name" aria-live="polite">Tippen</h2>
     <span id="nova-home-rank" class="nova-home-rank" hidden></span><div class="minimal-record" aria-label="Dein Rekord"><svg class="ui-icon" aria-hidden="true"><use href="#trophy"/></svg><span id="home-best">0</span></div>
     <button id="start" class="primary round-action" aria-label="Endlos spielen"><svg class="ui-icon" aria-hidden="true"><use href="#play"/></svg></button>
-    <button id="intro-replay" class="trailer-replay" aria-label="Trailer erneut ansehen"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="m10 9 5 3-5 3zM3 8h18"/></svg></button>
     <div id="mode-picker" class="mode-picker" role="group" aria-label="Spielmodus. Nach rechts wischen zum Wechseln."><button aria-label="Modus Tippen" aria-pressed="true"><span></span></button><button aria-label="Modus Ausweichen" aria-pressed="false"><span></span></button><button aria-label="Modus Sternenschlange" aria-pressed="false"><span></span></button><button aria-label="Modus Supernova" aria-pressed="false"><span></span></button><button aria-label="Modus Sternensturm" aria-pressed="false"><span></span></button></div>
   </div>
   <button id="open-leaderboard" class="home-rankings" aria-label="Bestenliste aktualisieren und Top 20 öffnen"><span id="home-leaderboard"></span><span id="home-leaderboard-state">…</span></button><div class="home-download"><button id="install" class="install"><svg class="ui-icon" aria-hidden="true"><use href="#download"/></svg>App laden</button><div id="offline-status" class="offline-status" role="status" aria-live="polite">Wird gespeichert …</div></div>
@@ -72,10 +70,6 @@
   <h2 id="storm-rotate-title">iPhone drehen</h2><p>Sternensturm spielst du im Querformat.</p>
   <button id="storm-rotate-home">Zur Spielauswahl</button>
 </dialog>
-<section id="story-intro" class="story-intro" role="dialog" aria-modal="true" aria-label="Sternenkrieger – Der Fall des Nexus. 30 Sekunden Film." hidden>
- <div class="intro-controls"><span>DER FALL DES NEXUS</span><button id="intro-audio" aria-pressed="false">Mit Ton starten</button><button id="intro-skip">Überspringen</button></div>
- <div class="intro-film"><canvas id="intro-canvas" width="1280" height="720" aria-hidden="true"></canvas><div id="intro-copy" aria-live="polite" aria-atomic="true"><h2 id="intro-title"></h2><p id="intro-caption"></p></div>
- <div id="intro-logo" class="intro-logo" hidden><svg viewBox="0 0 100 100" aria-hidden="true"><g fill="none" stroke="#e9c983"><circle cx="50" cy="50" r="44"/><circle cx="50" cy="50" r="35" stroke-dasharray="3 8"/><path d="M50 0v100M0 50h100" opacity=".4"/></g><path d="m50 9 8 29 24-20-20 25 29 7-29 8 20 24-25-20-7 29-8-29-24 20 20-25-29-7 29-8-20-24 25 20Z" fill="#ffe8a4"/></svg><strong>STERNENKRIEGER</strong><em>DER FALL DES NEXUS</em><p>Sieben Wächter. Ein Verrat. Fünf Überlebende.</p></div><div class="intro-line"><div id="intro-progress"></div></div></div>
-</section>
-<script src="./leaderboard-config.js?v=54" defer></script><script src="./leaderboard.js?v=54" defer></script><script src="./storm-layout.js?v=54"></script><script src="./storm-enemies.js?v=54"></script><script src="./storm-art.js?v=54"></script><script src="./storm.js?v=54" defer></script><script src="./nova.js?v=54" defer></script><script src="./trail.js?v=54" defer></script><script src="./snake.js?v=54" defer></script><script src="./game.js?v=54" defer></script><script src="./dodge.js?v=54" defer></script><script src="./music.js?v=54" defer></script><script src="./intro-audio.js?v=54" defer></script><script src="./intro.js?v=54" defer></script><script src="./app.js?v=54" defer></script><script src="./offline.js?v=54" defer></script>
+
+<script src="./leaderboard-config.js?v=55" defer></script><script src="./leaderboard.js?v=55" defer></script><script src="./storm-layout.js?v=55"></script><script src="./storm-enemies.js?v=55"></script><script src="./storm-art.js?v=55"></script><script src="./storm.js?v=55" defer></script><script src="./nova.js?v=55" defer></script><script src="./trail.js?v=55" defer></script><script src="./snake.js?v=55" defer></script><script src="./game.js?v=55" defer></script><script src="./dodge.js?v=55" defer></script><script src="./music.js?v=55" defer></script><script src="./app.js?v=55" defer></script><script src="./offline.js?v=55" defer></script>
 </body></html>
