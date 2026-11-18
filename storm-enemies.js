@@ -47,8 +47,11 @@
  function encounter(wave){return encounterPlan(wave)[0]||null;}
  function isSwarmWave(wave){return Number.isSafeInteger(wave)&&wave>=9&&wave%10===9;}
 
- function bossWaveMultiplier(wave=1){return (10+2*Math.floor(Math.max(1,Number.isFinite(wave)?wave:1)/5))/10;}
- function scaling(wave,elapsed,tier=0){return {hp:(.65+(1-Math.exp(-elapsed/420000))*1.65)*(1+Math.max(0,Math.log(wave/30))*.4)*(1+Math.max(0,wave-20)*.012)*5**tier,damage:(1+(1-Math.exp(-elapsed/420000))*1.1)*(1+Math.max(0,wave-24)*.008)*Math.pow(5,tier*.72),speed:1+Math.min(.65,(wave-1)*.008),rank:1+Math.floor((wave-1)/12)};}
+ // One wave-based curve per enemy class. Arena currency and waiting time never multiply combat stats.
+ const waveIndex=wave=>Math.max(0,Math.floor(Number.isFinite(wave)?wave:1)-1);
+ function bossWaveMultiplier(wave=1){return 2.4+.055*waveIndex(wave);}
+ function bossScaling(wave=1,group='elite'){const n=waveIndex(wave),hpWeight=group==='major'?1.35:group==='mid'?1.15:1,damageWeight=group==='major'?1.1:group==='mid'?1.05:1;return {hp:bossWaveMultiplier(wave)*hpWeight,damage:(1.15+.018*n)*damageWeight};}
+ function scaling(wave=1,elapsed=0,tier=0){const n=waveIndex(wave);return {hp:2.25+.035*n,damage:1.1+.01*n,speed:1+Math.min(.65,n*.008),rank:1+Math.floor(n/12)};}
  const MODIFIERS=[{id:'corrupt',name:'Korruptiert',color:'#ff527e',hp:1,damage:1.3},{id:'frozen',name:'Gefroren',color:'#8bdcff',hp:1.1,damage:1,slow:true},{id:'armored',name:'Verstärkt',color:'#ffd377',hp:1.4,damage:1},{id:'elite',name:'Elite',color:'#ed79ff',hp:1.2,damage:1.15}];
- return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,scaling,bossWaveMultiplier,MODIFIERS};
+ return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,scaling,bossScaling,bossWaveMultiplier,MODIFIERS};
 });
