@@ -236,3 +236,9 @@ html.storm-viewport:has(dialog[open]),html.storm-viewport:has(dialog[open]) body
 #storm-market{position:relative}#storm-upgrades-open{position:absolute;right:0;top:-25px;z-index:2;padding:4px 9px;min-height:24px;font-size:10px;border:1px solid #bacfe66b;border-radius:8px;background:#202537;color:#d8e6f5;touch-action:manipulation}
 #storm-upgrades-dialog{width:min(94vw,440px);max-height:85dvh;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#storm-upgrades-wallet{color:#d8e6f5;font-weight:700}#storm-upgrades-note{font-size:12px;line-height:1.5}.storm-upgrade-card{display:grid;gap:8px;padding:12px;margin:8px 0;border:1px solid #a5b8d33a;border-radius:12px;background:#242536}.storm-upgrade-card small{font-size:11px;line-height:1.5;color:#b8bbce}.storm-upgrade-card button{padding:10px;color:#d8e6f5;background:#333c50;border:1px solid #aabdd75c;border-radius:8px;touch-action:manipulation}.storm-upgrade-card button:disabled{opacity:.45}#storm-upgrades-close{position:sticky;bottom:0}
 .army-buy[data-currency="coins"] span{color:#d19a70}
+
+/* Sixth troop and four reserved slots: fixed three-row market, no horizontal scrolling. */
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) .screen#game.storm-mode{grid-template-rows:80px minmax(0,1fr) 278px}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #storm-shop-items{grid-template-rows:repeat(3,minmax(0,1fr))}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))).storm-compact .screen#game.storm-mode{grid-template-rows:72px minmax(0,1fr) 240px}
+.army-empty-slot{display:flex;align-items:center;justify-content:center;min-width:0;border:1px dashed #7f829044;border-radius:10px;background:#ffffff03;color:#969ab044;pointer-events:none}.army-empty-slot span{font-size:22px;font-weight:300}
