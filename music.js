@@ -1,8 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarMusic=api;})(globalThis,()=>{
-  // Original adaptive scores: local arcade synthesis and a bundled sampled battle orchestra.
-  const ROOTS=[45,41,48,43], ARP=[0,7,12,7,3,7,15,12];
-  const HOOK=[12,null,12,19,17,null,15,12,10,null,7,10,12,null,7,null];
+  // Original adaptive cinematic themes, using the bundled orchestra in every game.
   const frequency=note=>440*Math.pow(2,(note-69)/12);
   function intensity(level=1,remaining=20000){
     const energy=1-Math.exp(-(Math.max(1,level)-1)/8), urgent=remaining<=5000;
@@ -22,22 +20,30 @@
     const seconds=Math.max(0,elapsed)/1000,energy=1-Math.exp(-(seconds/130+Math.max(0,wave-1)/55)),boss=!!scene.boss,phase=boss?Math.max(1,Math.min(3,scene.phase||1)):0,rest=!!scene.rest;
     return {bpm:112+12*energy+(boss?5+phase:0),energy,boss,phase,rest,strings:rest?.6:1,highStrings:Math.min(1,.25+energy*.75+(boss?.3:0)),brass:rest?.38:.72+energy*.28,trumpet:rest?0:Math.min(1,energy*.85+(boss?.4:0)),drums:rest?.3:.72+energy*.28,fill:boss||energy>.5};
   }
+  const SCORES={
+    tap:{bpm:126,rise:18,roots:[38,34,41,36,38,34,33,33],lead:[74,77,81,79,77,74,73,69],drums:[0,6,8,14],name:'Sternenschmiede'},
+    dodge:{bpm:108,rise:34,roots:[38,38,34,34,36,36,33,33],lead:[62,69,65,70,67,64,61,69],drums:[0,10],name:'Durch den Schatten'},
+    sling:{bpm:100,rise:20,roots:[41,37,44,39,41,44,39,36],lead:[65,72,75,77,72,68,67,72],drums:[0,8,14],name:'Spur der Sterne'},
+    nova:{bpm:132,rise:16,roots:[36,32,39,34,36,32,31,31],lead:[72,79,75,82,79,75,74,79],drums:[0,3,6,8,11,14],name:'Sonnenlanze'}
+  };
+  function cinematicIntensity(mode='tap',level=1,remaining=20000,elapsed=0,scene={}){const profile=SCORES[mode]||SCORES.tap,energy=1-Math.exp(-(Math.max(0,elapsed)/1000/100+Math.max(0,level-1)/14)),urgent=mode==='tap'&&remaining<=5000,boss=!!scene.boss;return {bpm:profile.bpm+profile.rise*energy+(urgent?4:0)+(boss?4:0),energy,urgent,boss,strings:.75+energy*.25,highStrings:.2+energy*.8,brass:.45+energy*.55,drums:.65+energy*.35,fill:energy>.45||boss};}
+
   class Track {
     constructor(context,timers={setInterval:(fn,ms)=>setInterval(fn,ms),clearInterval:id=>clearInterval(id)},options={}){
-      this.ctx=context;this.timers=timers;this.sampleBank={};this.sampleReady=null;this.fetchSample=options.fetch||(globalThis.fetch?globalThis.fetch.bind(globalThis):null);this.maxVoices=options.maxVoices??96;this.voices=new Set();this.playing=false;this.timer=null;this.step=0;this.settings=intensity();
+      this.ctx=context;this.timers=timers;this.sampleBank={};this.sampleReady=null;this.fetchSample=options.fetch||(globalThis.fetch?globalThis.fetch.bind(globalThis):null);this.maxVoices=options.maxVoices??96;this.voices=new Set();this.playing=false;this.timer=null;this.step=0;this.mode='tap';this.settings=cinematicIntensity('tap');
       this.noise=context.createBuffer(1,context.sampleRate,context.sampleRate);
       const samples=this.noise.getChannelData(0);let seed=5731;
       for(let i=0;i<samples.length;i++){seed=(seed*16807)%2147483647;samples[i]=seed/1073741823.5-1;}
     }
-    update(level,remaining,elapsed=0,scene={}){this.settings=this.mode==='storm'?stormIntensity(elapsed,level,scene):this.mode==='dodge'?dodgeIntensity(elapsed):intensity(level,remaining);}
-    reset(level=1,mode='tap'){this.pause();this.mode=mode;this.step=0;this.update(level,20000,0);if(mode==='storm')this.prepareStorm();}
+    update(level,remaining,elapsed=0,scene={}){this.settings=this.mode==='storm'?stormIntensity(elapsed,level,scene):cinematicIntensity(this.mode,level,remaining,elapsed,scene);}
+    reset(level=1,mode='tap'){this.pause();this.mode=mode;this.step=0;this.update(level,20000,0);this.prepareStorm();}
     play(){
       if(this.playing)return;
       try{
-      const c=this.ctx;this.bus=c.createGain();this.bus.gain.setValueAtTime(0,c.currentTime);this.bus.gain.linearRampToValueAtTime(this.mode==='storm'?.55:.62,c.currentTime+.15);
+      const c=this.ctx;this.bus=c.createGain();this.bus.gain.setValueAtTime(0,c.currentTime);this.bus.gain.linearRampToValueAtTime(this.mode==='storm'?.55:.48,c.currentTime+.15);
       this.compressor=c.createDynamicsCompressor();this.compressor.threshold.value=-18;this.compressor.knee.value=12;this.compressor.ratio.value=5;this.compressor.attack.value=.003;this.compressor.release.value=.12;
       this.bus.connect(this.compressor);this.compressor.connect(c.destination);
-      if(this.mode==='storm'&&c.createConvolver){this.reverb=c.createConvolver();this.reverbSend=c.createGain();this.reverbSend.gain.value=.24;const impulse=c.createBuffer(2,Math.ceil(c.sampleRate*1.65),c.sampleRate);let seed=811;for(let channel=0;channel<2;channel++){const data=impulse.getChannelData(channel);let smooth=0;for(let i=0;i<data.length;i++){seed=(seed*16807)%2147483647;smooth=smooth*.65+(seed/1073741823.5-1)*.35;data[i]=smooth*Math.pow(1-i/data.length,2.8)*.32;}}this.reverb.buffer=impulse;this.reverbSend.connect(this.reverb);this.reverb.connect(this.bus);}
+      if(c.createConvolver){this.reverb=c.createConvolver();this.reverbSend=c.createGain();this.reverbSend.gain.value=.24;const impulse=c.createBuffer(2,Math.ceil(c.sampleRate*1.65),c.sampleRate);let seed=811;for(let channel=0;channel<2;channel++){const data=impulse.getChannelData(channel);let smooth=0;for(let i=0;i<data.length;i++){seed=(seed*16807)%2147483647;smooth=smooth*.65+(seed/1073741823.5-1)*.35;data[i]=smooth*Math.pow(1-i/data.length,2.8)*.32;}}this.reverb.buffer=impulse;this.reverbSend.connect(this.reverb);this.reverb.connect(this.bus);}
 
       this.playing=true;this.next=c.currentTime+.035;this.schedule();this.timer=this.timers.setInterval(()=>this.schedule(),25);
       }catch(error){this.pause();console.warn('Musik nicht verfügbar',error);}
@@ -81,7 +87,7 @@
     prepareStorm(){
       if(this.sampleReady)return this.sampleReady;
       if(!this.fetchSample||!this.ctx.decodeAudioData)return Promise.resolve(false);
-      this.sampleReady=Promise.all(Object.keys(BATTLE_SAMPLES).map(async name=>{try{const response=await this.fetchSample('./battle-'+name+'.m4a?v=91');if(!response.ok)throw new Error('Audio download failed');const buffer=await this.ctx.decodeAudioData(await response.arrayBuffer());this.sampleBank[name]=buffer;return true;}catch{return false;}})).then(results=>{this.samplesLoaded=results.every(Boolean);if(!this.samplesLoaded)this.sampleReady=null;return this.samplesLoaded;});return this.sampleReady;
+      this.sampleReady=Promise.all(Object.keys(BATTLE_SAMPLES).map(async name=>{try{const response=await this.fetchSample('./battle-'+name+'.m4a?v=92');if(!response.ok)throw new Error('Audio download failed');const buffer=await this.ctx.decodeAudioData(await response.arrayBuffer());this.sampleBank[name]=buffer;return true;}catch{return false;}})).then(results=>{this.samplesLoaded=results.every(Boolean);if(!this.samplesLoaded)this.sampleReady=null;return this.samplesLoaded;});return this.sampleReady;
     }
     instrument(name,pitch,time,duration,volume,pan=0){
       const buffer=this.sampleBank[name],meta=BATTLE_SAMPLES[name];
@@ -115,53 +121,34 @@
       if(p.boss&&p.phase>=2&&s===10)this.instrument('timpani',root+7,time,.6,.18,.05);
       if(p.boss&&p.phase===3&&s%4===3)this.instrument('strings-high',root+36+(ostinato[Math.floor(s/2)]%12),time,beat*.2,.065,.35);
     }
-    dodgeSequence(step,time,beat){
-      const s=step%16,bar=Math.floor(step/16),root=[38,34,41,36][Math.floor(bar/2)%4],p=this.settings;
-      // An original D-minor pulse: drums, syncopation and melody fade in as survival time grows.
-      if(s===0||s===8)this.kick(time,.68);else if(s%4===0&&p.pulse>0)this.kick(time,.68*p.pulse);
-      if((s===4||s===12)&&p.snare>0)this.snare(time,.65*p.snare);
-      if(s===0||s===6||s===10){this.note(root+(s===10?7:0),time,beat*.7,.16,'triangle',{hz:400+p.energy*700,end:110});this.note(root-12,time,beat*.55,.1,'sine');}
-      if(p.hats>0&&s%2===0)this.hiss(time,.035,(s%4===2?.075:.04)*p.hats,7500);
-      if(p.fill>0&&s%2===1)this.hiss(time,.026,.035*p.fill,9000);
-      if(p.arp>0&&s%2===0){
-        const melody=[12,19,15,22,19,15,10,7],note=root+12+melody[(s/2+bar)%8];
-        this.note(note,time,beat*.34,.07*p.arp,'triangle',null,-.22);
-        this.note(note,time+beat*.75,beat*.4,.024*p.arp,'sine',null,.28);
+    cinematicSequence(step,time,beat){
+      const mode=SCORES[this.mode]?this.mode:'tap',score=SCORES[mode],s=step%16,bar=Math.floor(step/16),chord=bar%8,root=score.roots[chord],p=this.settings,third=root===score.roots[0]?3:4,phrase=Math.floor(bar/8)%4;
+      if(score.drums.includes(s))this.instrument('drum',36,time,.9,(s===0?.32:.16)*p.drums,s%2?-.14:.1);
+      if(s===0||mode==='nova'&&s===8)this.instrument('timpani',root,time,1.1,.16*p.drums,-.2);
+      if((s===4||s===12)&&(mode!=='sling'||p.energy>.25))this.instrument('snare',60,time,.25,.1*p.drums,.22);
+      if(s===0&&bar%8===0)this.instrument('cymbal',60,time,2.6,.1,.18);
+      if(p.fill&&bar%4===3&&s>=13)this.instrument('snare',60,time,.13,.055+(s-13)*.025,.16);
+      const notes=[0,7,12,7,third,7,12,7];
+      if(s%2===0&&(mode!=='sling'||s%4===0||p.energy>.35)){
+        const i=s/2;this.instrument('cello',root+12+(i%4===2?7:0),time,beat*.55,.13*p.strings,-.3);
+        this.instrument('strings-low',root+24+notes[i],time+.006,beat*.44,.105*p.strings,-.45);
+        if(p.highStrings>.35)this.instrument('strings-high',root+36+notes[(i+chord)%8]%12,time+.012,beat*.4,.065*p.highStrings,.44);
       }
-      if(p.chords>0&&s===0)for(const n of [0,root===38?3:4,7])this.note(root+12+n,time,beat*2,.035*p.chords,'sawtooth',{hz:950+p.energy*800,end:250},n===0?-.3:.3);
-      if(p.fill>0&&bar%4===3&&s>=13)this.note(45+(15-s)*3,time,.08,.09*p.fill,'sine');
-      if(p.pulse>0&&s===14)this.note(root+12,time,beat*.2,.09*p.pulse,'sawtooth',{hz:1000,end:150});
-      if(s===0&&bar%8===0)this.hiss(time,.5,.06,5000);
+      if(s===0){for(const interval of [0,third,7])this.instrument('strings-pad',root+24+interval,time,beat*3.8,.037,interval===0?-.5:.5);
+        this.note(root-12,time,beat*2.8,.035,'sine',{hz:180,end:65});
+        if(mode==='sling')this.instrument('strings-high',score.lead[chord]+12,time,beat*2.7,.045,.32);
+      }
+      const lead=score.lead[chord]+(phrase===2&&mode!=='dodge'?12:0);
+      for(const at of mode==='dodge'?[0,10]:[0,6,12])if(s===at){const pitch=lead+(at===6?7:at===12?-2:0),length=mode==='sling'?1.6:at===0?1.2:.65;
+        this.instrument('horn',pitch,time,beat*length,.2*p.brass,-.12);
+        if(p.energy>.38&&(mode==='nova'||phrase>=1))this.instrument('trumpet',pitch,time+.015,beat*length*.85,.07*p.brass,.25);
+      }
+      if(mode==='dodge'&&s===14)this.instrument('timpani',root+7,time,.6,.08+p.energy*.05,.1);
+      if(mode==='nova'&&p.boss&&s%4===3)this.instrument('horn-stab',root+24,time,.25,.09,.16);
+      if(p.urgent&&s%4===3)this.instrument('strings-high',root+48,time,.1,.05,.3);
     }
-    sequence(step,time,beat){
-      if(this.mode==='storm'){this.stormSequence(step,time,beat);return;}
-      if(this.mode==='dodge'){this.dodgeSequence(step,time,beat);return;}
-      const s=step%16,bar=Math.floor(step/16),root=ROOTS[Math.floor(bar/2)%4],p=this.settings;
-      // Four-on-the-floor kick, offbeat bass and a two-bar hook keep even level one driving.
-      if(s%4===0)this.kick(time);
-      if(s===4||s===12)this.snare(time);
-      if(s%4===2){
-        this.note(root,time,beat*.42,.25,'sawtooth',{hz:460+p.energy*900,end:130});
-        this.note(root-12,time,beat*.4,.17,'sine');
-        this.hiss(time,.09,.07,6500);
-      }
-      if(p.hats&&s%2===0)this.hiss(time,.035,s%4===0?.045:.075,8000);
-      const hook=HOOK[(bar%2)*8+Math.floor(s/2)];
-      if(s%2===0&&hook!==null){
-        const pitch=57+hook;this.note(pitch,time,beat*.5,.085,'triangle',null,-.18);
-        this.note(pitch,time,beat*.45,.032,'sawtooth',{hz:1700+p.energy*2200,end:700},.18,7);
-        this.note(pitch,time+beat*.75,beat*.42,.018,'triangle',null,.3);
-      }
-      if(p.arp){
-        // Major thirds in F/C/G, minor third in A; alternate octaves every eight bars.
-        let interval=ARP[(s+bar)%ARP.length];if(root!==45&&(interval===3||interval===15))interval++;
-        this.note(root+12+interval+(Math.floor(bar/8)%2)*12,time,beat*.19,.045,'square',{hz:1700+p.energy*1700,end:650},s%2?.3:-.3);
-      }
-      if(p.chords&&(s===2||s===10))for(const interval of [0,root===45?3:4,7])this.note(root+12+interval,time,beat*.8,.045,'sawtooth',{hz:1800,end:350},interval===0?-.25:.25);
-      if(p.fill&&bar%4===3&&s>=13)this.snare(time,.38+(s-13)*.16);
-      if(p.urgent&&s%4===3)this.hiss(time,.04,.06,9000);
-      if(s===0&&bar%8===0)this.hiss(time,.65,.12,4500);
-    }
+    sequence(step,time,beat){if(this.mode==='storm')this.stormSequence(step,time,beat);else this.cinematicSequence(step,time,beat);}
+
   }
-  return {create:context=>new Track(context),Track,intensity,dodgeIntensity,stormIntensity,BATTLE_SAMPLES,BATTLE_THEME};
+  return {create:context=>new Track(context),Track,intensity,dodgeIntensity,stormIntensity,BATTLE_SAMPLES,BATTLE_THEME,SCORES,cinematicIntensity};
 });

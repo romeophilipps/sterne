@@ -14,7 +14,7 @@
   const dodging=()=>modes[mode].id==='dodge';
   const duration=ms=>Math.floor(ms/60000)+':'+String(Math.floor(ms/1000)%60).padStart(2,'0')+','+Math.floor(ms%1000/100);
   const keys=new Set();let pointerAnchor=null;
-  let state = 'home', run = StarGame.create(), lastFrame = 0, shownLevel = 1, audio, music;
+  let state = 'home', run = StarGame.create(), lastFrame = 0, shownLevel = 1, audio, music, effects, coopAudio=false;
   const cells = Array.from({length:9}, (_, i) => {
     const button = document.createElement('button'); button.className = 'cell'; button.setAttribute('aria-label', 'Leerer Sternenplatz');
     button.innerHTML = '<svg class="star-art" aria-hidden="true" hidden><use href="#star"/></svg>';
@@ -43,25 +43,13 @@
     $('nova-home-rank').hidden=modes[mode].id!=='nova';$('nova-home-rank').textContent='Arsenal '+Math.max(1,Math.floor(Number(novaProgress.rank)||1));$('storm-shop').hidden=true;$('mode-art').dataset.mode=current.id;document.body.dataset.game=current.id;StarCosmicArt.drawCover($('cosmic-home-cover'),current.id);$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('start').disabled=current.id==='storm'&&!stormArtReady;$('start').classList.toggle('loading-art',current.id==='storm'&&!stormArtReady);$('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
   }
-  const homeCarousel=StarHomeMenu.bind($('home'),$('home-card'),{getIndex:()=>mode,count:modes.length,setIndex:index=>{mode=index;homeUI();try{localStorage.setItem('stars-mode',modes[mode].id);}catch{}}});
+  const homeCarousel=StarHomeMenu.bind($('home'),$('home-card'),{getIndex:()=>mode,count:modes.length,setIndex:index=>{mode=index;effect('navigate');homeUI();try{localStorage.setItem('stars-mode',modes[mode].id);}catch{}}});
   StarHomeMenu.drawStormLogo($('storm-home-logo'),StarStormReveal.paint);
   function chooseMode(index,direction){if(state==='home')homeCarousel.go(index,direction);}
   function soundUI() { $('sound-toggle').setAttribute('aria-pressed', String(sound)); $('sound-toggle').setAttribute('aria-label', sound ? 'Ton ausschalten' : 'Ton einschalten'); $('mute-mark').hidden = sound; }
-  function unlockAudio() { try { if(!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); if(!music)music=StarMusic.create(audio); if(audio.state !== 'running') audio.resume().catch(()=>{}); } catch {} }
-  function tone(frequency=650, duration=.12, delay=0, type='sine', volume=.07, end=1.35) {
-    if(!sound || !audio) return;
-    try { const o = audio.createOscillator(), gain = audio.createGain(), t = audio.currentTime + delay;
-      o.type=type; o.frequency.setValueAtTime(frequency,t); o.frequency.exponentialRampToValueAtTime(frequency*end,t+duration);
-      gain.gain.setValueAtTime(.001,t); gain.gain.exponentialRampToValueAtTime(volume,t+.008); gain.gain.exponentialRampToValueAtTime(.001,t+duration);
-      o.connect(gain); gain.connect(audio.destination); o.start(t); o.stop(t+duration+.01);
-    } catch {}
-  }
-  function catchSound(isBonus) {
-    tone(180,.07,0,'sine',.09,.5);
-    tone(isBonus?880:660,.17,.015,'sine',.07,1.1);
-    tone(isBonus?1320:990,.2,.07,'sine',.045,1.04);
-    if(isBonus)tone(1760,.24,.13,'sine',.035,1.02);
-  }
+  function unlockAudio() { try { if(!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); if(!music)music=StarMusic.create(audio);if(!effects)effects=StarSound.create(audio); if(audio.state !== 'running') audio.resume().catch(()=>{}); } catch {} }
+  function effect(kind){if(sound&&effects)effects.play(kind,modes[mode].id);}
+  function catchSound(isBonus){effect(isBonus?'bonus':'collect');}
   function pulse(element, name) { element.classList.remove(name); void element.offsetWidth; element.classList.add(name); }
   function hearts() {
     $('lives').closest('.life-row').hidden=modes[mode].id==='storm';
@@ -97,7 +85,7 @@
     $('dodge-types').setAttribute('aria-label',run.available+' von 5 Gegnerarten aktiv');
   }
   function renderHUD() {
-    const musicBoss=modes[mode].id==='storm'?run.enemies.find(e=>e.boss&&e.hp>0):null;music?.update(run.level,run.remaining,run.elapsed,{boss:!!musicBoss,phase:musicBoss?.combatPhase||1,rest:run.rest>0});
+    const musicBoss=shooting()?run.enemies.find(e=>e.boss&&e.hp>0):null;music?.update(run.level,run.remaining,run.elapsed,{boss:!!musicBoss,phase:musicBoss?.combatPhase||1,rest:run.rest>0});
     $('score').textContent=dodging()?duration(run.elapsed):run.score;
     if(!dodging()&&!slinging()&&!shooting()){$('time').textContent=Math.ceil(run.remaining/1000);$('time-bar').style.width=Math.min(100,run.remaining/StarGame.START_MS*100)+'%';}
     $('game').classList.toggle('urgent',!dodging()&&run.remaining<=5000);
@@ -111,24 +99,24 @@
     const events=run.tick(dt);lastFrame=now;renderHUD();
     if(shooting()){novaFeedback(events);renderNova();}
     if(dodging()){for(const event of events)dodgeFeedback(event);renderDodge();}
-    if(run.ended){if(dodging()||slinging()||shooting()){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
-    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='loop'){tone(523,.15);tone(784,.2,.07);tone(1047,.32,.14);$('encouragement').textContent='Schleife! '+event.score+' Punkte und '+event.captured+' rote Sterne eingefangen';}if(event.kind==='comet'){tone(660,.15);tone(990,.2,.08);tone(1320,.3,.16);$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')tone(280,.1,0,'sine',.04,2);if(event.kind==='clear'){tone(880,.2);tone(1320,.25,.1);}if(event.kind==='bad'){hearts();tone(160,.2,0,'triangle',.05,.5);}}renderSling();}
+    if(run.ended){if(dodging()||slinging()||shooting()){state='ending';music?.pause();effects?.stop();setTimeout(()=>{if(state==='ending')finish(run.reason);},380);}else finish(run.reason);return false;}
+    if(slinging()){for(const event of events){if(event.kind==='hit')catchSound(false);if(event.kind==='loop'){effect('loop');$('encouragement').textContent='Schleife! '+event.score+' Punkte und '+event.captured+' rote Sterne eingefangen';}if(event.kind==='comet'){effect('comet');$('encouragement').textContent='Sternbild vollendet! Sechs Sekunden Kometenrausch, doppelte Punkte und Schutz';}if(event.kind==='burn')effect('burn');if(event.kind==='clear'){effect('clear');}if(event.kind==='bad'){hearts();effect('hit');}}renderSling();}
     if(!dodging()&&!slinging()&&!shooting()&&previousTarget!==run.target)renderBoard();return true;
   }
   function dodgeFeedback(event){
     if(event.kind==='unlock'){
       $('dodge-announcement').textContent=StarDodge.TYPES[event.type].name;pulse($('dodge-announcement'),'announce');
-      $('encouragement').textContent=StarDodge.TYPES[event.type].name+' kommen hinzu';tone(440,.12,0,'sine',.04,1.5);tone(660,.18,.1,'sine',.035,1.1);return;
+      $('encouragement').textContent=StarDodge.TYPES[event.type].name+' kommen hinzu';effect('warning');return;
     }
     if(event.kind==='destroy'){
       const cloud=document.createElement('span');cloud.className='dust-cloud';cloud.style.left=event.x*100+'%';cloud.style.top=event.y/run.height*100+'%';
       for(let i=0;i<12;i++){const dot=document.createElement('i'),angle=i*Math.PI/6;dot.style.setProperty('--dx',Math.cos(angle)*(22+i%3*9)+'px');dot.style.setProperty('--dy',Math.sin(angle)*(22+i%3*9)+'px');cloud.appendChild(dot);}
-      $('dodge-effects').appendChild(cloud);setTimeout(()=>cloud.remove(),700);tone(600,.08,0,'sine',.025,1.6);
+      $('dodge-effects').appendChild(cloud);setTimeout(()=>cloud.remove(),700);effect('collect');
     }
     const ring=document.createElement('span');ring.className='dodge-impact '+event.kind;ring.style.left=event.x*100+'%';ring.style.top=event.y/run.height*100+'%';$('dodge-effects').appendChild(ring);setTimeout(()=>ring.remove(),650);
-    if(['shield','fire'].includes(event.kind)){tone(event.kind==='fire'?880:660,.25);$('encouragement').textContent=event.kind==='fire'?'Feuerstern: zehn Sekunden unbesiegbar':'Schutzblase: zwanzig Sekunden oder ein Treffer';}
-    if(event.kind==='hit'){hearts();pulse($('lives'),'heart-hit');pulse($('dodge-field'),'field-hit');tone(150,.18,0,'triangle',.06,.45);$('encouragement').textContent='Ein Leben verloren';}
-    else if(event.kind==='split')tone(500,.06,0,'sine',.022,1.5);
+    if(['shield','fire'].includes(event.kind)){effect('ability');$('encouragement').textContent=event.kind==='fire'?'Feuerstern: zehn Sekunden unbesiegbar':'Schutzblase: zwanzig Sekunden oder ein Treffer';}
+    if(event.kind==='hit'){hearts();pulse($('lives'),'heart-hit');pulse($('dodge-field'),'field-hit');effect('hit');$('encouragement').textContent='Ein Leben verloren';}
+    else if(event.kind==='split')effect('shot');
   }
   function burst(i, points, isBonus, evil=false) {
     const effect=document.createElement('span');effect.className='burst'+(evil?' danger-burst':isBonus?' gold-burst':'');effect.setAttribute('aria-hidden','true');
@@ -143,10 +131,10 @@
     const event=run.hit(i);if(event.kind==='none')return;
     const gold=event.kind==='gold',evil=event.kind==='bad';
     burst(i,event.points,gold,evil);renderHUD();hearts();
-    if(evil){pulse($('lives'),'heart-hit');pulse($('board'),'board-hit');tone(190,.2,0,'triangle',.065,.5);$('encouragement').textContent='Ein Leben verloren';}
+    if(evil){pulse($('lives'),'heart-hit');pulse($('board'),'board-hit');effect('hit');$('encouragement').textContent='Ein Leben verloren';}
     else{catchSound(gold);pulse($('score'),'score-pop');if(gold)pulse($('time'),'time-gain');$('encouragement').textContent=gold?'Vier Sekunden dazu':'Stern gefangen';}
     renderBoard();
-    if(run.ended){state='ending';music?.pause();setTimeout(()=>{if(state==='ending')finish(run.reason);},550);}
+    if(run.ended){state='ending';music?.pause();effects?.stop();setTimeout(()=>{if(state==='ending')finish(run.reason);},550);}
   }
   let helpWasPlaying=false;
   const instructions={
@@ -158,7 +146,7 @@
   };
   function openHelp(){
     if(state==='playing'&&!advance(performance.now()))return;
-    helpWasPlaying=state==='playing';if(helpWasPlaying){state='help';keys.clear();pointerAnchor=null;music?.pause();}
+    helpWasPlaying=state==='playing';if(helpWasPlaying){state='help';keys.clear();pointerAnchor=null;music?.pause();effects?.stop();}
     const info=instructions[modes[mode].id];$('game-help-title').textContent=modes[mode].name;
     $('game-help-rules').innerHTML=info.steps.map(step=>'<li>'+step+'</li>').join('');$('game-help-note').textContent=info.note;$('game-help-demo').hidden=!slinging();$('game-help-close').textContent=helpWasPlaying?'Weiterspielen':'Fertig';$('game-help-dialog').showModal();
   }
@@ -167,10 +155,10 @@
   function start(loadout=null) {
     if(modes[mode].id==='storm'&&!StarStorm.validLoadout(loadout)){
       if(StarStormRoster.isOpen||StarStormReveal.active)return;
-      unlockAudio();music?.pause();const previous=state;state='reveal';
-      StarStormReveal.play({context:audio,sound,onSoundChange:value=>{sound=value;soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}}}).finally(()=>{state=previous;StarStormRoster.open().then(selection=>{if(selection)start(selection);});});return;
+      unlockAudio();music?.pause();effects?.stop();const previous=state;state='reveal';
+      StarStormReveal.play({context:audio,sound,onSoundChange:value=>{sound=value;if(!sound)effects?.stop();soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}}}).finally(()=>{state=previous;StarStormRoster.open().then(selection=>{if(selection)start(selection);});});return;
     }
-    unlockAudio();run=modes[mode].create();if(modes[mode].id==='storm')run.setLoadout(loadout);$('game').classList.toggle('storm-roster-run',modes[mode].id==='storm'&&!!run.loadout);music?.reset(1,modes[mode].id==='storm'?'storm':slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
+    unlockAudio();effects?.stop();effect('launch');run=modes[mode].create();if(modes[mode].id==='storm')run.setLoadout(loadout);$('game').classList.toggle('storm-roster-run',modes[mode].id==='storm'&&!!run.loadout);music?.reset(1,modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
     $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging()||shooting();$('nova-field').hidden=!shooting();$('nova-hud').hidden=!shooting();$('nova-pulse').hidden=!shooting()||modes[mode].id==='storm';$('storm-market').hidden=modes[mode].id!=='storm';$('game').classList.toggle('storm-mode',modes[mode].id==='storm');$('game').classList.toggle('nova-mode',shooting());$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());
     novaRenderer=null;novaBossUntil=0;novaNoticeUntil=0;$('dodge-instructions').hidden=!dodging();$('score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Punkte');$('dodge-hint').classList.remove('learned');$('dodge-announcement').textContent='';
@@ -180,15 +168,15 @@
   }
   function finish(reason='time') {
     saveNovaProgress();
-    state='result';music?.pause();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
+    state='result';music?.pause();effects?.stop();keys.clear();pointerAnchor=null;clearTarget();const current=modes[mode],record=run.score>records[current.id];if(record){records[current.id]=run.score;try{localStorage.setItem(current.key,String(run.score));}catch{}}
     document.dispatchEvent(new CustomEvent('stars-result',{detail:{mode:current.id,score:run.score}}));homeUI();$('final-score').textContent=dodging()?duration(run.score):run.score;$('final-score').parentElement.setAttribute('aria-label',dodging()?'Überlebenszeit':'Gesammelte Sterne');$('result').classList.toggle('dodge-result',dodging());
     $('storm-continue').hidden=!(modes[mode].id==='storm'&&reason==='lives'&&run.canContinue);
     if(!$('storm-continue').hidden)$('record-message').textContent+=' · Eine zweite Chance: '+run.arenaName;
     $('result-title').textContent=modes[mode].id==='storm'&&reason==='lives'?'Der Stern wurde zerstört':dodging()?'Überlebt':reason==='lives'?'Alle Herzen verbraucht':reason==='time'?'Zeit abgelaufen':record?'Neuer Rekord':'Runde beendet';
     $('record-message').textContent=record?'Neuer Rekord · '+current.name:'Rekord '+(dodging()?duration(records[current.id]):records[current.id])+' · '+current.name;
-    screen('result');if(reason!=='lives')tone(850,.25);$('again').focus({preventScroll:true});
+    screen('result');if(reason==='lives')effect('defeat');else if(reason!=='quit')effect('victory');$('again').focus({preventScroll:true});
   }
-  function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';keys.clear();pointerAnchor=null;music?.pause();$('pause-dialog').showModal(); }
+  function pause() { if(state!=='playing'||!advance(performance.now()))return;state='paused';keys.clear();pointerAnchor=null;music?.pause();effects?.stop();$('pause-dialog').showModal(); }
   function resume() { $('pause-dialog').close();if(state==='paused'){unlockAudio();state='playing';syncStormViewport();if(state==='playing'&&sound)music?.play();lastFrame=performance.now();} }
   function frame(now) { syncStormViewport();document.body.classList.toggle('snake-playing',(slinging()||shooting())&&state==='playing');if(state==='playing')advance(now);else lastFrame=now;requestAnimationFrame(frame); }
   $('storm-continue').addEventListener('click',()=>{if(state!=='result'||modes[mode].id!=='storm'||!run.continueRound())return;unlockAudio();$('storm-continue').hidden=true;keys.clear();screen('game');state='playing';lastFrame=performance.now();novaNotice='Zweite Chance · Stern für 5 Sekunden geschützt';novaNoticeUntil=run.elapsed+5000;renderHUD();renderBoard();if(sound)music?.play();});
@@ -197,8 +185,9 @@
   $('pause-dialog').addEventListener('cancel',e=>{e.preventDefault();resume();});
   $('quit').addEventListener('click',()=>{$('pause-dialog').close();finish('quit');});
   $('back-home').addEventListener('click',()=>{state='home';homeUI();screen('home');});
-  $('sound-toggle').addEventListener('click',()=>{sound=!sound;unlockAudio();soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}if(sound){if(state==='playing')music?.play();catchSound(false);}else music?.pause();});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){saveNovaProgress();pause();}});window.addEventListener('pagehide',()=>{saveNovaProgress();pause();});
+  $('sound-toggle').addEventListener('click',()=>{sound=!sound;unlockAudio();soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}if(sound){if(state==='playing')music?.play();catchSound(false);}else{music?.pause();effects?.stop();}});
+  document.addEventListener('stars-coop-audio',event=>{const d=event.detail||{};if(d.prepare){unlockAudio();music?.prepareStorm();return;}if(d.kind){effect(d.kind);return;}if(d.active){if(!coopAudio){unlockAudio();music?.reset(1,'storm');coopAudio=true;}music?.update(d.wave,undefined,d.elapsed,{boss:d.boss,phase:d.phase});if(sound&&!document.hidden)music?.play();}else if(coopAudio){music?.pause();effects?.stop();coopAudio=false;}});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden){effects?.stop();if(coopAudio)music?.pause();saveNovaProgress();pause();}});window.addEventListener('pagehide',()=>{effects?.stop();if(coopAudio)music?.pause();saveNovaProgress();pause();});
   $('mode-picker').querySelectorAll('button').forEach((button,i)=>button.addEventListener('click',()=>chooseMode(i)));
   let dragging=null;
   $('home').addEventListener('keydown',e=>{if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&state==='home'){e.preventDefault();chooseMode(mode+(e.key==='ArrowRight'?1:-1));}});
@@ -241,10 +230,10 @@
       row.append(heading,stats,future);list.append(row);
     }
   }
-  $('storm-upgrades-open').onclick=()=>{if(!(run instanceof StarStorm.Round)||state!=='playing'||!advance(performance.now()))return;state='upgrades';keys.clear();music?.pause();renderStormUpgrades();$('storm-upgrades-dialog').showModal();};
+  $('storm-upgrades-open').onclick=()=>{if(!(run instanceof StarStorm.Round)||state!=='playing'||!advance(performance.now()))return;state='upgrades';keys.clear();music?.pause();effects?.stop();renderStormUpgrades();$('storm-upgrades-dialog').showModal();};
   function closeStormUpgrades(){$('storm-upgrades-dialog').close();if(state==='upgrades'){state='playing';lastFrame=performance.now();syncStormViewport();if(sound)music?.play();}}
   $('storm-upgrades-close').onclick=closeStormUpgrades;$('storm-upgrades-dismiss').onclick=closeStormUpgrades;$('storm-upgrades-dialog').addEventListener('cancel',e=>{e.preventDefault();closeStormUpgrades();});
-  function renderArmyShop(){if(!(run instanceof StarStorm.Round))return;const army=run.army;if(armyShopRound!==run){armyShopRound=run;armyShopKey="";armyButtons=[];$('storm-shop-items').replaceChildren();$('storm-shop-items').classList.toggle('has-loadout',!!run.loadout);const rosterRow=run.loadout?document.createElement('div'):null;if(rosterRow){rosterRow.className='army-buy-row army-loadout-row';$('storm-shop-items').append(rosterRow);}for(const [kind,items] of [['warriors',StarStorm.WARRIORS],['heroes',StarStorm.HEROES]]){const row=document.createElement('div');row.className='army-buy-row';row.dataset.kind=kind;let extra=null;items.forEach((info,index)=>{if(!run.isAvailable(kind,index))return;const button=document.createElement('button');button.className='army-buy';button.setAttribute('aria-label',info.name+' kaufen für '+info.cost+(info.cost===1?' Münze':' Münzen'));button.title=info.text;{const portrait=document.createElement('canvas');portrait.className='army-portrait';portrait.setAttribute('aria-hidden','true');button.style.setProperty('--class-color',(kind==='heroes'?StarStormArt.HERO_COLORS:StarStormArt.ACCENTS)[index]);button.append(portrait);StarStormArt.ready.then(()=>StarStormArt.portrait(portrait,index,run.currencyTier,kind==='heroes'));}const name=document.createElement('strong'),price=document.createElement('span'),count=document.createElement('small');name.textContent=kind==='warriors'?['Schwert','Schild','Sniper','Rakete','Plasma','Assassine','Haudrauf','Heiler','Späher','Arkanist'][index]:info.name;price.textContent=info.cost+' ◉';button.dataset.kind=kind;button.append(name,price,count);const purchase=()=>{if(state==='playing'&&run.buy(kind,index)){tone(660,.1,0,'sine',.025);renderNova();}};StarStormLayout.bindPurchase(button,purchase);if(rosterRow)rosterRow.append(button);else if(kind==='warriors'&&index>=5){if(!extra){extra=document.createElement('div');extra.className='army-buy-row army-expansion-row';}extra.append(button);}else row.append(button);armyButtons.push({button,price,count,kind,index,info});});if(!rosterRow)$('storm-shop-items').append(row);if(extra){for(let i=0;i<Math.max(0,10-StarStorm.WARRIORS.length);i++){const slot=document.createElement('div');slot.className='army-empty-slot';slot.setAttribute('aria-label','Freier Truppenplatz '+(i+1));const icon=document.createElement('span');icon.textContent='+';icon.setAttribute('aria-hidden','true');slot.append(icon);extra.append(slot);}$('storm-shop-items').append(extra);}}}
+  function renderArmyShop(){if(!(run instanceof StarStorm.Round))return;const army=run.army;if(armyShopRound!==run){armyShopRound=run;armyShopKey="";armyButtons=[];$('storm-shop-items').replaceChildren();$('storm-shop-items').classList.toggle('has-loadout',!!run.loadout);const rosterRow=run.loadout?document.createElement('div'):null;if(rosterRow){rosterRow.className='army-buy-row army-loadout-row';$('storm-shop-items').append(rosterRow);}for(const [kind,items] of [['warriors',StarStorm.WARRIORS],['heroes',StarStorm.HEROES]]){const row=document.createElement('div');row.className='army-buy-row';row.dataset.kind=kind;let extra=null;items.forEach((info,index)=>{if(!run.isAvailable(kind,index))return;const button=document.createElement('button');button.className='army-buy';button.setAttribute('aria-label',info.name+' kaufen für '+info.cost+(info.cost===1?' Münze':' Münzen'));button.title=info.text;{const portrait=document.createElement('canvas');portrait.className='army-portrait';portrait.setAttribute('aria-hidden','true');button.style.setProperty('--class-color',(kind==='heroes'?StarStormArt.HERO_COLORS:StarStormArt.ACCENTS)[index]);button.append(portrait);StarStormArt.ready.then(()=>StarStormArt.portrait(portrait,index,run.currencyTier,kind==='heroes'));}const name=document.createElement('strong'),price=document.createElement('span'),count=document.createElement('small');name.textContent=kind==='warriors'?['Schwert','Schild','Sniper','Rakete','Plasma','Assassine','Haudrauf','Heiler','Späher','Arkanist'][index]:info.name;price.textContent=info.cost+' ◉';button.dataset.kind=kind;button.append(name,price,count);const purchase=()=>{if(state==='playing'&&run.buy(kind,index)){effect('purchase');renderNova();}};StarStormLayout.bindPurchase(button,purchase);if(rosterRow)rosterRow.append(button);else if(kind==='warriors'&&index>=5){if(!extra){extra=document.createElement('div');extra.className='army-buy-row army-expansion-row';}extra.append(button);}else row.append(button);armyButtons.push({button,price,count,kind,index,info});});if(!rosterRow)$('storm-shop-items').append(row);if(extra){for(let i=0;i<Math.max(0,10-StarStorm.WARRIORS.length);i++){const slot=document.createElement('div');slot.className='army-empty-slot';slot.setAttribute('aria-label','Freier Truppenplatz '+(i+1));const icon=document.createElement('span');icon.textContent='+';icon.setAttribute('aria-hidden','true');slot.append(icon);extra.append(slot);}$('storm-shop-items').append(extra);}}}
   const seconds=StarStorm.HEROES.map((_,i)=>{const hero=run.troops.find(t=>t.hero===i&&t.hp>0);return hero?Math.max(0,hero.retireAfterWave-run.completed):0;});
   const arrivals=StarStorm.HEROES.map((_,i)=>{const f=run.heroArrivals.find(f=>f.hero===i);return f?Math.max(1,Math.ceil((f.start+f.duration-run.elapsed)/1000)):0;});
   const shopKey=[army.coins,army.stars,run.currencyTier,run.troops.length,...army.levels,...army.warriors,...army.heroes,...army.heroUnlocked,...seconds,...arrivals].join();if(shopKey===armyShopKey)return;armyShopKey=shopKey;
@@ -259,8 +248,8 @@
   const updateStormBanter=StarStormBanter.createTicker($('storm-jokes'),$('storm-joke-text'));
   let novaRenderer=null,lastBoom=0,novaBossUntil=0,novaNoticeUntil=0,novaNotice='',novaBossName='BOSS';
   function renderNova(){if(!novaRenderer)novaRenderer=new (modes[mode].id==='storm'?StarStorm.Renderer:StarNova.Renderer)($('nova-canvas'));novaRenderer.draw(run);hearts();if(modes[mode].id==='storm'){renderStormWallet(run.army);renderArmyShop();const income='Bronze · '+run.coinRate.toLocaleString('de-DE',{maximumFractionDigits:2})+'/s';if($('storm-income').textContent!==income)$('storm-income').textContent=income;$('storm-income').title='Bronze: eine Münze alle '+(run.coinInterval/1000).toLocaleString('de-DE',{maximumFractionDigits:2})+' s · ab Welle 30: 2/s · Silber ab Welle 31: 1/s · Gold ab Welle 61: 0,5/s';updateStormBanter(run);}$('nova-announcement').textContent=run.elapsed<novaBossUntil?novaBossName:'';$('nova-upgrade-notice').textContent=run.elapsed<novaNoticeUntil?novaNotice:'';$('nova-xp-fill').style.width=Math.min(100,run.xp/run.needed*100)+'%';$('nova-rank').textContent=modes[mode].id==='storm'?'Welle '+run.wave+' · '+run.plan.name:'Arsenal '+run.rank+' · Welle '+run.wave;$('nova-pulse').disabled=run.cooldown>0;$('nova-pulse').textContent=(modes[mode].id==='storm'?'Verstärkung':'Nova')+(run.cooldown>0?' · '+Math.ceil(run.cooldown/1000)+' s':'');$('nova-field').setAttribute('aria-label',modes[mode].name+': '+(modes[mode].id==='storm'?'':run.lives+' Leben, ')+run.score+' Punkte'+(modes[mode].id==='storm'?', Stern '+Math.ceil(run.base.hp)+' von '+Math.ceil(run.base.max)+' Energie':''));}
-  function novaFeedback(events){for(const e of events){if(e.kind==='dimension-open'){tone(140,.5,0,'sine',.025,2);tone(280,.3,.2,'sine',.015,2);}if(e.kind==='dimension-close')tone(110,.4,0,'triangle',.025,.3);if(e.kind==='drone')tone(880,.12,0,'sine',.02);if(e.kind==='drone-impact'&&performance.now()-lastBoom>130){lastBoom=performance.now();tone(65,.26,0,'triangle',.04,.25);tone(180,.12,0,'sawtooth',.018,.3);}if(e.kind==='healing'){tone(660,.16,0,'sine',.015,1.5);}if(e.kind==='hammer'&&performance.now()-lastBoom>130){lastBoom=performance.now();tone(85,.18,0,'triangle',.035,.25);tone(180,.07,0,'sine',.02,.5);}if(e.kind==='currency'){novaNotice=e.name+' · '+run.arenaName+' · 1 zweite Chance';novaNoticeUntil=run.elapsed+4500;tone(990,.25);}if(e.kind==='warning'){$('encouragement').textContent='Warnzone! Aus der roten Markierung herausbewegen.';}if(e.kind==='ability'){novaNotice=e.name;novaNoticeUntil=run.elapsed+1600;}if(e.kind==='upgrade'){saveNovaProgress();novaNotice=StarNova.UPGRADES[e.key].name+' +';novaNoticeUntil=run.elapsed+1800;tone(880,.13,0,'sine',.025,1.5);}if(e.kind==='hurt'){hearts();pulse($('nova-field'),'field-hit');tone(100,.2,0,'triangle',.05,.35);}if(e.kind==='explode'&&performance.now()-lastBoom>130){lastBoom=performance.now();tone(e.boss?55:110,e.boss?.4:.15,0,'sawtooth',.025,.2);tone(440,.09,0,'sine',.015,2);}if(e.kind==='boss'){novaBossName=e.name||'BOSS';novaBossUntil=run.elapsed+2200;tone(150,.25,0,'sawtooth',.025,.65);$('encouragement').textContent=(e.name||'Boss')+' erscheint';}}if(events.some(e=>e.kind==='explode')){if(performance.now()-novaLastSave>400)saveNovaProgress();}}
-  function novaPulse(){if(shooting()&&state==='playing'&&run.nova()){pulse($('nova-field'),'field-hit');tone(80,.4,0,'sawtooth',.045,4);renderNova();}}
+  function novaFeedback(events){for(const e of events){if(e.kind==='shot')effect('shot');if(e.kind==='warning')effect('warning');if(e.kind==='dimension-open'){effect('portal');}if(e.kind==='dimension-close')effect('portal-close');if(e.kind==='drone')effect('drone');if(e.kind==='drone-impact'&&performance.now()-lastBoom>130){lastBoom=performance.now();effect('explode');}if(e.kind==='healing'){effect('heal');}if(e.kind==='hammer'&&performance.now()-lastBoom>130){lastBoom=performance.now();effect('explode');}if(e.kind==='currency'){novaNotice=e.name+' · '+run.arenaName+' · 1 zweite Chance';novaNoticeUntil=run.elapsed+4500;effect('currency');}if(e.kind==='warning'){$('encouragement').textContent='Warnzone! Aus der roten Markierung herausbewegen.';}if(e.kind==='ability'){effect('ability');novaNotice=e.name;novaNoticeUntil=run.elapsed+1600;}if(e.kind==='upgrade'){saveNovaProgress();novaNotice=StarNova.UPGRADES[e.key].name+' +';novaNoticeUntil=run.elapsed+1800;effect('upgrade');}if(e.kind==='hurt'){hearts();pulse($('nova-field'),'field-hit');effect('hit');}if(e.kind==='explode'&&performance.now()-lastBoom>130){lastBoom=performance.now();effect(e.boss?'boss':'explode');}if(e.kind==='boss'){novaBossName=e.name||'BOSS';novaBossUntil=run.elapsed+2200;effect('boss');$('encouragement').textContent=(e.name||'Boss')+' erscheint';}}if(events.some(e=>e.kind==='explode')){if(performance.now()-novaLastSave>400)saveNovaProgress();}}
+  function novaPulse(){if(shooting()&&state==='playing'&&run.nova()){pulse($('nova-field'),'field-hit');effect('nova');renderNova();}}
   $('nova-pulse').addEventListener('click',novaPulse);
   document.addEventListener('keydown',e=>{if(shooting()&&state==='playing'&&e.code==='Space'){e.preventDefault();novaPulse();}});
   let novaPointer=null,novaAnchor=null;

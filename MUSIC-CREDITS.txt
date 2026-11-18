@@ -8,3 +8,12 @@ Samples licensed CC0 1.0 Universal (public domain):
 https://creativecommons.org/publicdomain/zero/1.0/
 Edits: selected orchestral recordings, peak normalization, limited tails, stereo 32 kHz AAC conversion.
 The melody and adaptive arrangement are original; this is not a copied film or game soundtrack.
+
+Cosmic suite for all five games (v92):
+Tippen: Sternenschmiede — driving strings, brass responses and deep percussion.
+Ausweichen: Durch den Schatten — tense low strings, pulse and rising orchestral layers.
+Sternenschlange: Spur der Sterne — wider sustained strings and a soaring cosmic motif.
+Supernova: Sonnenlanze — martial percussion, brass and fast string ostinatos.
+Sternensturm: existing original adaptive battle theme, also used in cooperative play.
+All motifs and arrangements are original. All games reuse the credited CC0 instrument recordings.
+Sound effects: original Web Audio synthesis (crystal partials, filtered noise, bass impacts, spatial sweeps); no third-party effect recordings.
