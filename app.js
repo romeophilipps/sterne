@@ -153,6 +153,7 @@
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();syncStormViewport();if(state==='playing'&&sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
   function start(loadout=null) {
+    if(window.StarPlayer&&!StarPlayer.ensure())return;
     if(modes[mode].id==='storm'&&!StarStorm.validLoadout(loadout)){
       if(StarStormRoster.isOpen||StarStormReveal.active)return;
       unlockAudio();music?.pause();effects?.stop();const previous=state;state='reveal';
