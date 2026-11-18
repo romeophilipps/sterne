@@ -38,10 +38,11 @@
   }
   window.addEventListener('resize',syncStormViewport);window.addEventListener('orientationchange',()=>requestAnimationFrame(syncStormViewport));window.visualViewport?.addEventListener('resize',syncStormViewport);
   function homeUI(){
-    document.dispatchEvent(new CustomEvent('stars-mode',{detail:{mode:modes[mode].id}}));
     const current=modes[mode];$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
     $('nova-home-rank').hidden=modes[mode].id!=='nova';$('nova-home-rank').textContent='Arsenal '+Math.max(1,Math.floor(Number(novaProgress.rank)||1));$('storm-shop').hidden=true;$('mode-art').dataset.mode=current.id;document.body.dataset.game=current.id;StarCosmicArt.drawCover($('cosmic-home-cover'),current.id);$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('start').disabled=current.id==='storm'&&!stormArtReady;$('start').classList.toggle('loading-art',current.id==='storm'&&!stormArtReady);$('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
+    // Notify dependants only after the visible game and its data attributes agree.
+    document.dispatchEvent(new CustomEvent('stars-mode',{detail:{mode:current.id}}));
   }
   const homeCarousel=StarHomeMenu.bind($('home'),$('home-card'),{getIndex:()=>mode,count:modes.length,setIndex:index=>{mode=index;effect('navigate');homeUI();try{localStorage.setItem('stars-mode',modes[mode].id);}catch{}}});
   StarHomeMenu.drawStormLogo($('storm-home-logo'),StarStormReveal.paint);
