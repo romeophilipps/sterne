@@ -1,0 +1,47 @@
+/* Use the visible phone viewport, including browser bars and display cutouts. */
+:root{--device-height:100vh;--device-width:100vw;--device-top:0px}
+@supports(height:100dvh){:root{--device-height:100dvh}}
+body:not(.storm-layout) .app{width:100%;max-width:480px;min-height:var(--device-height);padding-left:max(clamp(12px,4vw,24px),env(safe-area-inset-left));padding-right:max(clamp(12px,4vw,24px),env(safe-area-inset-right))}
+body:not(.storm-layout) .app>header{min-width:0;flex-wrap:wrap}
+.screen,.social-dialog,.social-team,.duel-game,.roster-scroll{min-width:0}
+#storm-social-dialog,#storm-roster-dialog,#profile-dialog{max-width:min(560px,calc(var(--device-width) - 16px - env(safe-area-inset-left) - env(safe-area-inset-right)));max-height:calc(var(--device-height) - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+#storm-social-dialog{width:560px;padding:clamp(10px,3vw,18px)}
+#storm-social-dialog .duel-heading{padding:4px 0 12px;gap:8px}
+#storm-social-dialog .duel-heading>div{min-width:0}
+#storm-social-dialog .duel-heading h2{font-size:clamp(20px,5.5vw,25px);overflow-wrap:anywhere}
+.duel-exit{flex:0 0 44px;width:44px;height:44px}
+.social-lineups{grid-template-columns:repeat(2,minmax(0,1fr))}
+.social-lineup{grid-template-columns:minmax(0,1fr) 92px;gap:2px;min-height:116px}
+.social-slots{grid-template-columns:repeat(2,44px);gap:4px;width:92px}
+.social-slot{width:44px;height:44px}
+.social-hero{min-height:80px;touch-action:manipulation}
+.social-hero span{overflow-wrap:anywhere}
+.social-unit{min-height:96px}
+#social-ready{position:sticky;bottom:0;z-index:2;min-height:48px;margin-top:8px;box-shadow:0 5px 18px #080e24aa}
+.social-player>div{flex:1;overflow-wrap:anywhere}.social-player button{flex-shrink:0;min-height:44px}
+.social-invite{width:min(440px,calc(var(--device-width) - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)));top:calc(var(--device-top) + max(8px,env(safe-area-inset-top)));max-height:calc(var(--device-height) - 16px);overflow-y:auto}
+.social-invite button{min-height:44px}
+#storm-duel-dialog{height:var(--device-height);max-height:var(--device-height);max-width:min(560px,var(--device-width));padding-top:env(safe-area-inset-top);border-radius:clamp(0px,2vw,20px)}
+.duel-game{overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;flex-shrink:1}
+#duel-canvas{flex:1 0 clamp(150px,42vh,460px);min-height:150px;max-height:460px}
+.duel-shop-row{grid-template-columns:repeat(5,minmax(0,1fr))}.duel-shop button{min-height:64px}.duel-shop strong{overflow-wrap:anywhere}
+.duel-heading>div{min-width:0}.duel-wallet{overflow-wrap:anywhere;line-height:1.5}
+.duel-result{max-height:80%;overflow-y:auto;overscroll-behavior:contain}
+.roster-scroll{flex:1 1 auto}.roster-head,.roster-footer{flex-shrink:0}.roster-actions button{min-height:44px}
+#profile-name{font-size:18px}
+.device-keyboard dialog[open]:not(#storm-reveal-dialog){top:calc(var(--device-top) + 8px);bottom:auto;margin-top:0;max-height:calc(var(--device-height) - 16px)}
+@media(max-width:360px){
+ .social-lineup{grid-template-columns:1fr;justify-items:center;gap:5px}.social-hero canvas{width:78px;max-width:100%;height:auto}.social-slots{justify-self:center}.social-team h3{font-size:13px}.social-team{padding:8px 4px}.social-team>small{font-size:9px}.social-team>p{margin:8px 0 2px}
+ #storm-social-dialog .social-note{font-size:11px}.social-player{padding:10px;gap:8px}.social-player button{padding:10px}.social-unit{flex-basis:66px}.social-unit canvas{width:56px;height:48px}
+ #storm-duel-dialog .duel-heading{padding:8px}.duel-heading h2{font-size:20px}.duel-heading small{font-size:8px}.duel-game{padding-left:6px;padding-right:6px}.duel-wallet{font-size:11px}.duel-shop-row{gap:3px}.duel-shop strong{font-size:8px}
+ #profile-dialog{padding:20px}.roster-heroes{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-height:650px){
+ body:not(.storm-layout) .app{padding-top:max(8px,env(safe-area-inset-top));padding-bottom:max(8px,env(safe-area-inset-bottom))}.home-main{gap:6px;padding:2px 0 8px}.home-card{height:165px;grid-template-rows:105px 28px 24px}.home-art-stage,.home-art-stage .mode-art{height:105px}.home-art-stage canvas{max-height:105px;max-width:220px}#home .home-rankings{min-height:96px;padding:8px 12px}.home-download{padding-bottom:0}
+ #storm-social-dialog .social-note{line-height:1.4;margin:8px 0}.social-lineups{padding:6px 0}.social-team h3{margin:5px 0}.social-hero canvas{max-height:74px;object-fit:contain}.social-unit{min-height:82px}.social-unit canvas{height:44px}.social-troop-bar,.social-hero-picker{padding-bottom:8px}
+ .roster-head{padding:12px}.roster-head h2{font-size:21px}.roster-head p{font-size:11px}.roster-footer{padding:8px 12px max(8px,env(safe-area-inset-bottom))}.roster-footer p{min-height:0;margin-bottom:6px}
+ .duel-upgrades{flex:0 0 auto;max-height:115px}#duel-canvas{flex-basis:clamp(150px,38vh,240px)}
+}
+@media(min-width:600px){body:not(.storm-layout) .app{margin:12px auto;min-height:calc(var(--device-height) - 24px)}#storm-social-dialog{padding:20px}.social-hero canvas{max-width:120px}}
+/* Keep the fixed portrait battlefield while sizing controls to shorter phones. */
+@media(max-height:570px) and (orientation:portrait){:is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))).storm-compact .app .screen#game.storm-mode{grid-template-rows:64px minmax(0,1fr) 152px;gap:4px}body.storm-layout .storm-mode .army-buy{grid-template-rows:22px 11px 12px 9px}body.storm-layout .storm-mode .army-buy .army-portrait{height:22px;width:31px}body.storm-layout #nova-hud{top:40px;font-size:10px}}
