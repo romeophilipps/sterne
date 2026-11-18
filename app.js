@@ -22,7 +22,7 @@
     button.addEventListener('click', e => { if(e.detail === 0) hit(i); });
     $('board').appendChild(button); return button;
   });
-  function screen(name) { ['home','game','result'].forEach(id => $(id).hidden = id !== name);document.body.classList.toggle('storm-layout',name==='game'&&modes[mode].id==='storm');syncStormViewport(); }
+  function screen(name) { ['home','game','result'].forEach(id => $(id).hidden = id !== name);document.body.classList.toggle('storm-layout',name==='game'&&modes[mode].id==='storm');$('storm-shop').hidden=name!=='game'||modes[mode].id!=='storm';syncStormViewport(); }
   let stormViewportKey='';
   const lockStormViewport=StarStormLayout.createViewportLock(window,document);
   function syncStormViewport(){
@@ -40,10 +40,12 @@
   function homeUI(){
     document.dispatchEvent(new CustomEvent('stars-mode',{detail:{mode:modes[mode].id}}));
     const current=modes[mode];$('home-best').textContent=dodging()?duration(records[current.id]):records[current.id];$('mode-name').textContent=current.name;
-    $('nova-home-rank').hidden=modes[mode].id!=='nova';$('nova-home-rank').textContent='Arsenal '+Math.max(1,Math.floor(Number(novaProgress.rank)||1));$('storm-shop').hidden=current.id!=='storm';renderStormWallet({coins:10,silver:0,gold:0,stars:0});$('storm-shop').dataset.tier='0';$('storm-shop').setAttribute('aria-label','10 Bronzemünzen, 0 Sterne');$('mode-art').dataset.mode=current.id;$('start').setAttribute('aria-label',current.name+' – endlos spielen');
+    $('nova-home-rank').hidden=modes[mode].id!=='nova';$('nova-home-rank').textContent='Arsenal '+Math.max(1,Math.floor(Number(novaProgress.rank)||1));$('storm-shop').hidden=true;$('mode-art').dataset.mode=current.id;$('start').setAttribute('aria-label',current.name+' – endlos spielen');
     $('start').disabled=current.id==='storm'&&!stormArtReady;$('start').classList.toggle('loading-art',current.id==='storm'&&!stormArtReady);$('mode-picker').querySelectorAll('button').forEach((button,i)=>button.setAttribute('aria-pressed',String(i===mode)));
   }
-  function chooseMode(index,direction=1){if(state!=='home')return;mode=(index+modes.length)%modes.length;homeUI();$('mode-art').style.setProperty('--slide',direction*22+'px');pulse($('mode-art'),'mode-change');try{localStorage.setItem('stars-mode',modes[mode].id);}catch{}}
+  const homeCarousel=StarHomeMenu.bind($('home'),$('home-card'),{getIndex:()=>mode,count:modes.length,setIndex:index=>{mode=index;homeUI();try{localStorage.setItem('stars-mode',modes[mode].id);}catch{}}});
+  StarHomeMenu.drawStormLogo($('storm-home-logo'),StarStormReveal.paint);
+  function chooseMode(index,direction){if(state==='home')homeCarousel.go(index,direction);}
   function soundUI() { $('sound-toggle').setAttribute('aria-pressed', String(sound)); $('sound-toggle').setAttribute('aria-label', sound ? 'Ton ausschalten' : 'Ton einschalten'); $('mute-mark').hidden = sound; }
   function unlockAudio() { try { if(!audio) audio = new (window.AudioContext || window.webkitAudioContext)(); if(!music)music=StarMusic.create(audio); if(audio.state !== 'running') audio.resume().catch(()=>{}); } catch {} }
   function tone(frequency=650, duration=.12, delay=0, type='sine', volume=.07, end=1.35) {
@@ -198,12 +200,7 @@
   $('sound-toggle').addEventListener('click',()=>{sound=!sound;unlockAudio();soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}if(sound){if(state==='playing')music?.play();catchSound(false);}else music?.pause();});
   document.addEventListener('visibilitychange',()=>{if(document.hidden){saveNovaProgress();pause();}});window.addEventListener('pagehide',()=>{saveNovaProgress();pause();});
   $('mode-picker').querySelectorAll('button').forEach((button,i)=>button.addEventListener('click',()=>chooseMode(i)));
-  let swipe=null,suppressClickUntil=0,dragging=null;
-  $('home').addEventListener('pointerdown',e=>{suppressClickUntil=0;if(e.isPrimary&&e.button===0)swipe={id:e.pointerId,x:e.clientX,y:e.clientY};});
-  $('home').addEventListener('pointermove',e=>{if(!swipe||swipe.id!==e.pointerId)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;if(Math.abs(dx)>14&&Math.abs(dx)>Math.abs(dy)*1.3)$('home').setPointerCapture(e.pointerId);});
-  $('home').addEventListener('pointerup',e=>{if(!swipe||swipe.id!==e.pointerId)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;swipe=null;if(Math.abs(dx)>=48&&Math.abs(dx)>Math.abs(dy)*1.3){suppressClickUntil=performance.now()+400;chooseMode(mode+(dx>0?1:-1),Math.sign(dx));}});
-  $('home').addEventListener('pointercancel',()=>swipe=null);
-  $('home').addEventListener('click',e=>{if(e.detail!==0&&performance.now()<suppressClickUntil){suppressClickUntil=0;e.preventDefault();e.stopImmediatePropagation();}},true);
+  let dragging=null;
   $('home').addEventListener('keydown',e=>{if((e.key==='ArrowRight'||e.key==='ArrowLeft')&&state==='home'){e.preventDefault();chooseMode(mode+(e.key==='ArrowRight'?1:-1));}});
   function steer(e){
     if(!pointerAnchor||!dodging()||state!=='playing'||!advance(performance.now()))return;
