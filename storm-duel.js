@@ -1,10 +1,10 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm.js'):root.StarStorm);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarDuel=api;})(globalThis,S=>{
- const VERSION=4,MAX_UNITS=30;
+ const VERSION=5,MAX_UNITS=30;
  const DEFAULT_LOADOUT=Object.freeze({warriors:Object.freeze([0,1,2,3]),heroes:Object.freeze([0])});
  const validLoadout=p=>S.validLoadout(p,4,1);
  const freezeLoadout=p=>Object.freeze({warriors:Object.freeze([...p.warriors]),heroes:Object.freeze([...p.heroes])});
- const fieldKeys=['elapsed','wave','completed','base','army','baseSafeUntil','heroArrivals','heroDepartures','heroFx','bossDeaths','hammerWaves','healingProjectiles','healingZones','droneMissions','droneExplosions','dimensionFields','dimensionBursts','corpses','fx','shots','frozen','armored','troops','enemies','hazards','legionFx','banishments','rockets','projectiles','bossName','score','xp','needed','rank','rest'];
+ const fieldKeys=['elapsed','wave','completed','base','army','baseSafeUntil','heroArrivals','heroDepartures','heroFx','bossDeaths','hammerWaves','meleeWaves','healingProjectiles','healingZones','droneMissions','droneExplosions','dimensionFields','dimensionBursts','corpses','fx','shots','frozen','armored','troops','enemies','hazards','legionFx','banishments','rockets','projectiles','bossName','score','xp','needed','rank','rest'];
  const clean=o=>JSON.parse(JSON.stringify(o,(key,value)=>(['pending','to','_raw'].includes(key)||key==='source'&&typeof value==='object')?undefined:typeof value==='number'&&!Number.isFinite(value)?0:value));
  function random(seed){let n=seed>>>0;return ()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296;};}
  class Match{
@@ -12,12 +12,13 @@
    this.rounds=this.wallets.map((army,side)=>({army,get troops(){return r.troops.filter(t=>t.owner===side);},get base(){return r.base;},get heroArrivals(){return r.heroArrivals.filter(f=>f.owner===side);},loadout:this.loadouts[side]}));
   }
   command(side,cmd){if(![0,1].includes(side)||!cmd||this.winner!==null||!Number.isInteger(cmd.seq)||cmd.seq!==this.lastCommands[side]+1)return false;this.lastCommands[side]=cmd.seq;const times=this.commandTimes[side]=this.commandTimes[side].filter(t=>this.elapsed-t<1000);if(times.length>=12)return false;times.push(this.elapsed);
-   if(cmd.action!=='buy'&&cmd.action!=='upgrade'||!Number.isInteger(cmd.index))return false;
+   if(!['buy','upgrade','weapon'].includes(cmd.action)||!Number.isInteger(cmd.index))return false;
    const r=this.run,all=r.troops,own=all.filter(t=>t.owner===side),others=all.filter(t=>t.owner!==side),arrivals=r.heroArrivals,ownArrivals=arrivals.filter(f=>f.owner===side),otherArrivals=arrivals.filter(f=>f.owner!==side),army=this.wallets[side],loadout=this.loadouts[side];
    if(cmd.action==='buy'&&(!['warriors','heroes'].includes(cmd.kind)||own.filter(t=>t.hp>0).length+ownArrivals.length>=MAX_UNITS))return false;
    if(cmd.action==='buy'&&!loadout[cmd.kind].includes(cmd.index)||cmd.action==='upgrade'&&cmd.index!==S.WARRIORS.length&&!loadout.warriors.includes(cmd.index))return false;
+   if(cmd.action==='weapon'&&!loadout.warriors.includes(0))return false;
    const previousLoadout=r.loadout;r.army=army;r.troops=own;r.heroArrivals=ownArrivals;r.loadout=loadout;let ok=false;
-   try{if(cmd.action==='buy')ok=r.buy(cmd.kind,cmd.index);else ok=r.upgrade(cmd.index);for(const t of r.troops)if(t.owner===undefined)t.owner=side;for(const f of r.heroArrivals){f.owner=side;f.unit.owner=side;}}
+   try{if(cmd.action==='buy')ok=r.buy(cmd.kind,cmd.index);else if(cmd.action==='weapon')ok=r.weapon(cmd.kind,cmd.index);else ok=r.upgrade(cmd.index);for(const t of r.troops)if(t.owner===undefined)t.owner=side;for(const f of r.heroArrivals){f.owner=side;f.unit.owner=side;}}
    finally{r.troops=[...others,...r.troops];r.heroArrivals=[...otherArrivals,...r.heroArrivals];r.army=this.wallets[0];r.loadout=previousLoadout;}
    if(ok&&cmd.action==='upgrade'&&cmd.index===S.WARRIORS.length)for(const wallet of this.wallets)wallet.baseLevel=army.baseLevel;
    return ok;
