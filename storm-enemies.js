@@ -52,6 +52,14 @@
  function bossWaveMultiplier(wave=1){return 2.4+.055*waveIndex(wave);}
  function bossScaling(wave=1,group='elite'){const n=waveIndex(wave),hpWeight=group==='major'?1.35:group==='mid'?1.15:1,damageWeight=group==='major'?1.1:group==='mid'?1.05:1;return {hp:bossWaveMultiplier(wave)*hpWeight,damage:(1.15+.018*n)*damageWeight};}
  function scaling(wave=1,elapsed=0,tier=0){const n=waveIndex(wave);return {hp:2.25+.035*n,damage:1.1+.01*n,speed:1+Math.min(.65,n*.008),rank:1+Math.floor(n/12)};}
+ function squad(wave){if(!Number.isSafeInteger(wave)||wave<1)return [];const boss=encounter(wave);let ids;
+ if(wave===1)ids=['shadow','shadow','shadow','shadow'];else if(wave===2)ids=['guard','shadow','brood','shadow'];else if(wave===3)ids=['hunter','guard','shadow','shadow'];
+ else if(boss){ids=boss.id==='priest'?['guard','brood']:boss.id==='obsidian'?['runner','hunter']:boss.group==='major'?['guard','hunter']:boss.group==='mid'?['guard','hunter','shadow']:['hunter','shadow'];}
+ else if(isSwarmWave(wave))ids=wave<19?['brood','brood','runner','hunter']:['brood','brood','runner','hunter','guard','skyrazor'];
+ else{const patterns=[['guard','hunter','shadow','runner'],['shadow','brood','runner','shadow'],['hunter','nexusling','guard','brood'],['skyrazor','runner','hunter','shadow'],['guard','hunter','nexusling','runner'],['brood','runner','guard','hunter']];ids=[...patterns[(wave-1)%patterns.length]];if(wave>=20)ids.push(wave%2?'skyrazor':'nexusling');if(wave>=60)ids.push(wave%3?'hunter':'guard');}
+ return ids.map(id=>byId[id].unlock<=wave?byId[id]:byId.shadow);
+ }
+ function squadName(wave){const boss=encounter(wave);return boss?'Bossformation · '+boss.name:wave===1?'Schattenvorhut':wave===2?'Schild-Eskorte':wave===3?'Geschützte Jäger':isSwarmWave(wave)?'Flankenüberfall':['Geschützte Jäger','Flankenkeil','Kern-Eskorte','Luftüberfall','Panzer-Durchbruch','Sabotagekommando'][(wave-1)%6];}
  const MODIFIERS=[{id:'corrupt',name:'Korruptiert',color:'#ff527e',hp:1,damage:1.3},{id:'frozen',name:'Gefroren',color:'#8bdcff',hp:1.1,damage:1,slow:true},{id:'armored',name:'Verstärkt',color:'#ffd377',hp:1.4,damage:1},{id:'elite',name:'Elite',color:'#ed79ff',hp:1.2,damage:1.15}];
- return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,scaling,bossScaling,bossWaveMultiplier,MODIFIERS};
+ return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,scaling,bossScaling,bossWaveMultiplier,squad,squadName,MODIFIERS};
 });
