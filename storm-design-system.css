@@ -1,0 +1,185 @@
+/* Reusable primitives and adapters for the existing, functional Sternensturm views. */
+:is(.su-panel,.armory-dialog,.armory-weapon-dialog,#storm-roster-dialog,#storm-upgrades-dialog,#storm-social-dialog,#storm-duel-dialog){font-family:var(--su-font-body);font-size:var(--su-text-body);font-weight:var(--su-weight-regular);line-height:var(--su-leading-body);color:var(--su-text);background-color:var(--su-panel);border-color:var(--su-line-strong);border-radius:var(--su-radius-panel);box-shadow:var(--su-shadow);font-synthesis:none}
+.su-header{padding:var(--su-space-4);border-bottom:var(--su-line-width) solid var(--su-line)}
+.su-caption{font:var(--su-weight-label) var(--su-text-label)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+.su-pixel-accent{font:var(--su-weight-regular) var(--su-text-accent)/var(--su-leading-body) var(--su-font-pixel);letter-spacing:var(--su-tracking-normal)}
+:is(.su-button,.armory-tabs button,.armory-buy,.armory-equip,.armory-gear-tabs button,.roster-actions button,.storm-upgrade-action,#storm-upgrades-close,.social-player button,#social-ready,.duel-lobby button,.duel-waiting button){box-sizing:border-box;min-height:var(--su-touch);border-radius:var(--su-radius-control);font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);letter-spacing:var(--su-tracking-normal);touch-action:manipulation;transition:background-color var(--su-motion),border-color var(--su-motion);box-shadow:none}
+.su-button{padding:var(--su-space-3) var(--su-space-4);border:var(--su-line-width) solid var(--su-line-strong);background:var(--su-panel-raised);color:var(--su-cyan)}
+:is(.su-button--primary,.roster-actions .primary,#social-ready,.duel-lobby .primary){background:var(--su-gold);color:var(--su-bg);border-color:var(--su-gold);font-weight:var(--su-weight-ui);box-shadow:none}
+:is(.su-button,.armory-buy,.armory-equip,.roster-actions button,.storm-upgrade-action,#social-ready):disabled{color:var(--su-disabled);background:var(--su-panel-inset);border-color:var(--su-line);opacity:1;box-shadow:none;cursor:default}
+:is(.su-button,.su-card,.armory-product-open,.armory-troop-heading,.roster-card,.social-unit):focus-visible{outline:var(--su-focus-width) solid var(--su-cyan);outline-offset:var(--su-focus-gap)}
+:is(.su-card,.roster-card,.social-player){box-sizing:border-box;border:var(--su-line-width) solid var(--su-line);border-radius:var(--su-radius-control);background:var(--su-panel-raised);color:var(--su-text);box-shadow:none}
+:is(.su-card[aria-pressed=true],.su-card[data-selected=true],.roster-card[aria-pressed=true],.social-unit[aria-pressed=true]){border-color:var(--su-gold);background:var(--su-gold-fill);box-shadow:inset var(--su-focus-width) 0 var(--su-gold)}
+.su-slot{border:var(--su-line-width) solid var(--su-line-strong);border-radius:var(--su-radius-small);background:var(--su-panel-inset)}
+.su-tabs{display:flex;gap:var(--su-space-1);padding:var(--su-space-1);border:var(--su-line-width) solid var(--su-line);border-radius:var(--su-radius-control);background:var(--su-panel-inset)}
+.su-tabs>button{flex:1;min-height:var(--su-touch);border:0;border-radius:var(--su-radius-small);background:transparent;color:var(--su-muted);font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading)}
+.su-tabs>button[aria-pressed=true]{background:var(--su-gold-fill);color:var(--su-gold)}
+:is(.su-progress,.storm-upgrade-track,.nova-xp){height:var(--su-track-height);border:0;border-radius:var(--su-radius-small);background:var(--su-line);overflow:hidden;box-shadow:none}
+.su-progress>i{display:block;height:100%;background:var(--su-cyan)}
+:is(.su-currency,.diamond-balance,.army-wallet,.duel-wallet,#storm-upgrades-wallet){font-family:var(--su-font-heading);font-size:var(--su-text-ui);font-weight:var(--su-weight-ui);line-height:var(--su-leading-ui);font-variant-numeric:tabular-nums;letter-spacing:var(--su-tracking-normal)}
+[aria-invalid=true]{border-color:var(--su-danger)}
+/* Shared home/HUD hierarchy, scoped to Sternensturm. */
+body[data-game=storm]{font-family:var(--su-font-body);color:var(--su-text);--bg:var(--su-bg);--text:var(--su-text);--secondary:var(--su-muted);--line:var(--su-line);--gold:var(--su-gold);--blue:var(--su-cyan);--surface:var(--su-panel)}
+body[data-game=storm] :is(button,input,summary){font-family:var(--su-font-heading)}
+body[data-game=storm] #home .mode-name{font:var(--su-weight-ui) var(--su-text-title)/var(--su-leading-tight) var(--su-font-heading);color:var(--su-gold);letter-spacing:var(--su-tracking-normal)}
+body[data-game=storm] :is(.home-eyebrow,.app-brand){font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading);letter-spacing:var(--su-tracking-label);color:var(--su-muted)}
+body[data-game=storm] :is(#home-best,.score,.result-number){font-family:var(--su-font-heading);font-weight:var(--su-weight-ui);font-variant-numeric:tabular-nums}
+body[data-game=storm] #home-diamonds{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-cyan)}
+body[data-game=storm] .armory-home-button{background:var(--su-panel-raised);border-color:var(--su-line-strong);color:var(--su-cyan);box-shadow:none;border-radius:var(--su-radius-control)}
+body[data-game=storm] .armory-home-button.shop{background:var(--su-gold-fill);border-color:var(--su-line-strong);color:var(--su-gold)}
+body[data-game=storm] .armory-home-button small{font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading)}
+body[data-game=storm] #home .storm-play-choice{background:var(--su-panel-inset);border-color:var(--su-line);border-radius:var(--su-radius-control)}
+body[data-game=storm] #home .storm-play-choice button{min-height:var(--su-touch);font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-muted);background:transparent;box-shadow:none}
+body[data-game=storm] #home .storm-play-choice button[aria-pressed=true]{background:var(--su-panel-raised);color:var(--su-gold);box-shadow:none}
+body[data-game=storm] :is(.icon-button,.armory-close,#storm-upgrades-dismiss,.duel-exit){box-sizing:border-box;min-width:var(--su-touch);min-height:var(--su-touch);border-radius:var(--su-radius-control);color:var(--su-muted);background:var(--su-panel-raised);border-color:var(--su-line);box-shadow:none}
+/* Shop and equipment: same reference layout, calmer typography and states. */
+.armory-dialog .armory-header{padding:var(--su-space-4);padding-bottom:var(--su-space-8);border-bottom-color:var(--su-line);background-color:var(--su-panel)}
+.armory-dialog .armory-header>div:first-child{max-width:calc(100% - 60px)}
+.armory-dialog .armory-header small{font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading);letter-spacing:var(--su-tracking-label);color:var(--su-muted)}
+.armory-dialog .armory-header h2,.armory-dialog[data-view=gear] .armory-header h2{font:var(--su-weight-ui) var(--su-text-display)/var(--su-leading-tight) var(--su-font-heading);color:var(--su-gold);letter-spacing:var(--su-tracking-tight);margin-top:var(--su-space-2);max-width:calc(100% - 48px)}
+.armory-dialog .armory-header-wallet{padding:var(--su-space-1) var(--su-space-2);border-color:var(--su-line-strong);border-radius:var(--su-radius-small);background:var(--su-panel-inset)}
+.armory-dialog .diamond-balance{font:var(--su-weight-ui) var(--su-text-value)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-cyan)}
+.armory-dialog .armory-rate{font:var(--su-weight-regular) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted);bottom:var(--su-space-2)}
+.armory-dialog .armory-station-art{opacity:.28}
+.armory-dialog .armory-top{padding:var(--su-space-2) var(--su-space-3) 0;background:var(--su-panel-inset)}
+.armory-dialog .armory-tabs{border-color:var(--su-line);background:var(--su-bg);border-radius:var(--su-radius-control);padding:var(--su-space-1);gap:var(--su-space-1)}
+.armory-dialog .armory-tabs button{font-family:var(--su-font-heading);font-size:var(--su-text-body);font-weight:var(--su-weight-ui);color:var(--su-muted)}
+.armory-dialog .armory-tabs button[aria-pressed=true]{background:var(--su-gold-fill);border-color:var(--su-gold);color:var(--su-gold);box-shadow:none}
+.armory-dialog .armory-scroll{padding:var(--su-space-3);background:var(--su-bg);padding-bottom:var(--su-space-5)}
+.armory-dialog :is(.armory-filter label,.armory-filter select){font:var(--su-weight-label) var(--su-text-label)/var(--su-leading-ui) var(--su-font-body)}
+.armory-dialog .armory-filter{gap:var(--su-space-2);margin-bottom:var(--su-space-3)}
+.armory-dialog .armory-filter select{min-height:var(--su-touch);background:var(--su-panel-raised);border-color:var(--su-line-strong);border-radius:var(--su-radius-small);padding:var(--su-space-2)}
+.armory-dialog .armory-product{margin-bottom:var(--su-space-3);border-radius:var(--su-radius-control);background:var(--su-panel);border-color:color-mix(in srgb,var(--weapon-color) 55%,var(--su-line));box-shadow:none}
+.armory-dialog .armory-product-content{padding:var(--su-space-2)}
+.armory-dialog .armory-product-heading{padding-top:var(--su-space-4)}
+.armory-dialog .armory-product-heading small{font:var(--su-weight-regular) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+.armory-dialog .armory-product-heading h3{font:var(--su-weight-ui) var(--su-text-section)/var(--su-leading-tight) var(--su-font-heading);margin:var(--su-space-1) 0 var(--su-space-2);letter-spacing:var(--su-tracking-normal);overflow-wrap:normal}
+.armory-dialog .armory-rarity{font:var(--su-weight-regular) var(--su-text-accent)/var(--su-leading-body) var(--su-font-pixel);letter-spacing:var(--su-tracking-normal);padding:var(--su-space-half) var(--su-space-1);border-radius:var(--su-radius-small)}
+:is(.armory-dialog,.armory-weapon-dialog) .armory-price{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);font-variant-numeric:tabular-nums}
+.armory-dialog .armory-product-stats{border-color:var(--su-line);margin:var(--su-space-2) 0;padding:var(--su-space-2) 0;gap:var(--su-space-1)}
+.armory-dialog .armory-product-stats dt{font:var(--su-weight-label) var(--su-text-data)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+.armory-dialog .armory-product-stats dd{font:var(--su-weight-label) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);margin-top:var(--su-space-1);font-variant-numeric:tabular-nums;color:var(--su-text)}
+.armory-dialog .armory-effect{font:var(--su-weight-regular) var(--su-text-label)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+.armory-dialog .armory-cat-banner{margin-bottom:var(--su-space-3)}
+.armory-dialog .armory-gear-description{font:var(--su-weight-regular) var(--su-text-ui)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+.armory-dialog[data-view=gear] .armory-header{padding-bottom:var(--su-space-3)}
+.armory-dialog[data-view=gear] .armory-header-wallet{right:calc(var(--su-touch) + var(--su-space-4))}
+.armory-dialog .armory-troop{background:var(--su-panel);border-color:var(--su-line);border-radius:var(--su-radius-control);margin-bottom:var(--su-space-2)}
+.armory-dialog .armory-troop-heading{padding:var(--su-space-2);gap:var(--su-space-2)}
+.armory-dialog .armory-troop h3{font:var(--su-weight-ui) var(--su-text-card)/var(--su-leading-tight) var(--su-font-heading);margin:0 0 var(--su-space-1);color:var(--su-gold);white-space:normal;overflow-wrap:normal}
+.armory-dialog .armory-equipment-role{font:var(--su-weight-regular) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted);gap:var(--su-space-1)}
+.armory-dialog .armory-active-weapon{font:var(--su-weight-label) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body);color:var(--su-cyan)}
+.armory-dialog .armory-role-svg{color:var(--su-cyan)}
+.armory-dialog .armory-gear-tabs button{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-panel-raised);border-color:var(--su-line);color:var(--su-muted)}
+.armory-dialog .armory-gear-tabs button:first-child{background:var(--su-gold-fill);color:var(--su-gold);border-color:var(--su-gold)}
+.armory-dialog .armory-gear-tabs button:disabled{opacity:1;background:var(--su-panel-inset);color:var(--su-disabled);border-color:var(--su-line)}
+.armory-dialog .armory-equip{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-panel-raised);color:var(--su-cyan);border-color:var(--su-line-strong)}
+.armory-dialog .armory-status{font:var(--su-weight-regular) var(--su-text-label)/var(--su-leading-body) var(--su-font-body);color:var(--su-success)}
+.armory-weapon-dialog{padding:var(--su-space-5)}
+.armory-weapon-dialog h2{font:var(--su-weight-ui) var(--su-text-title)/var(--su-leading-tight) var(--su-font-heading);margin-bottom:var(--su-space-2)}
+.armory-weapon-dialog .armory-product-stats dt{font:var(--su-weight-label) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body)}
+.armory-weapon-dialog .armory-product-stats dd{font:var(--su-weight-label) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-body);font-variant-numeric:tabular-nums}
+.armory-weapon-dialog :is(.armory-effect,.armory-example){font:var(--su-weight-regular) var(--su-text-body)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+.armory-weapon-dialog .armory-buy{font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);min-height:var(--su-touch)}
+/* Team selection: compact information and a clear, persistent selected state. */
+#storm-roster-dialog .roster-head,.storm-forge-header{padding:var(--su-space-4);border-bottom-color:var(--su-line);background:var(--su-panel)}
+:is(.roster-head>small,.storm-forge-eyebrow,.duel-heading small){font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading);letter-spacing:var(--su-tracking-label);color:var(--su-cyan)}
+:is(#storm-roster-title,#storm-upgrades-title,.duel-heading h2){font:var(--su-weight-ui) var(--su-text-title)/var(--su-leading-tight) var(--su-font-heading);letter-spacing:var(--su-tracking-tight);margin:var(--su-space-2) 0;color:var(--su-gold)}
+#storm-roster-dialog .roster-head p{font:var(--su-weight-regular) var(--su-text-ui)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+#storm-roster-dialog .roster-scroll{padding:var(--su-space-3);background:var(--su-bg)}
+#storm-roster-dialog .roster-scroll h3{font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-text);margin:var(--su-space-1) 0 var(--su-space-3)}
+#storm-roster-dialog :is(.roster-troops,.roster-heroes){gap:var(--su-space-2)}
+#storm-roster-dialog .roster-card{min-height:76px;padding:var(--su-space-2);gap:var(--su-space-1);border-color:var(--su-line);border-radius:var(--su-radius-control);background:var(--su-panel);box-shadow:none}
+#storm-roster-dialog .roster-card[aria-pressed=true]{border-color:var(--su-gold);background:var(--su-gold-fill);box-shadow:inset var(--su-focus-width) 0 var(--su-gold)}
+#storm-roster-dialog .roster-card canvas{width:40px;height:auto;aspect-ratio:80/68;object-fit:contain;image-rendering:pixelated;flex:none}
+#storm-roster-dialog .roster-card strong{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-text);overflow-wrap:anywhere}
+#storm-roster-dialog .roster-card small{font:var(--su-weight-regular) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+#storm-roster-dialog .roster-card-text>span{font:var(--su-weight-ui) var(--su-text-label)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-cyan);font-variant-numeric:tabular-nums}
+#storm-roster-dialog .roster-check{font:var(--su-weight-ui) var(--su-text-label)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-muted)}
+#storm-roster-dialog .roster-card[aria-pressed=true] .roster-check{color:var(--su-gold)}
+#storm-roster-dialog .roster-heroes .roster-card{min-height:108px}
+#storm-roster-dialog .roster-heroes .roster-card canvas{width:52px;height:auto}
+#storm-roster-dialog .roster-footer{padding:var(--su-space-3);border-color:var(--su-line);background:var(--su-panel)}
+#storm-roster-dialog .roster-footer p{font:var(--su-weight-regular) var(--su-text-label)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+#storm-roster-dialog .roster-actions{gap:var(--su-space-2)}
+#storm-roster-dialog .roster-actions button{padding:var(--su-space-3);background:var(--su-panel-raised);color:var(--su-muted);border-color:var(--su-line-strong)}
+#storm-roster-dialog .roster-actions .primary{background:var(--su-gold);color:var(--su-bg);border-color:var(--su-gold)}
+#storm-roster-dialog .roster-actions .primary:disabled{background:var(--su-panel-inset);color:var(--su-disabled);border-color:var(--su-line);opacity:1}
+/* Forge, currency, stat blocks and future equipment follow the same hierarchy. */
+#storm-upgrades-dialog .storm-forge-scroll{padding:var(--su-space-3);background:var(--su-bg)}
+#storm-upgrades-dialog .storm-upgrade-card{padding:var(--su-space-3);margin-bottom:var(--su-space-3);background:var(--su-panel);border-color:var(--su-line);border-radius:var(--su-radius-control);box-shadow:none}
+#storm-upgrades-dialog .storm-upgrade-heading{gap:var(--su-space-2)}
+#storm-upgrades-dialog .storm-upgrade-title strong{font:var(--su-weight-ui) var(--su-text-card)/var(--su-leading-tight) var(--su-font-heading);color:var(--su-text)}
+#storm-upgrades-dialog .storm-upgrade-title>span:not(.storm-upgrade-track){font:var(--su-weight-label) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body);letter-spacing:var(--su-tracking-normal);color:var(--su-muted)}
+#storm-upgrades-dialog .storm-upgrade-action{font-size:var(--su-text-label);max-width:120px;background:var(--su-cyan-fill);border-color:var(--su-line-strong);color:var(--su-cyan)}
+#storm-upgrades-dialog .storm-upgrade-action:disabled{background:var(--su-panel-inset);color:var(--su-disabled);border-color:var(--su-line)}
+#storm-upgrades-dialog .storm-upgrade-stats{border-color:var(--su-line);gap:var(--su-space-2) var(--su-space-3);margin:var(--su-space-3) 0;padding:var(--su-space-2) 0}
+#storm-upgrades-dialog .storm-upgrade-stats span{font:var(--su-weight-label) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+#storm-upgrades-dialog .storm-upgrade-stats strong{font:var(--su-weight-label) var(--su-text-label)/var(--su-leading-ui) var(--su-font-body);color:var(--su-text)}
+#storm-upgrades-dialog .storm-upgrade-future{gap:var(--su-space-2)}
+#storm-upgrades-dialog .storm-upgrade-future button{min-height:var(--su-touch);padding:var(--su-space-2);background:var(--su-panel-inset);border-color:var(--su-line);border-style:solid;border-radius:var(--su-radius-small)}
+#storm-upgrades-dialog .storm-upgrade-future strong{font:var(--su-weight-ui) var(--su-text-label)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-muted)}
+#storm-upgrades-dialog .storm-upgrade-future span{font:var(--su-weight-regular) var(--su-text-micro)/var(--su-leading-body) var(--su-font-body);color:var(--su-dim)}
+#storm-upgrades-dialog :is(#storm-upgrades-note,.storm-weapon-note){font:var(--su-weight-regular) var(--su-text-label)/var(--su-leading-body) var(--su-font-body);color:var(--su-muted)}
+#storm-upgrades-dialog .storm-forge-footer{padding:var(--su-space-3) var(--su-space-4);border-color:var(--su-line);background:var(--su-panel)}
+#storm-upgrades-dialog .storm-forge-footer>span{font:var(--su-weight-regular) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+#storm-upgrades-dialog #storm-upgrades-close{font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-gold);border-color:var(--su-gold);color:var(--su-bg);min-height:var(--su-touch)}
+/* Cooperative setup and session controls; no changes to networking or turn logic. */
+:is(#storm-social-dialog,#storm-duel-dialog) :is(h3,.social-player strong,.duel-result strong){font-family:var(--su-font-heading);font-weight:var(--su-weight-ui)}
+:is(#storm-social-dialog,#storm-duel-dialog) :is(p,.social-note,.duel-status){font-family:var(--su-font-body);font-size:var(--su-text-ui);font-weight:var(--su-weight-regular);line-height:var(--su-leading-body);color:var(--su-muted)}
+#storm-social-dialog .social-player{padding:var(--su-space-3);background:var(--su-panel-raised);border-color:var(--su-line);border-radius:var(--su-radius-control)}
+#storm-social-dialog .social-player button{padding:var(--su-space-2) var(--su-space-3);background:var(--su-cyan-fill);color:var(--su-cyan);border-color:var(--su-line-strong)}
+#storm-social-dialog .social-team{background:var(--su-panel);border-color:var(--su-line);border-radius:var(--su-radius-control);box-shadow:none}
+#storm-social-dialog .social-team.is-mine{border-color:var(--su-cyan)}
+#storm-social-dialog .social-team h3{font-size:var(--su-text-value);color:var(--su-gold)}
+#storm-social-dialog .social-unit{font-family:var(--su-font-body);background:var(--su-panel-raised);border-color:var(--su-line);border-radius:var(--su-radius-control);box-shadow:none}
+#storm-social-dialog .social-unit strong{font:var(--su-weight-ui) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-heading)}
+#storm-social-dialog .social-unit[aria-pressed=true]{background:var(--su-gold-fill);border-color:var(--su-gold);box-shadow:inset var(--su-focus-width) 0 var(--su-gold)}
+#social-ready{font-family:var(--su-font-heading);background:var(--su-gold);color:var(--su-bg);border-color:var(--su-gold);box-shadow:none}
+.social-invite{font-family:var(--su-font-body);background:var(--su-panel-raised);border-color:var(--su-gold);border-radius:var(--su-radius-panel);box-shadow:var(--su-shadow)}
+.social-invite>strong{font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading)}
+.social-invite button{min-height:var(--su-touch);font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);border-radius:var(--su-radius-control)}
+#storm-duel-dialog .duel-shop button{background:var(--su-panel-raised);border-color:var(--su-line);border-radius:var(--su-radius-small);min-height:var(--su-touch)}
+#storm-duel-dialog .duel-shop strong{font:var(--su-weight-ui) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-heading)}
+#storm-duel-dialog .duel-shop span{font:var(--su-weight-ui) var(--su-text-label)/var(--su-leading-ui) var(--su-font-heading)}
+/* Keep original pixel sprites proportional in every menu. */
+:is(.roster-card,.social-unit,.duel-shop) canvas,.storm-upgrade-portrait,.army-portrait{height:auto;aspect-ratio:80/68;object-fit:contain;image-rendering:pixelated}
+body[data-game=storm] :is(.army-buy strong,.army-buy span){font-family:var(--su-font-heading);font-weight:var(--su-weight-ui)}
+body[data-game=storm] .army-buy strong{font-size:var(--su-text-compact);line-height:var(--su-leading-tight)}
+body[data-game=storm] .army-buy small{font:var(--su-weight-regular) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body)}
+body[data-game=storm] .army-buy{background:var(--su-panel-raised);border-color:var(--su-line);box-shadow:none;border-radius:var(--su-radius-small)}
+body[data-game=storm] :is(#storm-income,#storm-jokes,#storm-upgrades-open){font-family:var(--su-font-body)}
+body[data-game=storm] #storm-upgrades-open{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);min-height:var(--su-touch);border-radius:var(--su-radius-control);background:var(--su-panel-raised);border-color:var(--su-line-strong);color:var(--su-cyan);box-shadow:none}
+@container(max-width:350px){.armory-dialog .armory-header h2,.armory-dialog[data-view=gear] .armory-header h2{font-size:var(--su-text-title)}.armory-dialog .armory-troop h3{font-size:var(--su-text-value)}.armory-dialog .armory-equipment-role{font-size:var(--su-text-micro)}.armory-dialog .armory-gear-tabs button{font-size:var(--su-text-compact)}.armory-dialog .armory-product-heading h3{font-size:var(--su-text-card)}.armory-dialog .armory-product-heading small{font-size:var(--su-text-micro)}.armory-dialog .armory-product-stats dd{font-size:var(--su-text-micro)}.armory-dialog .armory-product-stats{gap:var(--su-space-half)}.armory-dialog .armory-effect{font-size:var(--su-text-compact)}}
+@media(max-width:350px){#storm-roster-dialog .roster-card{padding:var(--su-space-1);gap:var(--su-space-1)}#storm-roster-dialog .roster-card canvas{width:34px;height:auto}#storm-roster-dialog .roster-card strong{font-size:var(--su-text-ui)}#storm-upgrades-dialog .storm-upgrade-title strong{font-size:var(--su-text-value)}#storm-upgrades-dialog .storm-upgrade-heading{grid-template-columns:40px minmax(0,1fr) auto}#storm-upgrades-dialog .storm-upgrade-portrait{width:40px;height:auto}#storm-upgrades-dialog .storm-upgrade-action{max-width:104px}}
+@media(prefers-reduced-motion:reduce){:is(.su-button,.su-card,.armory-tabs button,.armory-buy,.armory-equip,.roster-card){transition:none}}
+/* Screenshot pass 1: isolate the modal header from the app header's flex layout. */
+.armory-dialog .armory-header{display:block;gap:var(--su-space-0)}
+.armory-dialog .armory-header>div:first-child{margin:0;max-width:calc(100% - 60px)}
+.armory-dialog .armory-product-heading{padding-top:var(--su-space-0)}
+.armory-dialog .armory-rarity{top:auto;bottom:0}
+.armory-dialog .armory-product-stats dd{overflow-wrap:normal;word-break:normal}
+@container(max-width:350px){.armory-dialog .armory-price{font-size:var(--su-text-label)}}
+/* Four category tabs stay legible even on narrow phones. */
+.armory-dialog .armory-gear-tabs button{flex-direction:column;gap:var(--su-space-half);padding:var(--su-space-1);font-size:var(--su-text-label);white-space:normal;line-height:var(--su-leading-ui)}
+.armory-dialog .armory-gear-tabs .armory-role-svg{width:14px;height:14px}
+/* Reserve a real touch row for the forge instead of overlapping the arena. */
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden])))[data-game=storm] .screen#game.storm-mode{grid-template-rows:80px minmax(0,1fr) 232px}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden])))[data-game=storm] #storm-market{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:var(--su-touch) minmax(0,1fr);gap:var(--su-space-1)}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden])))[data-game=storm] #storm-upgrades-open{position:static;grid-column:2;grid-row:1;margin:0;padding:var(--su-space-2);font-size:var(--su-text-label)}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden])))[data-game=storm] #storm-tactics{grid-column:1;grid-row:1;min-width:0;overflow:hidden}
+:is(body.storm-layout,body:has(#game.storm-mode:not([hidden])))[data-game=storm] #storm-shop-items{grid-column:1 / -1;grid-row:2}
+/* Shared utility dialogs inherit the same system while Sternensturm is active. */
+body[data-game=storm] :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog){font:var(--su-weight-regular) var(--su-text-body)/var(--su-leading-body) var(--su-font-body);color:var(--su-text);background:var(--su-panel);border:var(--su-line-width) solid var(--su-line-strong);border-radius:var(--su-radius-panel);padding:var(--su-space-5);box-shadow:var(--su-shadow)}
+body[data-game=storm] :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog) h2{font:var(--su-weight-ui) var(--su-text-title)/var(--su-leading-tight) var(--su-font-heading);color:var(--su-gold);letter-spacing:var(--su-tracking-tight)}
+body[data-game=storm] :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog) :is(p,li,label){font-size:var(--su-text-body);line-height:var(--su-leading-body);color:var(--su-muted)}
+body[data-game=storm] :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog) :is(button,input){box-sizing:border-box;min-height:var(--su-touch);border:var(--su-line-width) solid var(--su-line-strong);border-radius:var(--su-radius-control);font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-panel-raised);color:var(--su-cyan);box-shadow:none}
+body[data-game=storm] :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog) button.primary{background:var(--su-gold);color:var(--su-bg);border-color:var(--su-gold)}
+body[data-game=storm] #profile-form input{font-family:var(--su-font-body);font-weight:var(--su-weight-label);color:var(--su-text)}
+body[data-game=storm] #pause-dialog .danger{color:var(--su-danger)}
+
+body[data-game=storm] #game-help-dialog{text-align:left}
+body[data-game=storm] #game-help-title:focus{outline:none}
+body[data-game=storm] #game-help-demo{display:none}
+/* Only the fortress portion of the reference crop decorates the header. */
+.armory-dialog .armory-station-art{-webkit-mask-image:linear-gradient(90deg,transparent 60%,#000 85%);mask-image:linear-gradient(90deg,transparent 60%,#000 85%)}

@@ -1,0 +1,14 @@
+/* Sternensturm UI foundation. Change semantic tokens here, not individual screens. */
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-medium.ttf?v=110') format('truetype');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-semibold.ttf?v=110') format('truetype');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-bold.ttf?v=110') format('truetype');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:Inter;src:url('ui-inter.ttf?v=110') format('truetype');font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:'Press Start 2P';src:url('ui-press-start.ttf?v=110') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+:root{
+ --su-font-heading:'Chakra Petch',sans-serif;--su-font-body:Inter,sans-serif;--su-font-pixel:'Press Start 2P',monospace;
+ --su-text-accent:8px;--su-text-data:9px;--su-text-micro:10px;--su-text-compact:11px;--su-text-label:12px;--su-text-ui:13px;--su-text-body:14px;--su-text-value:16px;--su-text-card:18px;--su-text-section:20px;--su-text-title:24px;--su-text-display:28px;
+ --su-weight-regular:400;--su-weight-label:500;--su-weight-ui:600;--su-weight-emphasis:700;--su-leading-tight:1.2;--su-leading-ui:1.35;--su-leading-body:1.5;--su-tracking-label:.1em;--su-tracking-tight:-.01em;--su-tracking-normal:0;
+ --su-bg:#090f20;--su-panel:#111c30;--su-panel-raised:#17253b;--su-panel-inset:#0c1629;--su-line:#2c435d;--su-line-strong:#526f8b;--su-text:#e1edf8;--su-muted:#a1b6cc;--su-dim:#7f96af;--su-cyan:#82d8ed;--su-cyan-fill:#133448;--su-gold:#e8cb8d;--su-gold-fill:#332f27;--su-violet:#b7a4e5;--su-success:#91d8bf;--su-danger:#ee9ca6;--su-disabled:#6c8199;
+ --su-space-0:0;--su-space-half:2px;--su-space-1:4px;--su-space-2:8px;--su-space-3:12px;--su-space-4:16px;--su-space-5:20px;--su-space-6:24px;--su-space-8:32px;
+ --su-radius-small:6px;--su-radius-control:10px;--su-radius-panel:14px;--su-line-width:1px;--su-focus-width:2px;--su-focus-gap:3px;--su-touch:44px;--su-track-height:4px;--su-motion:140ms;--su-shadow:0 18px 60px #02081570;
+}

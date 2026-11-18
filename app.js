@@ -149,7 +149,7 @@
     if(state==='playing'&&!advance(performance.now()))return;
     helpWasPlaying=state==='playing';if(helpWasPlaying){state='help';keys.clear();pointerAnchor=null;music?.pause();effects?.stop();}
     const info=instructions[modes[mode].id];$('game-help-title').textContent=modes[mode].name;
-    $('game-help-rules').innerHTML=info.steps.map(step=>'<li>'+step+'</li>').join('');$('game-help-note').textContent=info.note;$('game-help-demo').hidden=!slinging();$('game-help-close').textContent=helpWasPlaying?'Weiterspielen':'Fertig';$('game-help-dialog').showModal();
+    $('game-help-rules').innerHTML=info.steps.map(step=>'<li>'+step+'</li>').join('');$('game-help-note').textContent=info.note;$('game-help-demo').hidden=!slinging();$('game-help-close').textContent=helpWasPlaying?'Weiterspielen':'Fertig';$('game-help-dialog').showModal();$('game-help-title').focus({preventScroll:true});$('game-help-dialog').scrollTop=0;
   }
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();syncStormViewport();if(state==='playing'&&sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
