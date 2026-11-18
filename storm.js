@@ -10,7 +10,7 @@
  {name:'Plasmaschütze',cost:20,hp:12,damage:2,range:.40,cooldown:300,color:'#be86ff',text:'20 Münzen · 12 Leben · 2 Schaden · 0,3 s · Reichweite 40 % · Streuschaden ab Lvl. 2'},
  {name:'Assassine',cost:25,hp:25,damage:50,range:.01,cooldown:5000,color:'#61dfff',text:'25 Bronze · 25 Leben · 50 Schaden · 5 s · 1 % Reichweite · Tarnt sich; schwächstes Ziel zuerst; bis zu 3 Ziele im Angriffsradius; kein doppeltes Ziel ohne Wechsel'},
  {name:'Haudrauf',cost:40,hp:200,damage:40,range:.02,cooldown:3000,color:'#ffca68',text:'40 Bronze · 200 Leben · 40 Flächenschaden · 3 s · 2 % Reichweite · Bevorzugt starke Gegner; Hammerschlag mit Erschütterungswelle'},
- {name:'Heiler',cost:30,hp:5,damage:0,range:.60,cooldown:12000,healRate:10,healRadius:.10,healDuration:5000,color:'#8cf3ff',text:'30 Bronze · 5 Leben · 60 % Reichweite · alle 12 s Heilmagie: 10 Leben/s für 5 s im Kreis · Bevorzugt eng stehende Verwundete'},
+ {name:'Heiler',cost:50,hp:5,damage:0,range:.60,cooldown:12000,healRate:10,healRadius:.10,healDuration:5000,color:'#8cf3ff',text:'50 Bronze · 5 Leben · 60 % Reichweite · alle 12 s Heilmagie: 10 Leben/s für 5 s im Kreis · Bevorzugt eng stehende Verwundete'},
  {name:'Späher',cost:60,hp:20,damage:0,droneDamage:200,range:.90,cooldown:25000,color:'#67e8ff',text:'60 Bronze · 20 Leben · 90 % Reichweite · scannt bis zu 5 gefährliche Ziele · Drohne alle 25 s: Fangnetz 5 s, danach 200 Raketenschaden je Ziel · 5 s Fluchttarnung'}
  ];
  const HERO_WAVES=2,HERO_ARRIVAL_DURATION=4000,HERO_RECALL_COST=30;
