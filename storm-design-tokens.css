@@ -1,9 +1,9 @@
 /* Sternensturm UI foundation. Change semantic tokens here, not individual screens. */
-@font-face{font-family:'Chakra Petch';src:url('ui-chakra-medium.ttf?v=111') format('truetype');font-style:normal;font-weight:500;font-display:swap}
-@font-face{font-family:'Chakra Petch';src:url('ui-chakra-semibold.ttf?v=111') format('truetype');font-style:normal;font-weight:600;font-display:swap}
-@font-face{font-family:'Chakra Petch';src:url('ui-chakra-bold.ttf?v=111') format('truetype');font-style:normal;font-weight:700;font-display:swap}
-@font-face{font-family:Inter;src:url('ui-inter.ttf?v=111') format('truetype');font-style:normal;font-weight:100 900;font-display:swap}
-@font-face{font-family:'Press Start 2P';src:url('ui-press-start.ttf?v=111') format('truetype');font-style:normal;font-weight:400;font-display:swap}
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-medium.ttf?v=112') format('truetype');font-style:normal;font-weight:500;font-display:swap}
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-semibold.ttf?v=112') format('truetype');font-style:normal;font-weight:600;font-display:swap}
+@font-face{font-family:'Chakra Petch';src:url('ui-chakra-bold.ttf?v=112') format('truetype');font-style:normal;font-weight:700;font-display:swap}
+@font-face{font-family:Inter;src:url('ui-inter.ttf?v=112') format('truetype');font-style:normal;font-weight:100 900;font-display:swap}
+@font-face{font-family:'Press Start 2P';src:url('ui-press-start.ttf?v=112') format('truetype');font-style:normal;font-weight:400;font-display:swap}
 :root{
  --su-font-heading:'Chakra Petch',sans-serif;--su-font-body:Inter,sans-serif;--su-font-pixel:'Press Start 2P',monospace;
  --su-text-accent:8px;--su-text-data:9px;--su-text-micro:10px;--su-text-compact:11px;--su-text-label:12px;--su-text-ui:13px;--su-text-body:14px;--su-text-value:16px;--su-text-card:18px;--su-text-section:20px;--su-text-title:24px;--su-text-display:28px;--su-text-score:64px;
