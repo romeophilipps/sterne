@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
- let socialMode=false;let selected='single',loadout=null,choosing=false,session=null,lastSnapshot=null,shopKey='',frame=0,lastDraw=0,snapshotAt=0,resultKey='',shownRound=0,renderer=null;const poses=new Map(),portraits=[],names=['Schwert','Schild','Sniper','Rakete','Plasma','Assassine','Haudrauf','Heiler','Späher','Arkanist'];
+ let socialMode=false;let selected='single',loadout=null,choosing=false,session=null,lastSnapshot=null,shopKey='',frame=0,lastDraw=0,snapshotAt=0,resultKey='',shownRound=0,renderer=null;const poses=new Map(),portraits=[],names=['Rekrut','Wächter','Sniper','Panzerjäger','Fusionist','Assassine','Haudrauf','Heiler','Späher','Arkanist'];
  const audioUpdate=detail=>{if(typeof CustomEvent==='function')document.dispatchEvent(new CustomEvent('stars-coop-audio',{detail}));};
  const choice=el('div',undefined,'storm-play-choice');choice.id='storm-play-choice';choice.setAttribute('role','group');choice.setAttribute('aria-label','Sternensturm Spielart');for(const [value,text] of [['single','Singleplayer'],['multi','Multiplayer']]){const b=el('button',text);b.type='button';b.dataset.play=value;b.setAttribute('aria-pressed',String(value===selected));b.onclick=()=>{selected=value;for(const x of choice.children)x.setAttribute('aria-pressed',String(x===b));$('start').setAttribute('aria-label',value==='multi'?'Sternensturm Multiplayer öffnen':'Sternensturm – endlos spielen');};choice.append(b);}($('home-actions')||$('start')).before(choice);
  const dialog=el('dialog');dialog.id='storm-duel-dialog';dialog.setAttribute('aria-labelledby','duel-title');

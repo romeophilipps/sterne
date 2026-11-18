@@ -6,11 +6,11 @@
  const Tactics=typeof module==='object'&&module.exports?require('./storm-tactics.js'):globalThis.StarTactics;
  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
  const WARRIORS=[
- {name:'Schwertkämpfer',cost:1,hp:10,damage:10,range:.05,cooldown:900,color:'#51dfff',text:'1 Münze · 10 Leben · 10 Schaden · 0,9 s · Reichweite 5 %'},
- {name:'Schildträger',cost:5,hp:30,damage:1,range:.25,cooldown:3000,color:'#e6b35b',text:'5 Bronze · 30 Leben + 30 Schildleben · Pistole: 1 Schaden · 3 s · 25 % Reichweite'},
+ {name:'Rekrut',cost:1,hp:10,damage:10,range:.05,cooldown:900,color:'#51dfff',text:'1 Münze · 10 Leben · 10 Schaden · 0,9 s · Reichweite 5 %'},
+ {name:'Wächter',cost:5,hp:30,damage:1,range:.25,cooldown:3000,color:'#e6b35b',text:'5 Bronze · 30 Leben + 30 Schildleben · Pistole: 1 Schaden · 3 s · 25 % Reichweite'},
  {name:'Sniper',cost:10,hp:3,damage:6,range:.70,cooldown:4000,color:'#8dc568',text:'10 Münzen · 3 Leben · 6 Schaden · 4 s · Reichweite 70 % · Einzelziel, kein Flächenschaden'},
- {name:'Raketenwerfer',cost:15,hp:15,damage:4,range:.35,cooldown:5000,color:'#f56b72',text:'15 Münzen · 15 Leben · 4 Flächenschaden · 5 s · Reichweite 35 %'},
- {name:'Plasmaschütze',cost:20,hp:12,damage:2,range:.40,cooldown:300,color:'#be86ff',text:'20 Münzen · 12 Leben · 2 Schaden · 0,3 s · Reichweite 40 % · Streuschaden ab Lvl. 2'},
+ {name:'Panzerjäger',cost:15,hp:15,damage:4,range:.35,cooldown:5000,color:'#f56b72',text:'15 Münzen · 15 Leben · 4 Flächenschaden · 5 s · Reichweite 35 %'},
+ {name:'Fusionist',cost:20,hp:12,damage:2,range:.40,cooldown:300,color:'#be86ff',text:'20 Münzen · 12 Leben · 2 Schaden · 0,3 s · Reichweite 40 % · Streuschaden ab Lvl. 2'},
  {name:'Assassine',cost:30,hp:25,damage:50,daggerDamage:40,range:.01,cooldown:5000,color:'#61dfff',text:'30 Bronze · 25 Leben · 50 Nahschaden + 2 Wurfdolche mit je 40 Schaden über das ganze Feld · 5 s · 1 % Nahreichweite · Nach Kill 10 s Tarnung auch beim Angriff · Zielwechsel nötig'},
  {name:'Haudrauf',cost:40,hp:200,damage:40,range:.02,cooldown:3000,color:'#ffca68',text:'40 Bronze · 200 Leben · 40 Flächenschaden · 3 s · 2 % Reichweite · Bevorzugt starke Gegner; Hammerschlag mit Erschütterungswelle'},
  {name:'Heiler',cost:50,hp:5,damage:0,range:.60,cooldown:12000,healRate:10,healRadius:.10,healDuration:5000,color:'#8cf3ff',text:'50 Bronze · 5 Leben · 60 % Reichweite · alle 12 s Heilmagie: 10 Leben/s für 5 s im Kreis · Bevorzugt eng stehende Verwundete'},
@@ -27,7 +27,7 @@
  function baseStats(level=1){return {max:+(90*growth(level)).toFixed(2),armor:Math.max(.5,1-.008*(level-1)),regen:.02*(level-1)};}
  function upgradeCost(level){return clamp(Math.floor(level),1,59);}
  const DAMAGE=[[1.3,.7,1.5,1.4,1.25],[.85,.8,1,1.2,1],[.65,1.8,1.25,.85,1.5],[1.6,1.35,1.4,1.35,1.3],[1.4,1.55,1.1,1.4,1.25],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1],[1,1,1,1,1]];
- const WAVES=[{name:'Splitter-Schwarm',hint:'Raketen gegen Schwärme, Schwerter für die Front',types:[0,0,0,3]},{name:'Panzerfront',hint:'Sniper + Schutz oder Plasma/Raketen + Nahkämpfer',types:[1,1,0,4]},{name:'Scharfschützen',hint:'Geschützte Fernkämpfer oder Schwerter mit Raketenhilfe',types:[2,2,0,1]},{name:'Sternensturm',hint:'Front halten, Raketen gegen Gruppen',types:[3,3,0,2]},{name:'Versorger-Eskorte',hint:'Versorger früh mit Snipern oder Flächenschaden ausschalten',types:[4,1,0,2]}];
+ const WAVES=[{name:'Splitter-Schwarm',hint:'Raketen gegen Schwärme, Rekruten für die Front',types:[0,0,0,3]},{name:'Panzerfront',hint:'Sniper + Schutz oder Plasma/Raketen + Nahkämpfer',types:[1,1,0,4]},{name:'Scharfschützen',hint:'Geschützte Fernkämpfer oder Rekruten mit Raketenhilfe',types:[2,2,0,1]},{name:'Sternensturm',hint:'Front halten, Raketen gegen Gruppen',types:[3,3,0,2]},{name:'Versorger-Eskorte',hint:'Versorger früh mit Snipern oder Flächenschaden ausschalten',types:[4,1,0,2]}];
  function validLoadout(p,warriorCount=6,heroCount=2){return !!p&&Array.isArray(p.warriors)&&p.warriors.length===warriorCount&&new Set(p.warriors).size===warriorCount&&p.warriors.every(i=>Number.isInteger(i)&&i>=0&&i<WARRIORS.length)&&Array.isArray(p.heroes)&&p.heroes.length===heroCount&&new Set(p.heroes).size===heroCount&&p.heroes.every(i=>Number.isInteger(i)&&i>=0&&i<HEROES.length);}
  function profile(p={}){return {version:9,coins:10,silver:0,gold:0,swordWeapon:-1,assassinWeapon:-1,levels:WARRIORS.map(()=>1),baseLevel:1,stars:0,warriors:WARRIORS.map(()=>0),heroes:[0,0,0,0,0],heroUnlocked:[true,true,true,true,true]};}
 

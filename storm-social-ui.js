@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const $=id=>document.getElementById(id),el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
- const troopNames=['Schwert','Schild','Sniper','Rakete','Plasma','Assassine','Haudrauf','Heiler','Späher','Arkanist'];
+ const troopNames=['Rekrut','Wächter','Sniper','Panzerjäger','Fusionist','Assassine','Haudrauf','Heiler','Späher','Arkanist'];
  let directory=null,pair=null,lobby=null,renderKey='',directoryKey='',battle=false,launching=false;
  const dialog=el('dialog',undefined,'social-dialog');dialog.id='storm-social-dialog';dialog.setAttribute('aria-labelledby','social-title');const head=el('div',undefined,'duel-heading'),heading=el('div');heading.append(el('small','STERNENSTURM · GEMEINSAM'));const title=el('h2','Deine Mitspieler');title.id='social-title';heading.append(title);const exit=el('button','×','duel-exit');exit.setAttribute('aria-label','Multiplayer-Menü schließen');exit.onclick=close;head.append(heading,exit);dialog.append(head);
  const browser=el('div'),intro=el('p','Lade jemanden ein und verteidigt gemeinsam den Stern. Beide Apps müssen geöffnet bleiben.','social-note'),connection=el('p','','social-note'),list=el('div',undefined,'social-players'),notice=el('p');list.id='social-player-list';notice.id='social-notice';notice.setAttribute('role','status');browser.append(intro,connection,list,notice);dialog.append(browser);

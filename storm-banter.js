@@ -9,14 +9,14 @@ Erst hauen, dann nach der Bedienungsanleitung fragen.
 Mein Flammenschwert darf nicht in die Spülmaschine.
 Der Schwertkrieger löst Probleme auf Schnittstellenebene.
 Klinge stumpf? Einfach sehr überzeugend schwingen.
-Unser Schwertkämpfer hat die Schneideprüfung bestanden.
+Unser Rekrut hat die Schneideprüfung bestanden.
 Dieser Schwertstreich wurde nicht gesponsert.
 Ich habe einen Schild. Was hast du? Gefühle?
 Schild hoch. Erwartungen runter.
-Der Schildträger nimmt Kritik persönlich entgegen.
+Der Wächter nimmt Kritik persönlich entgegen.
 Unser Schild ist stoßfest. Der Besitzer eher nicht.
 Hinter mir seid ihr sicher. Meistens. Ungefähr.
-Schildträger: die menschliche Cookie-Abfrage.
+Wächter: die menschliche Cookie-Abfrage.
 Mein Schild blockiert auch Montagmorgen.
 Bitte hinten anstellen. Hier wird ordentlich geblockt.
 Der Schild hat mehr Dellen als mein Lebenslauf.
@@ -39,14 +39,14 @@ Das war kein Feuerwerk. Aber danke fürs Klatschen.
 Raketen sind Argumente mit sehr viel Nachdruck.
 Bitte nicht schütteln. Das explodiert auch so.
 Unsere Raketen kommen ohne Rückgaberecht.
-Raketenwerfer: Gruppentherapie mit Knalleffekt.
+Panzerjäger: Gruppentherapie mit Knalleffekt.
 Die Rakete sagt Hallo. Alle gleichzeitig.
 Plasma ist wie Suppe. Nur mit mehr Versicherungsschäden.
 Unser Plasma ist frisch. Bitte nicht anfassen.
-Plasmaschütze sucht Steckdose mit Charakter.
+Fusionist sucht Steckdose mit Charakter.
 Das leuchtet so schön. Warum rennt ihr weg?
 Plasma: wenn Kaffee nicht mehr reicht.
-Der Plasmaschütze ist aufgeladen. Sozial eher weniger.
+Der Fusionist ist aufgeladen. Sozial eher weniger.
 Plasmawaffe bitte nicht zum Handy laden benutzen.
 Wer hat die Mikrowelle auf Endgegner gestellt?
 Plasma macht keine Flecken. Es macht neue Fenster.
@@ -132,7 +132,7 @@ Basaltor ist steinhart. Sein Humor leider auch.
 Der Bossbalken ist länger als meine Geduld.
 Ein Boss kommt selten allein. Die Rechnung leider auch.
 Münze gefunden. Finanzkrise für zwei Sekunden gelöst.
-Ich spare. Der Raketenwerfer sieht das anders.
+Ich spare. Der Panzerjäger sieht das anders.
 Mein Budget ist taktisch verschwunden.
 Eine Münze mehr. Noch immer kein Eigenheim.
 Die Münzen kommen automatisch. Die Ausreden auch.
@@ -169,7 +169,7 @@ Strategie ist, wenn Panik einen Namen bekommt.
 Wir sind ein Schwarm. Keiner weiß, wer lenkt.
 Der Sniper deckt. Der Rest dekoriert das Schlachtfeld.
 Einer für alle. Alle für den letzten freien Platz.
-Truppenbesprechung: Wer hat den Raketenwerfer gegessen?
+Truppenbesprechung: Wer hat den Panzerjäger gegessen?
 Freundlicher Beschuss ist ein sehr unfreundlicher Name.
 Im Weltraum hört dich niemand über Preise meckern.
 Houston, wir haben zu wenig Schilde.
@@ -179,12 +179,12 @@ Der Mond ist voll. Unser Budget nicht.
 Schwarzes Loch gesucht. Für die kaputten Helme.
 Galaxie gerettet. Müll bitte trotzdem trennen.
 Meteoritenwarnung? Ich habe einen Helm aus Überzeugung.
-Der Mars ist rot. Unser Raketenwerfer war das nicht.
+Der Mars ist rot. Unser Panzerjäger war das nicht.
 Lichtjahre voraus. Trotzdem kein Parkplatz.
 Bitte nicht auf den Boss tippen. Der wird sonst eingebildet.
 Pause gedrückt. Sogar das Chaos hält kurz die Luft an.
 Der Kaufbutton ist kein Stressball. Na gut, ein bisschen.
-Kein Tutorial überlebt den ersten Raketenwerfer.
+Kein Tutorial überlebt den ersten Panzerjäger.
 Dieser Held ist kurz verfügbar. Wie mein Ladekabel.
 Wieder nur ein Krieger. Ich hatte auf Gratis-Pommes gehofft.
 Der Held braucht vier Sekunden. Drama will vorbereitet sein.

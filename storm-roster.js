@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
  const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
- const short=['Schwert','Schild','Sniper','Rakete','Plasma','Assassine','Haudrauf','Heiler','Späher','Arkanist'],roles=['Licht & Heilung','Blitz & Tempo','Gravitation','Schutz & Abwehr','Feuer & Erneuerung'];
+ const short=['Rekrut','Wächter','Sniper','Panzerjäger','Fusionist','Assassine','Haudrauf','Heiler','Späher','Arkanist'],roles=['Licht & Heilung','Blitz & Tempo','Gravitation','Schutz & Abwehr','Feuer & Erneuerung'];
  let troopLimit=6,heroLimit=2,warriors=new Set(),heroesChosen=new Set(),resolve=null;const buttons=[],portraits=[];
  const dialog=el('dialog');dialog.id='storm-roster-dialog';dialog.setAttribute('aria-labelledby','storm-roster-title');
  const head=el('div',undefined,'roster-head'),eyebrow=el('small','STERNENSTURM · SINGLEPLAYER'),title=el('h2','Stelle dein Team zusammen');title.id='storm-roster-title';title.tabIndex=-1;const description=el('p');head.append(eyebrow,title,description);dialog.append(head);

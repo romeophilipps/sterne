@@ -17,14 +17,14 @@
   {at:27000,end:30000,image:'legion',title:'STERNENKRIEGER',text:'DER FALL DES NEXUS',fx:'logo',roster:null}
  ];
  const IMAGES=[...new Set(SCENES.map(s=>s.image))];
- const CAST={guardians:['Solaris','Volt','Polaris','Aegis','Phönix','Der Sechste','Nexus'],warriors:['Schwert','Schild','Sniper','Rakete','Plasma']};
+ const CAST={guardians:['Solaris','Volt','Polaris','Aegis','Phönix','Der Sechste','Nexus'],warriors:['Rekrut','Wächter','Sniper','Panzerjäger','Fusionist']};
  const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
  function sample(ms){const elapsed=clamp(Number.isFinite(ms)?ms:0,0,DURATION),index=SCENES.findIndex(s=>elapsed<s.end),scene=SCENES[index<0?SCENES.length-1:index];return {scene,index:index<0?SCENES.length-1:index,elapsed,progress:clamp((elapsed-scene.at)/(scene.end-scene.at)),ended:elapsed>=DURATION};}
  function clock(){let elapsed=0,last=null,finished=false;return {step(now,visible=true){if(finished)return sample(DURATION);if(last!==null&&visible)elapsed+=Math.max(0,now-last);last=visible?now:null;const s=sample(elapsed);finished=s.ended;return s;},reset(){elapsed=0;last=null;finished=false;},skip(){elapsed=DURATION;finished=true;return sample(elapsed);}};}
  function mount({onEnd=()=>{},onSound=()=>{}}={}){
   const overlay=document.getElementById('story-intro'),canvas=document.getElementById('intro-canvas'),c=canvas.getContext('2d'),app=document.querySelector('main.app'),skip=document.getElementById('intro-skip'),audioButton=document.getElementById('intro-audio'),title=document.getElementById('intro-title'),caption=document.getElementById('intro-caption'),logo=document.getElementById('intro-logo'),progress=document.getElementById('intro-progress');
   const pictures={};let raf=0,active=false,lastIndex=-1,audio=null,music=null,audible=false,previousFocus=null,narrator=null,audioRequest=0,soundStarted=false,currentElapsed=0;const timeline=clock();
-  const ready=Promise.all(IMAGES.map(name=>new Promise(resolve=>{const img=new Image();pictures[name]=img;img.onload=img.onerror=resolve;img.src='./intro-'+name+'.jpg?v=102';})));
+  const ready=Promise.all(IMAGES.map(name=>new Promise(resolve=>{const img=new Image();pictures[name]=img;img.onload=img.onerror=resolve;img.src='./intro-'+name+'.jpg?v=103';})));
   const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
   function cover(img,s,p){if(!img?.complete||!img.naturalWidth)return;const crop=s.crop||[0,0,1,1],sx=crop[0]*img.width,sy=crop[1]*img.height,sw=crop[2]*img.width,sh=crop[3]*img.height;const scale=Math.max(1280/sw,720/sh)*(reduced?1:1.025+.045*p),w=sw*scale,h=sh*scale,x=(1280-w)/2+(reduced?0:Math.sin(p*2)*7),y=(720-h)*.43;c.drawImage(img,sx,sy,sw,sh,x,y,w,h);
    // Local foreground motion: a gently moving cloak/arm, separate from the camera move.
@@ -79,7 +79,7 @@
   function render(s){currentElapsed=s.elapsed;const {scene,progress:p,elapsed}=s,t=reduced?0:elapsed/1000;c.clearRect(0,0,1280,720);c.fillStyle='#0b0719';c.fillRect(0,0,1280,720);c.save();if(!reduced&&scene.fx==='battle'){const hit=Math.pow(Math.max(0,Math.sin(t*4.5)),12);c.translate(Math.sin(t*91)*hit*4,Math.cos(t*83)*hit*3);}cover(pictures[scene.image],scene,p);effects(scene,t,p);if(scene.roster)roster(scene,t,p);if(scene.fx==='battle'&&!scene.roster){for(const a of choreography('combat',p,t))actor(a.item,a.x,a.y,a.scale,t,a.enemy,a.action||'run');if(!reduced)combatFX(p,t);}c.restore();
    const vignette=c.createRadialGradient(640,320,200,640,360,800);vignette.addColorStop(0,'#08041100');vignette.addColorStop(1,'#080411b8');c.fillStyle=vignette;c.fillRect(0,0,1280,720);
    const fade=reduced?0:Math.max(0,1-p*9,1-(1-p)*9);if(fade){c.fillStyle='rgba(7,4,15,'+fade+')';c.fillRect(0,0,1280,720);}
-   if(lastIndex!==s.index){lastIndex=s.index;overlay.dataset.scene=String(s.index);overlay.dataset.title=scene.title;title.textContent=scene.title;caption.textContent=scene.text;logo.hidden=scene.fx!=='logo';document.getElementById('intro-copy').hidden=scene.fx==='logo';overlay.style.setProperty('--scene-art','url("./intro-'+scene.image+'.jpg?v=102")');}
+   if(lastIndex!==s.index){lastIndex=s.index;overlay.dataset.scene=String(s.index);overlay.dataset.title=scene.title;title.textContent=scene.title;caption.textContent=scene.text;logo.hidden=scene.fx!=='logo';document.getElementById('intro-copy').hidden=scene.fx==='logo';overlay.style.setProperty('--scene-art','url("./intro-'+scene.image+'.jpg?v=103")');}
    progress.style.transform='scaleX('+(elapsed/DURATION)+')';if(music&&audible)music.update(1+Math.floor(elapsed/1800),20000,elapsed*12,{boss:elapsed>21000,phase:elapsed>24000?3:1,rest:elapsed<6000||elapsed>=27000});
   }
   function tick(now){if(!active)return;const s=timeline.step(now,!document.hidden);render(s);if(s.ended){finish();return;}raf=requestAnimationFrame(tick);}
