@@ -1,0 +1,16 @@
+'use strict';
+((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm-weapons.js'):root.StarWeapons);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarArmory=api;})(globalThis,W=>{
+ const empty=()=>({version:1,diamonds:0,remainder:0,owned:[],equipment:{swordWeapon:-1,assassinWeapon:-1},rounds:[]}),integer=(n,min=0,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
+ const validEquipment=e=>!!e&&typeof e==='object'&&[undefined,-1,0,1,2].includes(e.swordWeapon)&&[undefined,-1,3].includes(e.assassinWeapon);
+ const normalizeEquipment=e=>validEquipment(e)?{swordWeapon:e.swordWeapon??-1,assassinWeapon:e.assassinWeapon??-1}:{swordWeapon:-1,assassinWeapon:-1};
+ class Store{
+  constructor(storage,key='stars-armory-v1'){this.storage=storage;this.key=key;}
+  read(){let raw;try{raw=this.storage.getItem(this.key);}catch{throw Error('Dein Waffenlager ist gerade nicht erreichbar.');}if(!raw)return empty();let p;try{p=JSON.parse(raw);}catch{throw Error('Dein gespeichertes Waffenlager konnte nicht gelesen werden.');}if(!p||p.version!==1||!integer(p.diamonds)||!integer(p.remainder,0,99)||!Array.isArray(p.owned)||!Array.isArray(p.rounds))throw Error('Dein Waffenlager hat ein ungültiges Format.');const owned=[...new Set(p.owned.filter(id=>W.get(id)))],equipment=normalizeEquipment(p.equipment);for(const key of ['swordWeapon','assassinWeapon'])if(!owned.includes(equipment[key]))equipment[key]=-1;return {...empty(),diamonds:p.diamonds,remainder:p.remainder,owned,equipment,rounds:p.rounds.filter(r=>r&&typeof r.id==='string'&&r.id.length<=180&&integer(r.score)).slice(-1000)};}
+  save(p){const raw=JSON.stringify(p);try{this.storage.setItem(this.key,raw);if(this.storage.getItem(this.key)!==raw)throw Error();}catch{throw Error('Nicht gespeichert. Bitte erlaube das Speichern auf diesem Gerät und versuche es erneut.');}return p;}
+  settle(id,score){if(typeof id!=='string'||!id||id.length>180||!integer(score,0,1e9))throw Error('Ungültiges Rundenergebnis.');const p=this.read(),old=p.rounds.find(r=>r.id===id),points=Math.max(0,score-(old?.score||0));if(!points)return {earned:0,points:0,total:p.diamonds,remainder:p.remainder};const amount=p.remainder+points,earned=Math.floor(amount/100);p.diamonds+=earned;p.remainder=amount%100;if(old)old.score=score;else p.rounds.push({id,score});p.rounds=p.rounds.slice(-1000);this.save(p);return {earned,points,total:p.diamonds,remainder:p.remainder};}
+  buy(id){const w=W.get(id),p=this.read();if(!w||p.owned.includes(id)||p.diamonds<w.cost)return false;p.diamonds-=w.cost;p.owned.push(id);this.save(p);return true;}
+  equip(type,id){const p=this.read(),key=type===0?'swordWeapon':type===5?'assassinWeapon':null,w=W.get(id);if(!key||id!==-1&&(!w||w.type!==type||!p.owned.includes(id))||p.equipment[key]===id)return false;p.equipment[key]=id;this.save(p);return true;}
+  equipment(){return this.read().equipment;}
+ }
+ return {Store,empty,validEquipment,normalizeEquipment};
+});

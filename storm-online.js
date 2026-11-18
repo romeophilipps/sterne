@@ -16,26 +16,26 @@
   close(){this.closed=true;this.joined=false;clearTimeout(this.reconnect);clearInterval(this.heartbeat);this.socket?.close();}
  }
  class Session{
-  constructor(config,{host=false,loadout,expectedPeer=null,code=roomCode(),id=globalThis.crypto.randomUUID(),ChannelClass=Channel,clock=()=>Date.now()}={}){
+  constructor(config,{host=false,loadout,equipment=globalThis.StarArmoryUI?.equipment?.()||{},expectedPeer=null,code=roomCode(),id=globalThis.crypto.randomUUID(),ChannelClass=Channel,clock=()=>Date.now()}={}){
    this.expectedPeer=expectedPeer;this.host=host;this.code=normalize(code);if(!/^[A-HJ-NP-Z2-9]{8}$/.test(this.code))throw Error('Bitte den achtstelligen Raumcode eingeben.');
-   if(!D.validLoadout(loadout))throw Error('Wähle zuerst 4 Truppen und 1 Helden.');this.loadout=Object.freeze({warriors:Object.freeze([...loadout.warriors]),heroes:Object.freeze([...loadout.heroes])});this.peerLoadout=null;
+   if(!D.validLoadout(loadout))throw Error('Wähle zuerst 4 Truppen und 1 Helden.');this.loadout=Object.freeze({warriors:Object.freeze([...loadout.warriors]),heroes:Object.freeze([...loadout.heroes])});this.peerLoadout=null;this.equipment=D.normalizeEquipment(equipment);this.peerEquipment=null;
    Object.assign(this,{id,clock,startedAt:clock(),lastPeer:0,lastHello:0,lastSend:0,lastPulse:0,seq:0,round:0,pending:[],votes:[false,false],voteRequested:false,peerLeft:false,peer:null,hostId:null,snapshot:null,match:null,state:'lobby',connected:false,closed:false});
    this.onchange=()=>{};this.channel=new ChannelClass(config,this.code);this.channel.onstatus=s=>{this.connected=s==='connected';this.change();if(this.connected)this.hello();};this.channel.onmessage=m=>this.receive(m);
   }
   start(){this.channel.connect();this.timer=setInterval(()=>this.update(),50);return this;}
   change(){this.onchange(this);}
   send(type,data={}){return this.channel.send({v:D.VERSION,type,from:this.id,to:this.peer||undefined,round:this.round,...data});}
-  hello(){this.send(this.host?'offer':'hello',{to:undefined,loadout:this.loadout});this.lastHello=this.clock();}
+  hello(){this.send(this.host?'offer':'hello',{to:undefined,loadout:this.loadout,equipment:this.equipment});this.lastHello=this.clock();}
   sendState(){this.snapshot=this.match.snapshot();this.send('snapshot',{state:this.snapshot,votes:[...this.votes],peerLeft:this.peerLeft});}
-  startMatch(){this.round++;this.match=new D.Match((this.clock()^this.round*2654435761)>>>0,[this.loadout,this.peerLoadout]);this.seq=0;this.pending=[];this.votes=[false,false];this.voteRequested=false;this.peerLeft=false;this.state='playing';this.lastTick=this.clock();this.lastSend=this.clock();this.sendState();this.change();}
+  startMatch(){this.round++;this.match=new D.Match((this.clock()^this.round*2654435761)>>>0,[this.loadout,this.peerLoadout],[this.equipment,this.peerEquipment||{}]);this.seq=0;this.pending=[];this.votes=[false,false];this.voteRequested=false;this.peerLeft=false;this.state='playing';this.lastTick=this.clock();this.lastSend=this.clock();this.sendState();this.change();}
   maybeRestart(){if(this.match&&this.match.winner!==null&&this.votes.every(Boolean)&&!this.peerLeft)this.startMatch();}
   requestRematch(){if(this.closed||!this.connected||this.peerLeft||this.state!=='playing'||this.snapshot?.winner==null)return false;const seat=this.host?0:1;if(this.votes[seat])return false;this.votes[seat]=true;this.voteRequested=true;if(this.host){this.sendState();this.change();this.maybeRestart();}else{this.send('rematch');this.lastVoteSend=this.clock();this.change();}return true;}
   receive(m){
    if(this.closed||!m||this.expectedPeer&&m.from!==this.expectedPeer||m.v!==D.VERSION||m.from===this.id||typeof m.from!=='string'||m.from.length>100||m.to&&m.to!==this.id)return;
    if(this.host){
-    if(m.type==='hello'){if(!D.validLoadout(m.loadout))return;if(this.peer&&m.from!==this.peer){this.send('full',{to:m.from});return;}if(this.peerLoadout&&!sameLoadout(this.peerLoadout,m.loadout))return;if(!this.peerLoadout)this.peerLoadout={warriors:[...m.loadout.warriors],heroes:[...m.loadout.heroes]};this.peer=m.from;this.lastPeer=this.clock();this.send('welcome');return;}
+    if(m.type==='hello'){if(!D.validLoadout(m.loadout)||!D.validEquipment(m.equipment||{}))return;if(this.peer&&m.from!==this.peer){this.send('full',{to:m.from});return;}if(this.peerLoadout&&!sameLoadout(this.peerLoadout,m.loadout))return;if(this.peerEquipment&&JSON.stringify(D.normalizeEquipment(m.equipment||{}))!==JSON.stringify(this.peerEquipment))return;if(!this.peerEquipment)this.peerEquipment=D.normalizeEquipment(m.equipment||{});if(!this.peerLoadout)this.peerLoadout={warriors:[...m.loadout.warriors],heroes:[...m.loadout.heroes]};this.peer=m.from;this.lastPeer=this.clock();this.send('welcome');return;}
     if(m.from!==this.peer)return;this.lastPeer=this.clock();
-    if(m.type==='ready'){if(!D.validLoadout(m.loadout)||!sameLoadout(m.loadout,this.peerLoadout))return;if(!this.match)this.startMatch();else{this.sendState();this.change();}return;}
+    if(m.type==='ready'){if(!D.validLoadout(m.loadout)||!sameLoadout(m.loadout,this.peerLoadout)||!D.validEquipment(m.equipment||{})||JSON.stringify(D.normalizeEquipment(m.equipment||{}))!==JSON.stringify(this.peerEquipment))return;if(!this.match)this.startMatch();else{this.sendState();this.change();}return;}
     if(m.round!==this.round)return;
     if(m.type==='command'&&this.match){this.match.command(1,m.command);this.sendState();this.change();}
     else if(m.type==='rematch'&&this.match?.winner!==null&&!this.peerLeft){this.votes[1]=true;this.sendState();this.change();this.maybeRestart();}
@@ -43,7 +43,7 @@
    }else{
     if(m.type==='offer'&&!this.hostId){this.hello();return;}
     if(m.type==='full'&&!this.hostId){this.state='full';this.change();return;}
-    if(m.type==='welcome'){if(this.hostId&&this.hostId!==m.from)return;this.hostId=this.peer=m.from;this.lastPeer=this.clock();this.send('ready',{loadout:this.loadout});return;}
+    if(m.type==='welcome'){if(this.hostId&&this.hostId!==m.from)return;this.hostId=this.peer=m.from;this.lastPeer=this.clock();this.send('ready',{loadout:this.loadout,equipment:this.equipment});return;}
     if(m.from!==this.hostId)return;this.lastPeer=this.clock();
     if(m.type==='snapshot'&&D.validSnapshot(m.state)&&Number.isInteger(m.round)&&m.round>=1&&m.round>=this.round){
      if(m.round>this.round){this.round=m.round;this.seq=0;this.pending=[];this.snapshot=null;this.votes=[false,false];this.voteRequested=false;}
@@ -59,7 +59,7 @@
    if(this.closed)return;const now=this.clock();
    if(now-this.lastPulse>=700&&this.peer&&!this.peerLeft){this.send('pulse');this.lastPulse=now;}
    if(this.state==='lobby'&&now-this.lastHello>=1000)this.hello();
-   if(!this.host&&this.hostId&&!this.snapshot&&now-this.lastHello>=1000){this.send('ready',{loadout:this.loadout});this.lastHello=now;}
+   if(!this.host&&this.hostId&&!this.snapshot&&now-this.lastHello>=1000){this.send('ready',{loadout:this.loadout,equipment:this.equipment});this.lastHello=now;}
    if(!this.host&&this.voteRequested&&this.snapshot?.winner!==null&&!this.peerLeft&&now-(this.lastVoteSend||0)>=800){this.send('rematch');this.lastVoteSend=now;}
    if(this.host&&this.match){const dt=now-(this.lastTick||now);this.lastTick=now;if(!this.paused&&this.match.winner===null)this.match.tick(dt);if(now-this.lastSend>=200){this.sendState();this.lastSend=now;this.change();}}
    else if(this.pending.length&&now-this.lastSend>=800){this.send('command',{command:this.pending[0]});this.lastSend=now;}

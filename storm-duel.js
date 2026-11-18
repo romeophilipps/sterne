@@ -1,6 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm.js'):root.StarStorm);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarDuel=api;})(globalThis,S=>{
- const VERSION=5,MAX_UNITS=30;
+ const VERSION=6,MAX_UNITS=30;
  const DEFAULT_LOADOUT=Object.freeze({warriors:Object.freeze([0,1,2,3]),heroes:Object.freeze([0])});
  const validLoadout=p=>S.validLoadout(p,4,1);
  const freezeLoadout=p=>Object.freeze({warriors:Object.freeze([...p.warriors]),heroes:Object.freeze([...p.heroes])});
@@ -8,17 +8,17 @@
  const clean=o=>JSON.parse(JSON.stringify(o,(key,value)=>(['pending','to','_raw'].includes(key)||key==='source'&&typeof value==='object')?undefined:typeof value==='number'&&!Number.isFinite(value)?0:value));
  function random(seed){let n=seed>>>0;return ()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296;};}
  class Match{
-  constructor(seed=12345,loadouts=[DEFAULT_LOADOUT,DEFAULT_LOADOUT]){if(!Array.isArray(loadouts)||loadouts.length!==2||!loadouts.every(validLoadout))throw Error('Jeder Spieler muss 4 Truppen und 1 Helden wählen.');this.loadouts=Object.freeze(loadouts.map(freezeLoadout));this.run=S.create(random(seed));this.wallets=[this.run.army,S.profile()];this.elapsed=0;this.winner=null;this.sequence=0;this.lastCommands=[0,0];this.commandTimes=[[],[]];const r=this.run,spawn=r.spawnLegion.bind(r);r.spawnLegion=(...args)=>{const e=spawn(...args);if(e){e.hp*=2;e.max*=2;}return e;};
+  constructor(seed=12345,loadouts=[DEFAULT_LOADOUT,DEFAULT_LOADOUT],equipment=[{},{}]){if(!Array.isArray(loadouts)||loadouts.length!==2||!loadouts.every(validLoadout))throw Error('Jeder Spieler muss 4 Truppen und 1 Helden wählen.');this.loadouts=Object.freeze(loadouts.map(freezeLoadout));this.run=S.create(random(seed));this.wallets=[this.run.army,S.profile()];if(!Array.isArray(equipment)||equipment.length!==2||!equipment.every(S.Armory.validEquipment))throw Error('Ungültige Ausrüstung');this.wallets.forEach((army,i)=>Object.assign(army,S.Armory.normalizeEquipment(equipment[i])));this.rewardId=globalThis.crypto?.randomUUID?.()||('coop-'+Date.now()+'-'+Math.random());this.elapsed=0;this.winner=null;this.sequence=0;this.lastCommands=[0,0];this.commandTimes=[[],[]];const r=this.run,spawn=r.spawnLegion.bind(r);r.spawnLegion=(...args)=>{const e=spawn(...args);if(e){e.hp*=2;e.max*=2;}return e;};
    this.rounds=this.wallets.map((army,side)=>({army,get troops(){return r.troops.filter(t=>t.owner===side);},get base(){return r.base;},get heroArrivals(){return r.heroArrivals.filter(f=>f.owner===side);},loadout:this.loadouts[side]}));
   }
   command(side,cmd){if(![0,1].includes(side)||!cmd||this.winner!==null||!Number.isInteger(cmd.seq)||cmd.seq!==this.lastCommands[side]+1)return false;this.lastCommands[side]=cmd.seq;const times=this.commandTimes[side]=this.commandTimes[side].filter(t=>this.elapsed-t<1000);if(times.length>=12)return false;times.push(this.elapsed);
-   if(!['buy','upgrade','weapon'].includes(cmd.action)||!Number.isInteger(cmd.index))return false;
+   if(!['buy','upgrade'].includes(cmd.action)||!Number.isInteger(cmd.index))return false;
    const r=this.run,all=r.troops,own=all.filter(t=>t.owner===side),others=all.filter(t=>t.owner!==side),arrivals=r.heroArrivals,ownArrivals=arrivals.filter(f=>f.owner===side),otherArrivals=arrivals.filter(f=>f.owner!==side),army=this.wallets[side],loadout=this.loadouts[side];
    if(cmd.action==='buy'&&(!['warriors','heroes'].includes(cmd.kind)||own.filter(t=>t.hp>0).length+ownArrivals.length>=MAX_UNITS))return false;
    if(cmd.action==='buy'&&!loadout[cmd.kind].includes(cmd.index)||cmd.action==='upgrade'&&cmd.index!==S.WARRIORS.length&&!loadout.warriors.includes(cmd.index))return false;
-   if(cmd.action==='weapon'&&!loadout.warriors.includes(0))return false;
+   
    const previousLoadout=r.loadout;r.army=army;r.troops=own;r.heroArrivals=ownArrivals;r.loadout=loadout;let ok=false;
-   try{if(cmd.action==='buy')ok=r.buy(cmd.kind,cmd.index);else if(cmd.action==='weapon')ok=r.weapon(cmd.kind,cmd.index);else ok=r.upgrade(cmd.index);for(const t of r.troops)if(t.owner===undefined)t.owner=side;for(const f of r.heroArrivals){f.owner=side;f.unit.owner=side;}}
+   try{if(cmd.action==='buy')ok=r.buy(cmd.kind,cmd.index);else ok=r.upgrade(cmd.index);for(const t of r.troops)if(t.owner===undefined)t.owner=side;for(const f of r.heroArrivals){f.owner=side;f.unit.owner=side;}}
    finally{r.troops=[...others,...r.troops];r.heroArrivals=[...otherArrivals,...r.heroArrivals];r.army=this.wallets[0];r.loadout=previousLoadout;}
    if(ok&&cmd.action==='upgrade'&&cmd.index===S.WARRIORS.length)for(const wallet of this.wallets)wallet.baseLevel=army.baseLevel;
    return ok;
@@ -30,8 +30,8 @@
    }this.sequence++;
   }
   surrender(side){if(this.winner===null&&[0,1].includes(side))this.winner='draw';}
-  snapshot(){const r=this.run,field=clean(Object.fromEntries(fieldKeys.map(key=>[key,r[key]])));return {v:VERSION,mode:'coop',seq:this.sequence,elapsed:this.elapsed,winner:this.winner,ack:[...this.lastCommands],field,rounds:this.wallets.map((army,side)=>({army:clean(army),base:clean(r.base),troops:field.troops.filter(t=>t.owner===side),heroArrivals:field.heroArrivals.filter(f=>f.owner===side),loadout:this.loadouts[side]}))};}
+  snapshot(){const r=this.run,field=clean(Object.fromEntries(fieldKeys.map(key=>[key,r[key]])));return {v:VERSION,mode:'coop',rewardId:this.rewardId,seq:this.sequence,elapsed:this.elapsed,winner:this.winner,ack:[...this.lastCommands],field,rounds:this.wallets.map((army,side)=>({army:clean(army),base:clean(r.base),troops:field.troops.filter(t=>t.owner===side),heroArrivals:field.heroArrivals.filter(f=>f.owner===side),loadout:this.loadouts[side]}))};}
  }
- function validSnapshot(s){return !!s&&s.v===VERSION&&s.mode==='coop'&&Number.isFinite(s.seq)&&Number.isFinite(s.elapsed)&&[null,'defeat','draw'].includes(s.winner)&&Array.isArray(s.ack)&&s.ack.length===2&&s.field&&Number.isFinite(s.field.wave)&&Array.isArray(s.field.troops)&&s.field.troops.length<=MAX_UNITS*2&&Array.isArray(s.field.enemies)&&s.field.enemies.length<=40&&Array.isArray(s.rounds)&&s.rounds.length===2&&s.rounds.every(r=>r&&r.base&&Number.isFinite(r.base.hp)&&Number.isFinite(r.base.max)&&Array.isArray(r.troops)&&r.troops.length<=MAX_UNITS&&r.army&&validLoadout(r.loadout)&&Array.isArray(r.heroArrivals)&&r.heroArrivals.length<=1);}
- return {VERSION,Match,validSnapshot,MAX_UNITS,validLoadout,DEFAULT_LOADOUT};
+ function validSnapshot(s){return !!s&&s.v===VERSION&&s.mode==='coop'&&typeof s.rewardId==='string'&&s.rewardId.length>0&&s.rewardId.length<=180&&Number.isSafeInteger(s.field?.score)&&s.field.score>=0&&s.field.score<=1e9&&Number.isFinite(s.seq)&&Number.isFinite(s.elapsed)&&[null,'defeat','draw'].includes(s.winner)&&Array.isArray(s.ack)&&s.ack.length===2&&s.field&&Number.isFinite(s.field.wave)&&Array.isArray(s.field.troops)&&s.field.troops.length<=MAX_UNITS*2&&Array.isArray(s.field.enemies)&&s.field.enemies.length<=40&&Array.isArray(s.rounds)&&s.rounds.length===2&&s.rounds.every(r=>r&&r.base&&Number.isFinite(r.base.hp)&&Number.isFinite(r.base.max)&&Array.isArray(r.troops)&&r.troops.length<=MAX_UNITS&&r.army&&validLoadout(r.loadout)&&Array.isArray(r.heroArrivals)&&r.heroArrivals.length<=1);}
+ return {VERSION,normalizeEquipment:S.Armory.normalizeEquipment,validEquipment:S.Armory.validEquipment,Match,validSnapshot,MAX_UNITS,validLoadout,DEFAULT_LOADOUT};
 });
