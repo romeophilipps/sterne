@@ -163,7 +163,11 @@
   function closeHelp(){ $('game-help-dialog').close();if(helpWasPlaying&&state==='help'){state='playing';lastFrame=performance.now();syncStormViewport();if(state==='playing'&&sound)music?.play();}helpWasPlaying=false; }
   $('game-help').addEventListener('click',openHelp);$('game-help-close').addEventListener('click',closeHelp);$('game-help-dialog').addEventListener('cancel',e=>{e.preventDefault();closeHelp();});
   function start(loadout=null) {
-    if(modes[mode].id==='storm'&&!StarStorm.validLoadout(loadout)){if(!StarStormRoster.isOpen)StarStormRoster.open().then(selection=>{if(selection)start(selection);});return;}
+    if(modes[mode].id==='storm'&&!StarStorm.validLoadout(loadout)){
+      if(StarStormRoster.isOpen||StarStormReveal.active)return;
+      unlockAudio();music?.pause();const previous=state;state='reveal';
+      StarStormReveal.play({context:audio,sound,onSoundChange:value=>{sound=value;soundUI();try{localStorage.setItem('stars-sound',sound?'on':'off');}catch{}}}).finally(()=>{state=previous;StarStormRoster.open().then(selection=>{if(selection)start(selection);});});return;
+    }
     unlockAudio();run=modes[mode].create();if(modes[mode].id==='storm')run.setLoadout(loadout);$('game').classList.toggle('storm-roster-run',modes[mode].id==='storm'&&!!run.loadout);music?.reset(1,modes[mode].id==='storm'?'storm':slinging()||shooting()?'dodge':modes[mode].id);shownLevel=1;keys.clear();pointerAnchor=null;hearts();
     cells.forEach(cell=>cell.querySelectorAll('.burst').forEach(effect=>effect.remove()));enemyNodes.clear();$('dodge-enemies').replaceChildren();$('dodge-effects').replaceChildren();
     $('sling-field').hidden=!slinging();$('sling-shots').hidden=!slinging();$('game').classList.toggle('sling-mode',slinging());$('board').hidden=dodging()||slinging()||shooting();$('nova-field').hidden=!shooting();$('nova-hud').hidden=!shooting();$('nova-pulse').hidden=!shooting()||modes[mode].id==='storm';$('storm-market').hidden=modes[mode].id!=='storm';$('game').classList.toggle('storm-mode',modes[mode].id==='storm');$('game').classList.toggle('nova-mode',shooting());$('dodge-field').hidden=!dodging();$('dodge-hint').hidden=!dodging();$('dodge-types').hidden=!dodging();$('game').classList.toggle('dodge-mode',dodging());

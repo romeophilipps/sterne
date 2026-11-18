@@ -266,3 +266,13 @@ html.storm-viewport:has(dialog[open]),html.storm-viewport:has(dialog[open]) body
 :is(body.storm-layout,body:has(#game.storm-mode:not([hidden]))) #storm-shop-items.has-loadout{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
 .army-loadout-row{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));height:100%}
 @media(max-width:350px){.roster-head{padding:15px 13px 10px}.roster-head h2{font-size:21px}.roster-scroll{padding:10px}.roster-troops{gap:6px}.roster-card{gap:4px;min-height:85px;padding:8px 4px}.roster-card canvas{width:40px;height:42px}.roster-card strong{font-size:11px}.roster-card small{font-size:8px}.roster-card-text>span{font-size:9px}.roster-heroes{gap:6px}}
+
+/* Logo reveal is scoped to the post-selection singleplayer launch. */
+#storm-reveal-dialog{position:fixed;inset:0;margin:0;padding:0;border:0;border-radius:0;width:100vw;height:100dvh;max-width:none;max-height:none;background:transparent;overflow:hidden;box-shadow:none;color:#fff5d8}
+#storm-reveal-dialog::backdrop{background:transparent;backdrop-filter:none}
+#storm-reveal-dialog::before{display:none}#storm-reveal-dialog canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#storm-reveal-dialog button{position:absolute;z-index:1;min-height:44px;padding:11px 17px;border:1px solid #e7c98b65;border-radius:9px;background:#0a1029c9;color:#ffebc7;font:600 12px system-ui;touch-action:manipulation;backdrop-filter:blur(8px)}
+#storm-reveal-dialog .reveal-skip{right:max(18px,env(safe-area-inset-right));bottom:max(22px,env(safe-area-inset-bottom))}
+#storm-reveal-dialog .reveal-mute{right:max(18px,env(safe-area-inset-right));top:max(18px,env(safe-area-inset-top))}
+.reveal-accessible-title{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+html.storm-viewport body.storm-layout #storm-reveal-dialog[open]{width:100vw;max-width:none;height:100dvh;max-height:none;transform:none;backdrop-filter:none;-webkit-backdrop-filter:none;box-sizing:border-box}
