@@ -17,7 +17,7 @@
   const options={passive:false,capture:true};
   const stop=e=>{if(e.cancelable)e.preventDefault();};
   const touchStart=e=>{if(e.touches.length>1)stop(e);};
-  const touchMove=e=>{if(e.touches.length>1||!e.target?.closest?.('dialog[open]'))stop(e);};
+  const touchMove=e=>{if(e.touches.length>1||!e.target?.closest?.('dialog[open], [data-testplay-album]'))stop(e);};
   const resetScroll=()=>{if(win.scrollX||win.scrollY)win.scrollTo(0,0);};
   const handlers={gesturestart:stop,gesturechange:stop,dblclick:stop,touchstart:touchStart,touchmove:touchMove};
   return enabled=>{
