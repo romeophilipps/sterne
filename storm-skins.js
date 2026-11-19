@@ -1,19 +1,21 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarSkins=api;})(globalThis,()=>{
  const CHEST_COST=100,DIRECT_COST=200;
- const CATALOG=Object.freeze([
-  {id:1,type:0,variant:1,name:'Weihnachtssoldat',color:'#ed8b9f'},
-  {id:2,type:0,variant:2,name:'Wüstenranger',color:'#e8cb8d'},
-  {id:3,type:0,variant:3,name:'Galaktischer Ritter',color:'#b7a4e5'},
-  {id:81,type:8,variant:1,name:'Winterspäher',color:'#b7e7f2'},
-  {id:82,type:8,variant:2,name:'Pilot',color:'#e8cb8d'},
-  {id:83,type:8,variant:3,name:'Agent',color:'#9ddd81'},
-  {id:91,type:9,variant:1,name:'Weihnachtsarkanist',color:'#ed8b9f'},
-  {id:92,type:9,variant:2,name:'Sternenweiser',color:'#e8cb8d'},
-  {id:93,type:9,variant:3,name:'Dimensionswächter',color:'#b7a4e5'}
- ].map(Object.freeze));
+ const TROOPS=Object.freeze([
+  {type:0,name:'Rekrut',skins:['Weihnachtssoldat','Wüstenranger','Galaktischer Ritter','Sternenrekrut']},
+  {type:1,name:'Wächter',skins:['Santa-Wächter','Zenit-Wache','Aegis-Paladin','Sternenwächter']},
+  {type:2,name:'Sniper',skins:['Eisjäger','Schattenagent','Geisterschütze','Sternenschütze']},
+  {type:3,name:'Panzerjäger',skins:['Geschenkwerfer','Verwüster','Imperialer Brecher','Orbitaljäger']},
+  {type:4,name:'Fusionist',skins:['Winter-Fusionist','Neon-Fusionist','Void-Synth','Plasma-Pionier']},
+  {type:5,name:'Assassine',skins:['Eis-Assassine','Schattenklinge','Ronin','Nachtläufer']},
+  {type:6,name:'Haudrauf',skins:['Weihnachts-Haudrauf','Donnerkrieger','Berserker','Stahlkoloss']},
+  {type:7,name:'Heiler',skins:['Weihnachtsheiler','Lichtpriester','Sternenheiler','Feldsanitäter']},
+  {type:9,name:'Arkanist',skins:['Weihnachtsarkanist','Sternenweiser','Dimensionswächter','Sternenmagier']},
+  {type:8,name:'Späher',skins:['Winterspäher','Pilot','Agent','Orbitalspäher']}
+ ].map(t=>Object.freeze({...t,skins:Object.freeze(t.skins)})));
+ const CATALOG=Object.freeze(TROOPS.flatMap(t=>t.skins.map((name,i)=>Object.freeze({id:t.type*10+i+1,type:t.type,variant:(i+1)%4,name,color:(t.type===8?['#b7e7f2','#e8cb8d','#9ddd81']:['#b7e7f2','#9ebee7','#bd95f0'])[i%3]}))));
  const get=id=>CATALOG.find(s=>s.id===id)||null;
- function normalize(owned=[],equipped={}){const ids=Array.isArray(owned)?[...new Set(owned.filter(id=>get(id)))]:[],selection={};if(equipped&&typeof equipped==='object')for(const type of [0,8,9]){const id=equipped[type];if(ids.includes(id)&&get(id)?.type===type)selection[type]=id;}return {owned:ids,equipped:selection};}
+ function normalize(owned=[],equipped={}){const ids=Array.isArray(owned)?[...new Set(owned.filter(id=>get(id)))]:[],selection={};if(equipped&&typeof equipped==='object')for(const {type} of TROOPS){const id=equipped[type];if(ids.includes(id)&&get(id)?.type===type)selection[type]=id;}return {owned:ids,equipped:selection};}
  function choose(owned,random=Math.random,catalog=CATALOG){const pool=catalog.filter(s=>!owned.includes(s.id));if(!pool.length)return null;const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');return pool[Math.floor(n*pool.length)];}
  function rotationInfo(now=Date.now()){
   const date=new Date(now);if(!Number.isFinite(date.getTime()))throw Error('Ungültige Zeit.');
@@ -25,5 +27,5 @@
  const DAILY_CHEST=false;
  function chestPool(now=Date.now()){return DAILY_CHEST?rotationInfo(now).skins:CATALOG;}
  function statePose(state){return ({idle:'idle',run:'run',jump:'jump',attack:'attack',aim:'attack',special:'special',ability:'special',ultimate:'special',hit:'hit',block:'hit',death:'death',cloak:'special',reload:'idle',rise:'jump'})[state]||'idle';}
- return {CATALOG,CHEST_COST,DIRECT_COST,DAILY_CHEST,rotationInfo,chestPool,get,normalize,choose,statePose};
+ return {TROOPS,CATALOG,CHEST_COST,DIRECT_COST,DAILY_CHEST,rotationInfo,chestPool,get,normalize,choose,statePose};
 });

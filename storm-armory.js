@@ -12,7 +12,7 @@
   equip(type,id){const p=this.read(),key=type===0?'swordWeapon':type===5?'assassinWeapon':null,w=W.get(id);if(!key||id!==-1&&(!w||w.type!==type||!p.owned.includes(id))||p.equipment[key]===id)return false;p.equipment[key]=id;this.save(p);return true;}
   buySkin(id){const skin=K.get(id),p=this.read();if(!skin||p.skins.owned.includes(id)||p.diamonds<K.DIRECT_COST)return false;p.diamonds-=K.DIRECT_COST;p.skins.owned.push(id);this.save(p);return true;}
   chest(random=Math.random,now=Date.now()){const p=this.read();if(p.diamonds<K.CHEST_COST)return null;const skin=K.choose(p.skins.owned,random,K.chestPool(now));if(!skin)return null;p.diamonds-=K.CHEST_COST;p.skins.owned.push(skin.id);this.save(p);return skin;}
-  equipSkin(type,id){const p=this.read(),skin=K.get(id);if(![0,8,9].includes(type)||id!==-1&&(!skin||skin.type!==type||!p.skins.owned.includes(id)))return false;if(id===-1)delete p.skins.equipped[type];else p.skins.equipped[type]=id;this.save(p);return true;}
+  equipSkin(type,id){const p=this.read(),skin=K.get(id);if(!K.TROOPS.some(t=>t.type===type)||id!==-1&&(!skin||skin.type!==type||!p.skins.owned.includes(id)))return false;if(id===-1)delete p.skins.equipped[type];else p.skins.equipped[type]=id;this.save(p);return true;}
   equipment(){const p=this.read();return {...p.equipment,...(Object.keys(p.skins.equipped).length?{skins:{...p.skins.equipped}}:{})};}
  }
  return {Store,empty,validEquipment,normalizeEquipment};

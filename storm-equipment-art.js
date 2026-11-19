@@ -1,7 +1,7 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarEquipmentArt=api;})(globalThis,()=>{
- const ORDER=Object.freeze([0,1,2,3,4,5,6,7,9]);
- const ROLES=Object.freeze(['Allrounder · Flexibel','Verteidigung · Schutz','Fernkampf · Präzision','Schwer · Durchschlag','Fernkampf · Energie','Nahkampf · Schnell','Nahkampf · Robust','Unterstützung · Heilung','','Magie · Kontrolle']);
+ const ORDER=Object.freeze([0,1,2,3,4,5,6,7,9,8]);
+ const ROLES=Object.freeze(['Allrounder · Flexibel','Verteidigung · Schutz','Fernkampf · Präzision','Schwer · Durchschlag','Fernkampf · Energie','Nahkampf · Schnell','Nahkampf · Robust','Unterstützung · Heilung','Aufklärung · Drohne','Magie · Kontrolle']);
  const ICONS=Object.freeze({
  0:'M5 14l7-7 7 7M5 20l7-7 7 7',
  1:'M12 3l8 3v6c0 5-4 8-8 10-4-2-8-5-8-10V6zM12 5v14',
@@ -11,6 +11,7 @@
  5:'M5 21l5-5m-3-3 4 4M9 12l9-9 3 0 0 3-9 9z',
  6:'M7 11V6a2 2 0 0 1 4 0v4-6a2 2 0 0 1 4 0v6-4a2 2 0 0 1 4 0v5-2a2 2 0 0 1 3 1v7l-4 5H9l-6-7a2 2 0 0 1 3-3l3 3',
  7:'M10 3h4v7h7v4h-7v7h-4v-7H3v-4h7z',
+ 8:'M3 8a13 13 0 0 1 18 0M6 12a9 9 0 0 1 12 0M9 16a4 4 0 0 1 6 0M12 21h.01',
  9:'M20 8a9 9 0 1 0 1 9M18 11a6 6 0 1 1-6-5 4 4 0 1 1-4 4',
  skins:'M8 3l4 2 4-2 6 5-3 4-3-2v11H8V10l-3 2-3-4zM8 3q4 6 8 0',
  modules:'M6 6h12v12H6zM9 2v4m6-4v4M9 18v4m6-4v4M2 9h4m-4 6h4m12-6h4m-4 6h4',
@@ -18,7 +19,7 @@
  upgrades:'M12 21V5m-7 7 7-7 7 7M5 22h14'
  });
  function icon(type,doc=document){const svg=doc.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 24 24');svg.setAttribute('aria-hidden','true');svg.setAttribute('class','armory-role-svg');const path=doc.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d',ICONS[type]||ICONS[0]);path.setAttribute('fill','none');path.setAttribute('stroke','currentColor');path.setAttribute('stroke-width','1.8');path.setAttribute('stroke-linecap','round');path.setAttribute('stroke-linejoin','round');svg.append(path);return svg;}
- const DEFAULTS=Object.freeze(['Blaues Energieschwert','Sternenschild','Präzisionsgewehr','Panzerjäger-Werfer','Fusionsgewehr','Zwei gerade Energiedolche','Sternenhammer','Heilungsstab','','Magischer Dimensionskern']);
- function preview(type,active){if(!ORDER.includes(type))return null;const special=type===0&&[1,2].includes(active?.id);return {src:special?'equipment-weapon-'+active.id+'.webp':'equipment-'+type+'.webp',framed:!special,name:active?.name||DEFAULTS[type],rarity:1,width:special?180:276,height:special?175:90};}
+ const DEFAULTS=Object.freeze(['Blaues Energieschwert','Sternenschild','Präzisionsgewehr','Panzerjäger-Werfer','Fusionsgewehr','Zwei gerade Energiedolche','Sternenhammer','Heilungsstab','Aufklärungsdrohne','Magischer Dimensionskern']);
+ function preview(type,active){if(!ORDER.includes(type))return null;if(type===8)return {src:'storm-drone.png',framed:false,name:DEFAULTS[8],rarity:1,width:276,height:90};const special=type===0&&[1,2].includes(active?.id);return {src:special?'equipment-weapon-'+active.id+'.webp':'equipment-'+type+'.webp',framed:!special,name:active?.name||DEFAULTS[type],rarity:1,width:special?180:276,height:special?175:90};}
  return {ORDER,ROLES,ICONS,DEFAULTS,preview,icon};
 });
