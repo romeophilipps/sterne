@@ -145,9 +145,18 @@
  this.hazards=this.hazards.filter(h=>h.life>0&&this.enemies.some(e=>e.id===h.source&&e.hp>0));this.heroFx=this.heroFx.filter(f=>this.elapsed-f.start<f.duration).slice(-20);this.troops=this.troops.filter(t=>t.hp>0);this.enemies=this.enemies.filter(e=>e.hp>0);this.rockets=this.rockets.filter(r=>r.life>0).slice(-36);this.shots=this.shots.filter(b=>(b.life-=dt)>0).slice(-90);this.fx=this.fx.filter(f=>(f.life-=dt)>0).slice(-40);this.peakEnemies=Math.max(this.peakEnemies,this.enemies.length);
  }
  }
+ // All battlefield layers share one presentation clock. Simulation/network steps
+ // remain independent; slow devices skip stale pictures instead of slowing combat.
+ const ANIMATION_FPS=20,ANIMATION_FRAME_MS=1000/ANIMATION_FPS;
+ class AnimationClock{
+  constructor(){this.reset();}
+  reset(){this.tick=-1;this.elapsed=-1;this.surface=null;}
+  shouldDraw(elapsed,surface){if(!Number.isFinite(elapsed)||elapsed<0)return false;const tick=Math.floor((elapsed+1e-7)/ANIMATION_FRAME_MS),changed=surface!==this.surface||elapsed<this.elapsed||tick!==this.tick;this.elapsed=elapsed;if(!changed)return false;this.tick=tick;this.surface=surface;return true;}
+ }
  class Renderer{
- constructor(canvas){this.canvas=canvas;this.c=canvas.getContext('2d');this.poses=new Map();this.time=0;}
- draw(run){const c=this.c,w=this.canvas.clientWidth,h=this.canvas.clientHeight;if(!w||!h)return;const d=Math.min(2,globalThis.devicePixelRatio||1);if(this.canvas.width!==Math.round(w*d)||this.canvas.height!==Math.round(h*d)){this.canvas.width=Math.round(w*d);this.canvas.height=Math.round(h*d);}c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,w,h);if(run.elapsed<this.time)this.poses.clear();const blend=1-Math.exp(-Math.min(.1,Math.max(0,(run.elapsed-this.time)/1000))/.045);this.time=run.elapsed;const live=new Set([...run.troops,...run.enemies].map(t=>t.id));for(const id of this.poses.keys())if(!live.has(id))this.poses.delete(id);
+ constructor(canvas){this.canvas=canvas;this.c=canvas.getContext('2d');this.poses=new Map();this.time=0;this.animationClock=new AnimationClock();}
+ draw(run){const w=this.canvas.clientWidth,h=this.canvas.clientHeight;if(!w||!h)return false;const d=Math.min(2,globalThis.devicePixelRatio||1);if(!this.animationClock.shouldDraw(run.elapsed,[w,h,d,run.arena,run.rewardId||''].join(':')))return false;this.paint(run);return true;}
+ paint(run){const c=this.c,w=this.canvas.clientWidth,h=this.canvas.clientHeight;const d=Math.min(2,globalThis.devicePixelRatio||1);if(this.canvas.width!==Math.round(w*d)||this.canvas.height!==Math.round(h*d)){this.canvas.width=Math.round(w*d);this.canvas.height=Math.round(h*d);}c.setTransform(d,0,0,d,0,0);c.clearRect(0,0,w,h);if(run.elapsed<this.time)this.poses.clear();const blend=1-Math.exp(-Math.min(.1,Math.max(0,(run.elapsed-this.time)/1000))/.045);this.time=run.elapsed;const live=new Set([...run.troops,...run.enemies].map(t=>t.id));for(const id of this.poses.keys())if(!live.has(id))this.poses.delete(id);
  const p=(x,z)=>globalThis.StarStormArt?StarStormArt.project(x,z,w,h):({x:w*(.035+.93*(1-z)),y:h*(.82+(x-.5)*.12)});
  const star=(x,y,r,color)=>{c.beginPath();for(let i=0;i<10;i++){const a=i*Math.PI/5-Math.PI/2,t=i%2?r*.46:r;i?c.lineTo(x+Math.cos(a)*t,y+Math.sin(a)*t):c.moveTo(x+Math.cos(a)*t,y+Math.sin(a)*t);}c.closePath();c.fillStyle=color;c.fill();};
  if(globalThis.StarStormArt)StarStormArt.drawBackground(c,w,h,run.elapsed,run.arena);else{c.fillStyle='#30273d';c.fillRect(0,0,w,h);}
@@ -181,5 +190,5 @@
 
  }
  }
- return {Legion,Tactics,Weapons,Armory,CURRENCY_WAVES,Round,create:(r,p)=>new Round(r,p),Renderer,WARRIORS,HEROES,HERO_WAVES,HERO_ARRIVAL_DURATION,HERO_RECALL_COST,validLoadout,profile,DAMAGE,WAVES,unitStats,leveledStats,baseStats,upgradeCost,UPGRADES};
+ return {Legion,Tactics,Weapons,Armory,CURRENCY_WAVES,Round,create:(r,p)=>new Round(r,p),ANIMATION_FPS,ANIMATION_FRAME_MS,AnimationClock,Renderer,WARRIORS,HEROES,HERO_WAVES,HERO_ARRIVAL_DURATION,HERO_RECALL_COST,validLoadout,profile,DAMAGE,WAVES,unitStats,leveledStats,baseStats,upgradeCost,UPGRADES};
 });
