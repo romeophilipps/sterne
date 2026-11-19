@@ -17,6 +17,6 @@
   root.addEventListener('click',e=>{if((busy||now()<suppressUntil)&&e.detail!==0){e.preventDefault();e.stopImmediatePropagation();}},true);
   return {go,get busy(){return busy;}};
  }
- async function drawStormLogo(canvas,paint){const load=src=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src;});try{const [space,wordmark]=await Promise.all([load('./storm-logo-space.png?v=116'),load('./storm-wordmark.png?v=116')]);paint(canvas.getContext('2d'),canvas.width,canvas.height,10500,{space,wordmark});}catch{const c=canvas.getContext('2d');c.fillStyle='#edc778';c.font='italic 900 65px system-ui';c.textAlign='center';c.fillText('STERNENSTURM',canvas.width/2,canvas.height/2);}}
+ async function drawStormLogo(canvas,paint){const load=src=>new Promise((resolve,reject)=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=reject;i.src=src;});try{const [space,wordmark]=await Promise.all([load('./storm-logo-space.png?v=117'),load('./storm-wordmark.png?v=117')]);paint(canvas.getContext('2d'),canvas.width,canvas.height,10500,{space,wordmark});}catch{const c=canvas.getContext('2d');c.fillStyle='#edc778';c.font='italic 900 65px system-ui';c.textAlign='center';c.fillText('STERNENSTURM',canvas.width/2,canvas.height/2);}}
  return {wrap,swipeStep,bind,drawStormLogo};
 });

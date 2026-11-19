@@ -22,10 +22,11 @@
   const key=[date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),next=new Date(date);next.setHours(24,0,0,0);
   let seed=(Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000)+115)>>>0;
   const pool=[...CATALOG];for(let i=pool.length-1;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=Math.floor((seed/4294967296)*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  return {key,next:next.getTime(),skins:pool.slice(0,4)};
+  return {key,next:next.getTime(),skins:pool.slice(0,3)};
  }
+ function isDailyOffer(id,now=Date.now()){return rotationInfo(now).skins.some(s=>s.id===id);}
  const DAILY_CHEST=false;
  function chestPool(now=Date.now()){return DAILY_CHEST?rotationInfo(now).skins:CATALOG;}
  function statePose(state){return ({idle:'idle',run:'run',jump:'jump',attack:'attack',aim:'attack',special:'special',ability:'special',ultimate:'special',hit:'hit',block:'hit',death:'death',cloak:'special',reload:'idle',rise:'jump'})[state]||'idle';}
- return {TROOPS,CATALOG,CHEST_COST,DIRECT_COST,DAILY_CHEST,rotationInfo,chestPool,get,normalize,choose,statePose};
+ return {TROOPS,CATALOG,CHEST_COST,DIRECT_COST,DAILY_CHEST,rotationInfo,isDailyOffer,chestPool,get,normalize,choose,statePose};
 });
