@@ -1,5 +1,5 @@
 'use strict';
-((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm-weapons.js'):root.StarWeapons,typeof module==='object'&&module.exports?require('./storm-skins.js'):root.StarSkins);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarArmory=api;})(globalThis,(W,K)=>{
+((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm-weapons.js'):root.StarWeapons,typeof module==='object'&&module.exports?require('./storm-skins.js'):root.StarSkins,typeof module==='object'&&module.exports?require('./storm-shop-catalog.js'):root.StarShop);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarArmory=api;})(globalThis,(W,K,Shop)=>{
  const empty=()=>({version:1,diamonds:0,remainder:0,owned:[],equipment:{swordWeapon:-1,assassinWeapon:-1},rounds:[],skins:{owned:[],equipped:{}}}),integer=(n,min=0,max=Number.MAX_SAFE_INTEGER)=>Number.isSafeInteger(n)&&n>=min&&n<=max;
  const validEquipment=e=>!!e&&typeof e==='object'&&[undefined,-1,0,1,2].includes(e.swordWeapon)&&[undefined,-1,3].includes(e.assassinWeapon);
  const normalizeEquipment=e=>validEquipment(e)?{swordWeapon:e.swordWeapon??-1,assassinWeapon:e.assassinWeapon??-1,...(e.skins?{skins:K.normalize(K.CATALOG.map(s=>s.id),e.skins).equipped}:{})}:{swordWeapon:-1,assassinWeapon:-1};
@@ -11,7 +11,10 @@
   buy(id){const w=W.get(id),p=this.read();if(!w||p.owned.includes(id)||p.diamonds<w.cost)return false;p.diamonds-=w.cost;p.owned.push(id);this.save(p);return true;}
   equip(type,id){const p=this.read(),key=type===0?'swordWeapon':type===5?'assassinWeapon':null,w=W.get(id);if(!key||id!==-1&&(!w||w.type!==type||!p.owned.includes(id))||p.equipment[key]===id)return false;p.equipment[key]=id;this.save(p);return true;}
   buySkin(id,now=Date.now()){const skin=K.get(id),p=this.read();if(!skin||!K.isDailyOffer(id,now)||p.skins.owned.includes(id)||p.diamonds<K.DIRECT_COST)return false;p.diamonds-=K.DIRECT_COST;p.skins.owned.push(id);this.save(p);return true;}
-  chest(random=Math.random,now=Date.now()){const p=this.read();if(p.diamonds<K.CHEST_COST)return null;const skin=K.choose(p.skins.owned,random,K.chestPool(now));if(!skin)return null;p.diamonds-=K.CHEST_COST;p.skins.owned.push(skin.id);this.save(p);return skin;}
+  openChest(kind='standard',random=Math.random,now=Date.now()){const def=Shop.CHESTS[kind],p=this.read();if(!def||!Shop.chestAvailable(kind,now)||p.diamonds<def.cost)return null;const reward=Shop.choose(Shop.chestPool(kind,p,now),random);if(!reward)return null;p.diamonds-=def.cost;if(reward.kind==='skin')p.skins.owned.push(reward.id);else p.owned.push(reward.id);this.save(p);return reward;}
+  chest(random=Math.random,now=Date.now()){return this.openChest('standard',random,now);}
+  buyWinterBundle(now=Date.now()){const p=this.read(),missing=Shop.bundleMissing(p);if(!Shop.seasonInfo(now).active||!missing.length||p.diamonds<Shop.WINTER_BUNDLE.cost)return false;p.diamonds-=Shop.WINTER_BUNDLE.cost;p.skins.owned.push(...missing);this.save(p);return true;}
+
   equipSkin(type,id){const p=this.read(),skin=K.get(id);if(!K.TROOPS.some(t=>t.type===type)||id!==-1&&(!skin||skin.type!==type||!p.skins.owned.includes(id)))return false;if(id===-1)delete p.skins.equipped[type];else p.skins.equipped[type]=id;this.save(p);return true;}
   equipment(){const p=this.read();return {...p.equipment,...(Object.keys(p.skins.equipped).length?{skins:{...p.skins.equipped}}:{})};}
  }

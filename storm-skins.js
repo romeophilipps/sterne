@@ -16,7 +16,7 @@
  const RARITIES=Object.freeze({rare:Object.freeze({label:'SELTEN',color:'#79d9ef'}),epic:Object.freeze({label:'EPISCH',color:'#c298ed'}),legendary:Object.freeze({label:'LEGENDÄR',color:'#efd080'})});
  const CATALOG=Object.freeze(TROOPS.flatMap(t=>t.skins.map((name,i)=>{const variant=(i+1)%4,rarity=variant===0?'rare':variant===3?'legendary':'epic';return Object.freeze({id:t.type*10+i+1,type:t.type,variant,name,rarity,seasonal:variant===1,available:variant!==1,color:RARITIES[rarity].color});})));
  const AVAILABLE=Object.freeze(CATALOG.filter(s=>s.available));
- function collection(owned=[]){return TROOPS.flatMap(t=>CATALOG.filter(s=>s.type===t.type&&(s.available||owned.includes(s.id))).sort((a,b)=>a.variant-b.variant));}
+ function collection(owned=[],includeSeasonal=false){return TROOPS.flatMap(t=>CATALOG.filter(s=>s.type===t.type&&(s.available||includeSeasonal&&s.seasonal||owned.includes(s.id))).sort((a,b)=>a.variant-b.variant));}
  const get=id=>CATALOG.find(s=>s.id===id)||null;
  function normalize(owned=[],equipped={}){const ids=Array.isArray(owned)?[...new Set(owned.filter(id=>get(id)))]:[],selection={};if(equipped&&typeof equipped==='object')for(const {type} of TROOPS){const id=equipped[type];if(ids.includes(id)&&get(id)?.type===type)selection[type]=id;}return {owned:ids,equipped:selection};}
  function choose(owned,random=Math.random,catalog=CATALOG){const pool=catalog.filter(s=>!owned.includes(s.id));if(!pool.length)return null;const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');return pool[Math.floor(n*pool.length)];}
