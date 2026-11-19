@@ -1,6 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarEquipmentArt=api;})(globalThis,()=>{
- const ORDER=Object.freeze([0,1,2,3,4,5,6,7,9,8]);
+ const ORDER=Object.freeze([0,1,2,3,4,5,6,7,8,9]);
  const ROLES=Object.freeze(['Allrounder · Flexibel','Verteidigung · Schutz','Fernkampf · Präzision','Schwer · Durchschlag','Fernkampf · Energie','Nahkampf · Schnell','Nahkampf · Robust','Unterstützung · Heilung','Aufklärung · Drohne','Magie · Kontrolle']);
  const ICONS=Object.freeze({
  0:'M5 14l7-7 7 7M5 20l7-7 7 7',

@@ -16,7 +16,7 @@
   buyWinterBundle(now=Date.now()){const p=this.read(),missing=Shop.bundleMissing(p);if(!Shop.seasonInfo(now).active||!missing.length||p.diamonds<Shop.WINTER_BUNDLE.cost)return false;p.diamonds-=Shop.WINTER_BUNDLE.cost;p.skins.owned.push(...missing);this.save(p);return true;}
 
   redeemCode(input,now=Date.now()){const gift=Rewards.find(input);if(!gift)return {ok:false,reason:'invalid'};const p=this.read(),id='code:'+gift.code;if(p.redeemedCodes.includes(gift.code)||p.inbox.some(m=>m.id===id))return {ok:false,reason:'used'};if(!integer(now))throw Error('Ungültige Zeit.');p.redeemedCodes.push(gift.code);p.inbox.push({id,title:gift.title,message:gift.message,diamonds:gift.diamonds,claimed:false,createdAt:now});this.save(p);return {ok:true,id};}
-  claimMail(id){const p=this.read(),mail=p.inbox.find(m=>m.id===id);if(!mail||mail.claimed)return false;if(!integer(p.diamonds+mail.diamonds))throw Error('Dein Diamantenkonto ist voll.');p.diamonds+=mail.diamonds;mail.claimed=true;this.save(p);return true;}
+  claimMail(id){const p=this.read(),mail=p.inbox.find(m=>m.id===id);if(!mail||mail.claimed)return false;if(!integer(p.diamonds+mail.diamonds))throw Error('Dein Sternenstaubkonto ist voll.');p.diamonds+=mail.diamonds;mail.claimed=true;this.save(p);return true;}
   equipSkin(type,id){const p=this.read(),skin=K.get(id);if(!K.TROOPS.some(t=>t.type===type)||id!==-1&&(!skin||skin.type!==type||!p.skins.owned.includes(id)))return false;if(id===-1)delete p.skins.equipped[type];else p.skins.equipped[type]=id;this.save(p);return true;}
   equipment(){const p=this.read();return {...p.equipment,...(Object.keys(p.skins.equipped).length?{skins:{...p.skins.equipped}}:{})};}
  }
