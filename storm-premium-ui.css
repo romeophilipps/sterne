@@ -69,9 +69,9 @@ body[data-game=storm] :is(.market-buy,.skin-direct-buy,.armory-buy,.skin-chest-b
 @container(min-width:600px){.market-nav button{flex-direction:row;min-height:48px;font-size:var(--su-text-ui);gap:8px}.market-chest-card{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);padding:20px}.market-chest-art{max-width:340px;margin:auto}.market-chest-copy h3{font-size:var(--su-text-title)}.market-chest-copy .armory-note{font-size:var(--su-text-body)}.market-daily .skin-featured-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.market-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.market-category{grid-template-columns:26px minmax(0,1fr) 12px;gap:8px;padding:12px}.market-category strong{font-size:var(--su-text-ui)}}
 @media(prefers-reduced-motion:reduce){.market-frame-star,.market-frame-spark{animation:none!important}body[data-game=storm] :is(.market-buy,.skin-direct-buy,.armory-buy,.skin-chest-buy,.primary){transition:none!important}}
 
-body[data-game=storm]{background-image:linear-gradient(#050b1bcf,#050b1be8),url('storm-reveal-space.png?v=150');background-position:center;background-size:cover;background-attachment:fixed}
+body[data-game=storm]{background-image:linear-gradient(#050b1bcf,#050b1be8),url('storm-reveal-space.png?v=151');background-position:center;background-size:cover;background-attachment:fixed}
 body[data-game=storm]:has(dialog[open]){overflow:hidden}
-body[data-game=storm] .armory-station-art{background:linear-gradient(90deg,#10192c 20%,#10192c77 70%),url('storm-reveal-space.png?v=150') right 8%/cover no-repeat;opacity:.72}
+body[data-game=storm] .armory-station-art{background:linear-gradient(90deg,#10192c 20%,#10192c77 70%),url('storm-reveal-space.png?v=151') right 8%/cover no-repeat;opacity:.72}
 .skin-album-card:not([data-rarity]) .skin-art-button{margin-top:24px;min-height:150px;grid-template-rows:100px minmax(24px,auto)}
 .skin-album-card:not([data-rarity]) .skin-preview{height:100px}
 
@@ -173,7 +173,7 @@ body:has(#home[hidden]) #home-mailbox{display:none}
 /* Shared preview canvas: preserve proportions for standard and collectible skins. */
 .skin-art-button .skin-preview,.skin-detail-preview,.skin-materialization .skin-preview,.market-bundle-preview .skin-preview{object-fit:contain}
 
-body[data-game=storm] #storm-armory-dialog[data-view="skins-shop"]{background-image:linear-gradient(#050b1b20,#050b1b38),url('shop-space-background.jpg?v=150');background-position:center;background-size:cover;background-repeat:no-repeat}
+body[data-game=storm] #storm-armory-dialog[data-view="skins-shop"]{background-image:linear-gradient(#050b1b20,#050b1b38),url('shop-space-background.jpg?v=151');background-position:center;background-size:cover;background-repeat:no-repeat}
 #storm-armory-dialog[data-view="skins-shop"] .armory-header{background:linear-gradient(90deg,#081021e0,#08102160)}
 #storm-armory-dialog[data-view="skins-shop"] .armory-scroll{background:transparent}
 #storm-armory-dialog .skin-album-card .skin-art-button{display:block;position:relative;isolation:isolate;width:100%;height:auto;aspect-ratio:5/6;min-height:0;padding:0;margin-top:0;grid-template-rows:none;border:0;clip-path:none;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
@@ -195,14 +195,14 @@ body[data-game=storm] #storm-armory-dialog[data-view="skins-shop"]{background-im
 #storm-armory-dialog .skin-album-card .skin-preview{top:17%;height:56%}
 
 /* Homepage v130: supplied original artwork, live controls and live player data. */
-body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])){background-color:#050b20;background-image:url('./home-horizon.png?v=150'),linear-gradient(#04091dd9,#04091dc9),url('./shop-space-background.jpg?v=150');background-position:center bottom,center,center top;background-size:100% auto,cover,cover;background-repeat:no-repeat;background-attachment:fixed}
+body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])){background-color:#050b20;background-image:url('./home-horizon.png?v=151'),linear-gradient(#04091dd9,#04091dc9),url('./shop-space-background.jpg?v=151');background-position:center bottom,center,center top;background-size:100% auto,cover,cover;background-repeat:no-repeat;background-attachment:fixed}
 body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app{width:100%;max-width:720px;min-height:100svh;margin:0 auto;padding:12px clamp(12px,4.5vw,32px) 32px;border:0;border-radius:0;background:none;box-shadow:none}
 body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app>header{margin:0 0 16px;gap:8px;flex-wrap:nowrap;min-height:44px}
 body:has(#mode-art[data-mode=storm]) .app-brand{font:600 11px/1.2 var(--su-font-body);letter-spacing:.08em;color:#bdc6dc;gap:4px}
-body:has(#mode-art[data-mode=storm]) .app-brand:before{content:"";width:40px;height:42px;background:url('./home-brand-star.png?v=150') center/contain no-repeat}
+body:has(#mode-art[data-mode=storm]) .app-brand:before{content:"";width:40px;height:42px;background:url('./home-brand-star.png?v=151') center/contain no-repeat}
 body:has(#mode-art[data-mode=storm]) .app-brand>svg{display:none}
-#home-settings{background:url('./home-settings.png?v=150') center/contain no-repeat;border:0;box-shadow:none;border-radius:0;flex-shrink:0}
-body:has(#mode-art[data-mode=storm]) #game-help{background:url('./home-help.png?v=150') center/contain no-repeat;border:0;box-shadow:none;border-radius:0;flex-shrink:0}
+#home-settings{background:url('./home-settings.png?v=151') center/contain no-repeat;border:0;box-shadow:none;border-radius:0;flex-shrink:0}
+body:has(#mode-art[data-mode=storm]) #game-help{background:url('./home-help.png?v=151') center/contain no-repeat;border:0;box-shadow:none;border-radius:0;flex-shrink:0}
 body:has(#mode-art[data-mode=storm]) #game-help svg{visibility:hidden}
 #home-settings-dialog{width:min(340px,calc(100vw - 32px));padding:24px;color:var(--su-text);border:1px solid var(--su-line-strong);border-radius:var(--su-radius-panel);background:var(--su-panel);box-shadow:0 18px 80px #000b}
 #home-settings-dialog form{display:flex;align-items:center;justify-content:space-between;gap:16px}#home-settings-dialog h2{font:600 var(--su-text-title)/1.2 var(--su-font-heading);margin:0}#home-settings-dialog .home-audio-setting{display:flex;align-items:center;justify-content:space-between;gap:24px;padding-top:24px;font:500 var(--su-text-body)/1.5 var(--su-font-body)}
@@ -217,21 +217,21 @@ body:has(#mode-art[data-mode=storm]) #home .home-original-banner{display:block;w
 body:has(#mode-art[data-mode=storm]) #home #storm-home-logo{display:none}
 body:has(#mode-art[data-mode=storm]) #home .mode-name{margin:0;font:600 clamp(24px,4.5vw,34px)/1.2 var(--su-font-heading);letter-spacing:.015em;color:#eee2c8}
 body:has(#mode-art[data-mode=storm]) #home .minimal-record{font:600 clamp(19px,3.6vw,27px)/1.3 var(--su-font-heading);color:#edc566;gap:8px}
-body:has(#mode-art[data-mode=storm]) #home .minimal-record:before,body:has(#mode-art[data-mode=storm]) #home .minimal-record:after{content:"";width:15px;height:28px;background:url('./home-medal-1.png?v=150') left center/43px 33px no-repeat}
+body:has(#mode-art[data-mode=storm]) #home .minimal-record:before,body:has(#mode-art[data-mode=storm]) #home .minimal-record:after{content:"";width:15px;height:28px;background:url('./home-medal-1.png?v=151') left center/43px 33px no-repeat}
 body:has(#mode-art[data-mode=storm]) #home .minimal-record:after{transform:scaleX(-1)}
 body:has(#mode-art[data-mode=storm]) #home #home-diamonds{font:600 clamp(13px,2.5vw,18px)/1.4 var(--su-font-heading);color:#83daef;margin:0 0 4px}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice{display:grid;grid-template-columns:1fr 1fr;width:100%;max-width:none;min-height:48px;aspect-ratio:624/82;padding:0;margin:0;border:0;border-radius:0;box-shadow:none;gap:0;background:#09132b80;overflow:visible}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice:before{inset:0 auto 0 0;width:50%;height:100%;border:0;box-shadow:none;clip-path:none;background:url('./home-mode-gold.png?v=150') center/100% 100% no-repeat;transform:none;z-index:1;pointer-events:none;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice:before{inset:0 auto 0 0;width:50%;height:100%;border:0;box-shadow:none;clip-path:none;background:url('./home-mode-gold.png?v=151') center/100% 100% no-repeat;transform:none;z-index:1;pointer-events:none;transition:transform .3s cubic-bezier(.2,.8,.2,1)}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice:has([data-play=multi][aria-pressed=true]):before{transform:translateX(100%)}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button{position:relative;z-index:0;display:flex;gap:6px;min-height:48px;padding:9px 8px;white-space:nowrap;background:url('./home-mode-dark.png?v=150') center/100% 100% no-repeat!important;border:0;box-shadow:none!important;color:#adc5e2;font:600 clamp(11px,2.1vw,17px)/1.2 var(--su-font-heading);text-transform:uppercase;letter-spacing:.015em}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button{position:relative;z-index:0;display:flex;gap:6px;min-height:48px;padding:9px 8px;white-space:nowrap;background:url('./home-mode-dark.png?v=151') center/100% 100% no-repeat!important;border:0;box-shadow:none!important;color:#adc5e2;font:600 clamp(11px,2.1vw,17px)/1.2 var(--su-font-heading);text-transform:uppercase;letter-spacing:.015em}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button[aria-pressed=true]{color:#fff1cf}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button:before{content:"";width:22px;height:23px;clip-path:none;background:url('./home-single-icon.png?v=150') center/contain no-repeat;filter:none;flex-shrink:0}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice [data-play=multi]:before{width:27px;background-image:url('./home-multi-icon.png?v=150')}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button:before{content:"";width:22px;height:23px;clip-path:none;background:url('./home-single-icon.png?v=151') center/contain no-repeat;filter:none;flex-shrink:0}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice [data-play=multi]:before{width:27px;background-image:url('./home-multi-icon.png?v=151')}
 body:has(#mode-art[data-mode=storm]) #home #home-actions{grid-template-columns:171fr 303fr 171fr;width:100%;max-width:none;min-height:0;gap:0;margin:0;align-items:center}
 body:has(#mode-art[data-mode=storm]) #home #home-actions :is(#start,.armory-home-button){width:100%;height:auto;min-height:44px;min-width:0;margin:0;padding:0;clip-path:none;border:0;border-radius:0;box-shadow:none;background-color:transparent;background-position:center;background-size:100% auto;background-repeat:no-repeat;transition:transform .18s,filter .18s;isolation:isolate}
-body:has(#mode-art[data-mode=storm]) #home #home-actions #armory-open{aspect-ratio:171/175;background-image:url('./home-equipment.png?v=150')}
-body:has(#mode-art[data-mode=storm]) #home #home-actions #armory-shop-open{aspect-ratio:171/174;background-image:url('./home-shop.png?v=150')}
-body:has(#mode-art[data-mode=storm]) #home #home-actions #start{aspect-ratio:303/228;background-image:url('./home-play.png?v=150');overflow:visible}
+body:has(#mode-art[data-mode=storm]) #home #home-actions #armory-open{aspect-ratio:171/175;background-image:url('./home-equipment.png?v=151')}
+body:has(#mode-art[data-mode=storm]) #home #home-actions #armory-shop-open{aspect-ratio:171/174;background-image:url('./home-shop.png?v=151')}
+body:has(#mode-art[data-mode=storm]) #home #home-actions #start{aspect-ratio:303/228;background-image:url('./home-play.png?v=151');overflow:visible}
 body:has(#mode-art[data-mode=storm]) #home #home-actions :is(svg,small,.start-label,.start-orbit){visibility:hidden}
 body:has(#mode-art[data-mode=storm]) #home #start:after{inset:12% 22%;border-radius:40%;mix-blend-mode:screen;background:linear-gradient(115deg,transparent 35%,#ffed9e1f 50%,transparent 65%);background-size:300% 100%;animation:home-reflect 5s linear infinite}
 body:has(#mode-art[data-mode=storm]) #home #start .start-particles{inset:16%;opacity:.75}
@@ -241,26 +241,26 @@ body:has(#mode-art[data-mode=storm]) #home .mode-picker{position:relative;displa
 body:has(#mode-art[data-mode=storm]) #home .mode-picker:before,body:has(#mode-art[data-mode=storm]) #home .mode-picker:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,#d7bc7377)}
 body:has(#mode-art[data-mode=storm]) #home .mode-picker:after{transform:scaleX(-1)}
 body:has(#mode-art[data-mode=storm]) #home .home-rankings{position:relative;min-height:110px;margin:0;padding:12px 14px;background:linear-gradient(110deg,#10203b66,#070d2266);border:0;border-radius:0;box-shadow:none}
-body:has(#mode-art[data-mode=storm]) #home .home-rankings:before{content:"";position:absolute;inset:0;background:url('./home-ranking.png?v=150') center/100% 100% no-repeat;pointer-events:none}
+body:has(#mode-art[data-mode=storm]) #home .home-rankings:before{content:"";position:absolute;inset:0;background:url('./home-ranking.png?v=151') center/100% 100% no-repeat;pointer-events:none}
 body:has(#mode-art[data-mode=storm]) #home-leaderboard .podium{position:relative;display:grid;grid-template-columns:38px minmax(0,1fr) auto;align-items:center;gap:8px;min-height:32px;padding:3px 9px;border:0;border-radius:0;box-shadow:none;background:none;font:600 15px/1.3 var(--su-font-heading)}
-body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-1:before{content:"";position:absolute;inset:0;pointer-events:none;background:url('./home-first-place.png?v=150') center/100% 100% no-repeat}
+body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-1:before{content:"";position:absolute;inset:0;pointer-events:none;background:url('./home-first-place.png?v=151') center/100% 100% no-repeat}
 body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-1{background:linear-gradient(100deg,#ad6a2729,#e3b97d12,transparent)}
 body:has(#mode-art[data-mode=storm]) #home-leaderboard :is(.ranking-name,.ranking-score,.ranking-position){font:inherit}
 body:has(#mode-art[data-mode=storm]) #home-leaderboard .ranking-position{position:relative;color:transparent;width:35px;height:30px;background:var(--rank-medal) center/contain no-repeat}
-body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-1{--rank-medal:url('./home-medal-1.png?v=150');color:#f2d17f}
-body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-2{--rank-medal:url('./home-medal-2.png?v=150');color:#c6d2e5}
-body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-3{--rank-medal:url('./home-medal-3.png?v=150');color:#d6ad94}
+body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-1{--rank-medal:url('./home-medal-1.png?v=151');color:#f2d17f}
+body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-2{--rank-medal:url('./home-medal-2.png?v=151');color:#c6d2e5}
+body:has(#mode-art[data-mode=storm]) #home-leaderboard .place-3{--rank-medal:url('./home-medal-3.png?v=151');color:#d6ad94}
 body:has(#mode-art[data-mode=storm]) #home .home-download{margin-top:42px;padding:0;opacity:.8}
 @media(min-width:600px){body:has(#mode-art[data-mode=storm]) #home .home-main{gap:16px}body:has(#mode-art[data-mode=storm]) #home .home-rankings{padding:16px 20px}body:has(#mode-art[data-mode=storm]) #home-leaderboard .podium{min-height:48px;font-size:21px;grid-template-columns:55px minmax(0,1fr) auto}body:has(#mode-art[data-mode=storm]) #home-leaderboard .ranking-position{width:46px;height:40px}}
 @media(prefers-reduced-motion:reduce){body:has(#mode-art[data-mode=storm]) #home *,body:has(#mode-art[data-mode=storm]) #home *:before,body:has(#mode-art[data-mode=storm]) #home *:after{animation:none!important;transition:none!important}}
 body:has(#mode-art[data-mode=storm]) #home .home-card{flex-direction:column}
-body[data-game=storm] header #home-settings{background:url('./home-settings.png?v=150') center/contain no-repeat;border:0;border-radius:0;box-shadow:none}
+body[data-game=storm] header #home-settings{background:url('./home-settings.png?v=151') center/contain no-repeat;border:0;border-radius:0;box-shadow:none}
 body:has(#mode-art[data-mode=storm]) #home #home-actions button:before{display:none}
 body:has(#mode-art[data-mode=storm]) #home #home-actions button:after{border:0;box-shadow:none}
 body:has(#mode-art[data-mode=storm]) #home #home-actions .armory-home-button:after{display:none}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice{height:auto}
-body:has(#mode-art[data-mode=storm]) #home .minimal-record:before,body:has(#mode-art[data-mode=storm]) #home .minimal-record:after{width:19px;height:30px;background:url('./home-laurel.png?v=150') center/contain no-repeat}
-body:has(#mode-art[data-mode=storm]) #home .minimal-record svg{width:24px;height:24px;background:url('./home-trophy.png?v=150') center/contain no-repeat}
+body:has(#mode-art[data-mode=storm]) #home .minimal-record:before,body:has(#mode-art[data-mode=storm]) #home .minimal-record:after{width:19px;height:30px;background:url('./home-laurel.png?v=151') center/contain no-repeat}
+body:has(#mode-art[data-mode=storm]) #home .minimal-record svg{width:24px;height:24px;background:url('./home-trophy.png?v=151') center/contain no-repeat}
 body:has(#mode-art[data-mode=storm]) #home .minimal-record svg use{visibility:hidden}
 body:has(#mode-art[data-mode=storm]) #home #home-diamonds{border:0;border-radius:0;background:none;box-shadow:none;padding:0;min-height:30px;display:flex;align-items:center;gap:4px}
 #home-diamonds .home-currency-icon{display:block;width:25px;height:23px;object-fit:contain}
@@ -306,24 +306,24 @@ body[data-game=storm] #storm-armory-dialog[data-view=skins-shop] .market-nav but
 #storm-armory-dialog .market-nav .market-nav-original{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none}
 #storm-armory-dialog .market-nav button:before{display:none}
 body[data-game=storm] #storm-armory-dialog .market-nav button:after{content:none;border:0;box-shadow:none}
-body[data-game=storm] #storm-armory-dialog .market-nav button[data-market-page=skins]:after{content:"";position:absolute;inset:0;background:url('./market-nav-inactive-frame.png?v=150') center/contain no-repeat;pointer-events:none;z-index:1}
-body[data-game=storm] #storm-armory-dialog .market-nav button[aria-pressed=true]:after{content:"";position:absolute;inset:0;background:url('./market-nav-active-frame.png?v=150') center/contain no-repeat;pointer-events:none;z-index:2;filter:drop-shadow(0 0 2px #e3ffff) drop-shadow(0 0 5px #42deff);animation:market-nav-selection 3s ease-in-out infinite}
+body[data-game=storm] #storm-armory-dialog .market-nav button[data-market-page=skins]:after{content:"";position:absolute;inset:0;background:url('./market-nav-inactive-frame.png?v=151') center/contain no-repeat;pointer-events:none;z-index:1}
+body[data-game=storm] #storm-armory-dialog .market-nav button[aria-pressed=true]:after{content:"";position:absolute;inset:0;background:url('./market-nav-active-frame.png?v=151') center/contain no-repeat;pointer-events:none;z-index:2;filter:drop-shadow(0 0 2px #e3ffff) drop-shadow(0 0 5px #42deff);animation:market-nav-selection 3s ease-in-out infinite}
 body[data-game=storm] #storm-armory-dialog .market-nav button:hover{transform:translateY(-2px);filter:brightness(1.12)}
 body[data-game=storm] #storm-armory-dialog .market-nav button:active{transform:scale(.95)}
 body[data-game=storm] #storm-armory-dialog[data-skin-page=album] .market-album-heading{align-items:center;gap:8px;margin:12px 0 27px;border:0;padding:0;min-height:44px}
 .market-album-heading>div{flex:1;min-width:0}
-body[data-game=storm] #storm-armory-dialog .market-album-heading h3{position:relative;width:100%;max-width:320px;min-height:30px;aspect-ratio:556/84;margin:0;background:url('./market-album-title.png?v=150') left center/contain no-repeat;color:transparent;font-size:0;line-height:0;letter-spacing:0}
-body[data-game=storm] #storm-armory-dialog .market-album-heading h3:after{content:"";position:absolute;left:0;right:0;bottom:-18px;height:20px;background:url('./market-album-title-rule.png?v=150') left center/100% 100% no-repeat;pointer-events:none}
-body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link{position:relative;flex:none;width:100px;height:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:url('./market-album-back.png?v=150') center/contain no-repeat;color:transparent;font-size:0;line-height:0}
+body[data-game=storm] #storm-armory-dialog .market-album-heading h3{position:relative;width:100%;max-width:320px;min-height:30px;aspect-ratio:556/84;margin:0;background:url('./market-album-title.png?v=151') left center/contain no-repeat;color:transparent;font-size:0;line-height:0;letter-spacing:0}
+body[data-game=storm] #storm-armory-dialog .market-album-heading h3:after{content:"";position:absolute;left:0;right:0;bottom:-18px;height:20px;background:url('./market-album-title-rule.png?v=151') left center/100% 100% no-repeat;pointer-events:none}
+body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link{position:relative;flex:none;width:100px;height:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:url('./market-album-back.png?v=151') center/contain no-repeat;color:transparent;font-size:0;line-height:0}
 body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link:before,body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link:after{display:none}
-body[data-game=storm] #storm-armory-dialog .market-collection-note{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;width:100%;box-sizing:border-box;min-height:86px;margin:0 0 20px;padding:10px 12px;border:8px solid transparent;border-image:url('./market-album-info-frame.png?v=150') 29 33 stretch;border-image-outset:2px;background:#0e0b25;color:var(--su-text);font:500 var(--su-text-ui)/1.6 var(--su-font-body);overflow-wrap:normal}
+body[data-game=storm] #storm-armory-dialog .market-collection-note{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:12px;width:100%;box-sizing:border-box;min-height:86px;margin:0 0 20px;padding:10px 12px;border:8px solid transparent;border-image:url('./market-album-info-frame.png?v=151') 29 33 stretch;border-image-outset:2px;background:#0e0b25;color:var(--su-text);font:500 var(--su-text-ui)/1.6 var(--su-font-body);overflow-wrap:normal}
 .market-collection-note>img{display:block;width:42px;height:48px;object-fit:contain;image-rendering:pixelated}
 .market-collection-copy{min-width:0}.market-collection-copy strong{color:#05e0ef;font-weight:700;font-variant-numeric:tabular-nums}
 body[data-game=storm] #storm-armory-dialog .market-album-filter{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:8px;padding:0;margin:0 0 22px;border:0;background:none;box-shadow:none}
-body[data-game=storm] #storm-armory-dialog .market-album-filter>label{display:block;width:100%;min-height:44px;aspect-ratio:268/113;padding:0;background:url('./market-album-filter-label.png?v=150') left center/contain no-repeat;color:transparent;font-size:0;line-height:0;cursor:pointer}
-.market-album-filter-field{position:relative;min-width:0;min-height:56px;border:8px solid transparent;border-image:url('./market-album-filter-frame.png?v=150') 31 38 stretch;border-image-outset:2px;background:#0c1941;box-sizing:border-box}
+body[data-game=storm] #storm-armory-dialog .market-album-filter>label{display:block;width:100%;min-height:44px;aspect-ratio:268/113;padding:0;background:url('./market-album-filter-label.png?v=151') left center/contain no-repeat;color:transparent;font-size:0;line-height:0;cursor:pointer}
+.market-album-filter-field{position:relative;min-width:0;min-height:56px;border:8px solid transparent;border-image:url('./market-album-filter-frame.png?v=151') 31 38 stretch;border-image-outset:2px;background:#0c1941;box-sizing:border-box}
 #storm-armory-dialog .market-album-filter-icon{position:absolute;z-index:1;left:5px;top:50%;transform:translateY(-50%);width:34px;height:34px;object-fit:contain;pointer-events:none;image-rendering:pixelated}
-body[data-game=storm] #storm-armory-dialog .market-album-filter select{position:relative;display:block;width:100%;max-width:none;min-width:0;min-height:40px;margin:0;padding:4px 28px 4px 44px;appearance:none;-webkit-appearance:none;border:0;border-radius:0;box-shadow:none;background:transparent url('./market-album-filter-arrow.png?v=150') right 2px center/24px 20px no-repeat;color:#edf1ff;font:600 var(--su-text-value)/1.3 var(--su-font-heading);letter-spacing:.015em;text-overflow:ellipsis;cursor:pointer}
+body[data-game=storm] #storm-armory-dialog .market-album-filter select{position:relative;display:block;width:100%;max-width:none;min-width:0;min-height:40px;margin:0;padding:4px 28px 4px 44px;appearance:none;-webkit-appearance:none;border:0;border-radius:0;box-shadow:none;background:transparent url('./market-album-filter-arrow.png?v=151') right 2px center/24px 20px no-repeat;color:#edf1ff;font:600 var(--su-text-value)/1.3 var(--su-font-heading);letter-spacing:.015em;text-overflow:ellipsis;cursor:pointer}
 #storm-armory-dialog .market-album-filter select option{background:#101b36;color:#f0eaff}
 @container(max-width:350px){body[data-game=storm] #storm-armory-dialog .market-album-filter{grid-template-columns:64px minmax(0,1fr);gap:6px}body[data-game=storm] #storm-armory-dialog .market-collection-note{grid-template-columns:32px minmax(0,1fr);padding:8px;gap:8px}.market-collection-note>img{width:32px;height:40px}body[data-game=storm] #storm-armory-dialog .market-album-filter select{font-size:14px;padding-left:37px;padding-right:24px}#storm-armory-dialog .market-album-filter-icon{width:29px;height:30px;left:2px}body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link{width:90px}}
 @container(min-width:600px){body[data-game=storm] #storm-armory-dialog .market-nav{gap:12px;padding-top:10px}body[data-game=storm] #storm-armory-dialog .market-nav button{max-height:142px;aspect-ratio:240/221}body[data-game=storm] #storm-armory-dialog .market-album-heading .market-text-link{width:154px}body[data-game=storm] #storm-armory-dialog .market-collection-note{font-size:var(--su-text-body);grid-template-columns:54px minmax(0,1fr);padding:12px 16px}.market-collection-note>img{width:54px;height:56px}body[data-game=storm] #storm-armory-dialog .market-album-filter{grid-template-columns:112px minmax(0,1fr)}body[data-game=storm] #storm-armory-dialog .market-album-filter select{font-size:20px;padding-left:54px}.market-album-filter-field{min-height:64px}#storm-armory-dialog .market-album-filter-icon{width:42px;height:42px}}
@@ -333,20 +333,20 @@ body[data-game=storm] #storm-armory-dialog .market-album-filter select{position:
 .market-nav-label{display:none!important}
 
 /* Multiplayer v133 · separated original room scene, frames, controls and live formations. */
-body[data-game=storm] #storm-social-dialog{box-sizing:border-box;width:min(720px,calc(100vw - 12px));max-width:720px;max-height:calc(100dvh - 12px);margin:auto;padding:10px 12px 16px;border:1px solid #7375cb;border-radius:12px;background:#0a0d29 url('./shop-space-background.jpg?v=150') center/cover;color:var(--su-text);overflow:auto;overscroll-behavior:contain;container-type:inline-size;box-shadow:0 16px 80px #0009}
+body[data-game=storm] #storm-social-dialog{box-sizing:border-box;width:min(720px,calc(100vw - 12px));max-width:720px;max-height:calc(100dvh - 12px);margin:auto;padding:10px 12px 16px;border:1px solid #7375cb;border-radius:12px;background:#0a0d29 url('./shop-space-background.jpg?v=151') center/cover;color:var(--su-text);overflow:auto;overscroll-behavior:contain;container-type:inline-size;box-shadow:0 16px 80px #0009}
 #storm-social-dialog .social-room-header{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:8px;margin:0 0 8px}
 #storm-social-dialog .social-room-header>img{display:block;width:100%;max-width:410px;max-height:48px;object-fit:contain;margin:auto;image-rendering:pixelated}
 #storm-social-dialog :is(.social-back,.social-settings){position:relative;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:0;border-radius:0;box-shadow:none;background:transparent center/contain no-repeat}
-#storm-social-dialog .social-back{background-image:url('./room-back.png?v=150')}#storm-social-dialog .social-settings{background-image:url('./room-settings.png?v=150')}
+#storm-social-dialog .social-back{background-image:url('./room-back.png?v=151')}#storm-social-dialog .social-settings{background-image:url('./room-settings.png?v=151')}
 #storm-social-dialog :is(.social-back,.social-settings):before,#storm-social-dialog :is(.social-back,.social-settings):after{display:none}
-#storm-social-dialog .social-room-title{width:min(100%,490px);height:auto;aspect-ratio:449/89;min-height:44px;margin:0 auto 8px;background:url('./room-title.png?v=150') center/contain no-repeat;font-size:0;line-height:0;color:transparent}
+#storm-social-dialog .social-room-title{width:min(100%,490px);height:auto;aspect-ratio:449/89;min-height:44px;margin:0 auto 8px;background:url('./room-title.png?v=151') center/contain no-repeat;font-size:0;line-height:0;color:transparent}
 #storm-social-dialog .social-room-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 8px}
-#storm-social-dialog .social-room-tabs button{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:46px;padding:4px 3px;border:7px solid transparent;border-image:url('./room-tab-inactive.png?v=150') 16 24 stretch;background:#101641;color:#b3b9ed;font:600 clamp(12px,2.7cqw,19px)/1.2 var(--su-font-heading);box-shadow:none;border-radius:0}
-#storm-social-dialog .social-room-tabs button[aria-selected=true]{border-image-source:url('./room-tab-active.png?v=150');color:#edfdff;filter:drop-shadow(0 0 4px #20dbff55)}
+#storm-social-dialog .social-room-tabs button{position:relative;display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:46px;padding:4px 3px;border:7px solid transparent;border-image:url('./room-tab-inactive.png?v=151') 16 24 stretch;background:#101641;color:#b3b9ed;font:600 clamp(12px,2.7cqw,19px)/1.2 var(--su-font-heading);box-shadow:none;border-radius:0}
+#storm-social-dialog .social-room-tabs button[aria-selected=true]{border-image-source:url('./room-tab-active.png?v=151');color:#edfdff;filter:drop-shadow(0 0 4px #20dbff55)}
 #storm-social-dialog .social-room-tabs img{width:25px;height:24px;object-fit:contain;image-rendering:pixelated}
 #storm-social-dialog .social-room-tabs button:before,#storm-social-dialog .social-room-tabs button:after{display:none}
-#storm-social-dialog .social-search-box{margin:0 0 5px;border:6px solid transparent;border-image:url('./room-search-frame.png?v=150') 12 17 stretch;background:#0f1538;min-height:44px;box-sizing:border-box}
-#storm-social-dialog #social-player-search{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:32px;margin:0;padding:4px 8px 4px 34px;appearance:none;border:0;border-radius:0;box-shadow:none;background:transparent url('./room-search-icon.png?v=150') 4px center/24px 24px no-repeat;color:#eef0ff;font:500 var(--su-text-body)/1.4 var(--su-font-heading)}
+#storm-social-dialog .social-search-box{margin:0 0 5px;border:6px solid transparent;border-image:url('./room-search-frame.png?v=151') 12 17 stretch;background:#0f1538;min-height:44px;box-sizing:border-box}
+#storm-social-dialog #social-player-search{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:32px;margin:0;padding:4px 8px 4px 34px;appearance:none;border:0;border-radius:0;box-shadow:none;background:transparent url('./room-search-icon.png?v=151') 4px center/24px 24px no-repeat;color:#eef0ff;font:500 var(--su-text-body)/1.4 var(--su-font-heading)}
 #storm-social-dialog #social-player-search::placeholder{color:#a6b2eb;opacity:1}
 #storm-social-dialog .social-directory{position:relative;z-index:2;margin:0 0 4px}
 #storm-social-dialog .social-intro{display:none}
@@ -364,14 +364,14 @@ body[data-game=storm] #storm-social-dialog{box-sizing:border-box;width:min(720px
 #storm-social-dialog #social-notice{margin:4px 0;font-size:12px;color:#d4cdf0}#storm-social-dialog #social-notice:empty{display:none}
 #storm-social-dialog #social-team-stage{display:block}
 #storm-social-dialog .social-lineups{position:relative;isolation:isolate;display:block;width:calc(100% + 24px);margin:0 -12px;aspect-ratio:720/637;min-height:310px;padding:0;container-type:inline-size;background:transparent}
-#storm-social-dialog .social-lineups:before{content:"";position:absolute;inset:0;z-index:-1;background:url('./room-scene.png?v=150') center bottom/100% auto no-repeat;pointer-events:none;image-rendering:pixelated}
+#storm-social-dialog .social-lineups:before{content:"";position:absolute;inset:0;z-index:-1;background:url('./room-scene.png?v=151') center bottom/100% auto no-repeat;pointer-events:none;image-rendering:pixelated}
 #storm-social-dialog .social-team{position:absolute;top:0;bottom:0;left:0;width:50%;padding:0;margin:0;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
 #storm-social-dialog .social-team:nth-child(2){left:50%}
 #storm-social-dialog .social-team>small{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
-#storm-social-dialog .social-team:before{content:"";position:absolute;z-index:3;left:calc(24.3 * var(--room-cq,1cqw));top:calc(100% - calc(65.83 * var(--room-cq,1cqw)));width:calc(10 * var(--room-cq,1cqw));height:calc(6.39 * var(--room-cq,1cqw));background:url('./room-crown-gold.png?v=150') center/contain no-repeat;pointer-events:none;image-rendering:pixelated}
-#storm-social-dialog .social-team:nth-child(2):before{left:calc(16.25 * var(--room-cq,1cqw));background-image:url('./room-crown-purple.png?v=150')}
-#storm-social-dialog .social-team>h3{position:absolute;z-index:2;top:calc(100% - calc(60.14 * var(--room-cq,1cqw)));left:calc(14.3 * var(--room-cq,1cqw));width:calc(29.72 * var(--room-cq,1cqw));height:calc(8.61 * var(--room-cq,1cqw));box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0;padding:0 9px;border:0;background:#0c1948 url('./room-name-blue.png?v=150') center/100% 100% no-repeat;color:#f1f5ff;font:600 clamp(11px,calc(2.6 * var(--room-cq,1cqw)),20px)/1.1 var(--su-font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#storm-social-dialog .social-team:nth-child(2)>h3{left:calc(6.11 * var(--room-cq,1cqw));background-image:url('./room-name-purple.png?v=150');background-color:#201038}
+#storm-social-dialog .social-team:before{content:"";position:absolute;z-index:3;left:calc(24.3 * var(--room-cq,1cqw));top:calc(100% - calc(65.83 * var(--room-cq,1cqw)));width:calc(10 * var(--room-cq,1cqw));height:calc(6.39 * var(--room-cq,1cqw));background:url('./room-crown-gold.png?v=151') center/contain no-repeat;pointer-events:none;image-rendering:pixelated}
+#storm-social-dialog .social-team:nth-child(2):before{left:calc(16.25 * var(--room-cq,1cqw));background-image:url('./room-crown-purple.png?v=151')}
+#storm-social-dialog .social-team>h3{position:absolute;z-index:2;top:calc(100% - calc(60.14 * var(--room-cq,1cqw)));left:calc(14.3 * var(--room-cq,1cqw));width:calc(29.72 * var(--room-cq,1cqw));height:calc(8.61 * var(--room-cq,1cqw));box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0;padding:0 9px;border:0;background:#0c1948 url('./room-name-blue.png?v=151') center/100% 100% no-repeat;color:#f1f5ff;font:600 clamp(11px,calc(2.6 * var(--room-cq,1cqw)),20px)/1.1 var(--su-font-heading);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#storm-social-dialog .social-team:nth-child(2)>h3{left:calc(6.11 * var(--room-cq,1cqw));background-image:url('./room-name-purple.png?v=151');background-color:#201038}
 #storm-social-dialog .social-lineup{position:absolute;inset:0;display:block;margin:0;padding:0;pointer-events:none}
 #storm-social-dialog .social-hero{position:absolute;z-index:1;left:calc(29.16 * var(--room-cq,1cqw));bottom:calc(24 * var(--room-cq,1cqw));transform:translateX(-50%);display:block;width:clamp(60px,calc(19 * var(--room-cq,1cqw)),140px);height:clamp(78px,calc(22 * var(--room-cq,1cqw)),150px);min-height:0;min-width:0;margin:0;padding:0;border:0;box-shadow:none;background:none;pointer-events:auto}
 #storm-social-dialog .social-team:nth-child(2) .social-hero{left:calc(21.25 * var(--room-cq,1cqw))}
@@ -380,30 +380,30 @@ body[data-game=storm] #storm-social-dialog{box-sizing:border-box;width:min(720px
 #storm-social-dialog .social-hero:before,#storm-social-dialog .social-hero:after{display:none}
 #storm-social-dialog .social-slots{--slot-h:clamp(44px,calc(8.6 * var(--room-cq,1cqw)),62px);--slot-w:clamp(46px,calc(12.6 * var(--room-cq,1cqw)),91px);--slot-gap:clamp(3px,calc(.6 * var(--room-cq,1cqw)),5px);--slot-stack:calc(4 * var(--slot-h) + 3 * var(--slot-gap));position:absolute;left:calc(2.5 * var(--room-cq,1cqw));right:auto;top:min(calc(100% - calc(54 * var(--room-cq,1cqw))),calc(100% - var(--slot-stack) - 4px));display:flex;flex-direction:column;gap:var(--slot-gap);margin:0;padding:0;pointer-events:auto}
 #storm-social-dialog .social-team:nth-child(2) .social-slots{left:auto;right:calc(2.5 * var(--room-cq,1cqw))}
-#storm-social-dialog .social-slot{box-sizing:border-box;display:grid;place-items:center;width:var(--slot-w);height:var(--slot-h);min-height:44px;min-width:44px;padding:3px;border:7px solid transparent;border-image:url('./room-slot-blue.png?v=150') 14 19 stretch;border-radius:0;background:#102047;color:#b7e4ff;box-shadow:none;font:600 27px/1 var(--su-font-heading)}
-#storm-social-dialog .social-team:nth-child(2) .social-slot{border-image-source:url('./room-slot-purple.png?v=150');background:#241344;color:#eac2ff}
+#storm-social-dialog .social-slot{box-sizing:border-box;display:grid;place-items:center;width:var(--slot-w);height:var(--slot-h);min-height:44px;min-width:44px;padding:3px;border:7px solid transparent;border-image:url('./room-slot-blue.png?v=151') 14 19 stretch;border-radius:0;background:#102047;color:#b7e4ff;box-shadow:none;font:600 27px/1 var(--su-font-heading)}
+#storm-social-dialog .social-team:nth-child(2) .social-slot{border-image-source:url('./room-slot-purple.png?v=151');background:#241344;color:#eac2ff}
 #storm-social-dialog .social-slot canvas{width:100%;height:100%;max-height:46px;object-fit:contain;image-rendering:pixelated;pointer-events:none}
 #storm-social-dialog .social-slot:before,#storm-social-dialog .social-slot:after{display:none}
-#storm-social-dialog .social-team>p{position:absolute;z-index:3;left:calc(15.69 * var(--room-cq,1cqw));bottom:calc(8.47 * var(--room-cq,1cqw));width:calc(28.61 * var(--room-cq,1cqw));height:calc(9.58 * var(--room-cq,1cqw));box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0;padding:0 calc(1 * var(--room-cq,1cqw)) 0 calc(5 * var(--room-cq,1cqw));background:#121943 url('./room-ready.png?v=150') center/100% 100% no-repeat;color:#c7d8f4;font:600 clamp(10px,calc(2.2 * var(--room-cq,1cqw)),16px)/1.1 var(--su-font-heading);white-space:nowrap}
+#storm-social-dialog .social-team>p{position:absolute;z-index:3;left:calc(15.69 * var(--room-cq,1cqw));bottom:calc(8.47 * var(--room-cq,1cqw));width:calc(28.61 * var(--room-cq,1cqw));height:calc(9.58 * var(--room-cq,1cqw));box-sizing:border-box;display:flex;align-items:center;justify-content:center;margin:0;padding:0 calc(1 * var(--room-cq,1cqw)) 0 calc(5 * var(--room-cq,1cqw));background:#121943 url('./room-ready.png?v=151') center/100% 100% no-repeat;color:#c7d8f4;font:600 clamp(10px,calc(2.2 * var(--room-cq,1cqw)),16px)/1.1 var(--su-font-heading);white-space:nowrap}
 #storm-social-dialog .social-team:nth-child(2)>p{left:calc(6.25 * var(--room-cq,1cqw))}
 #storm-social-dialog .social-team>.social-ready-label{color:#9df9cb;filter:drop-shadow(0 0 5px #6ef3bd55)}
 #storm-social-dialog .social-hero-picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:8px;margin:0 0 12px;border:1px solid #8159c4;background:#11112de8}
 #storm-social-dialog .social-hero-picker[hidden]{display:none}
-#storm-social-dialog .social-troop-tray{box-sizing:border-box;margin:0 0 12px;padding:9px 7px 5px;border:8px solid transparent;border-image:url('./room-tray.png?v=150') 21 22 23 stretch;background:#10153a}
+#storm-social-dialog .social-troop-tray{box-sizing:border-box;margin:0 0 12px;padding:9px 7px 5px;border:8px solid transparent;border-image:url('./room-tray.png?v=151') 21 22 23 stretch;background:#10153a}
 #storm-social-dialog .social-troop-tray h3{position:relative;margin:0 0 6px;padding:0 0 0 29px;color:#edf7ff;font:600 var(--su-text-value)/1.5 var(--su-font-heading)}
-#storm-social-dialog .social-troop-tray h3:before{content:"";position:absolute;left:0;top:0;width:24px;height:25px;background:url('./room-tray-icon.png?v=150') center/contain no-repeat;image-rendering:pixelated}
+#storm-social-dialog .social-troop-tray h3:before{content:"";position:absolute;left:0;top:0;width:24px;height:25px;background:url('./room-tray-icon.png?v=151') center/contain no-repeat;image-rendering:pixelated}
 #storm-social-dialog .social-troop-carousel{display:grid;grid-template-columns:28px minmax(0,1fr) 28px;align-items:center;gap:3px}
 #storm-social-dialog :is(.social-troops-prev,.social-troops-next){width:28px;min-width:28px;height:70px;min-height:44px;padding:0;border:0;border-radius:0;background:transparent center/20px 30px no-repeat;box-shadow:none}
-#storm-social-dialog .social-troops-prev{background-image:url('./room-arrow-left.png?v=150')}#storm-social-dialog .social-troops-next{background-image:url('./room-arrow-right.png?v=150')}
+#storm-social-dialog .social-troops-prev{background-image:url('./room-arrow-left.png?v=151')}#storm-social-dialog .social-troops-next{background-image:url('./room-arrow-right.png?v=151')}
 #storm-social-dialog .social-troop-bar{display:flex;gap:5px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;margin:0;padding:3px 0 7px;scrollbar-width:thin}
-#storm-social-dialog .social-unit{box-sizing:border-box;flex:0 0 62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:82px;padding:4px 2px;border:5px solid transparent;border-image:url('./room-card.png?v=150') 15 stretch;border-radius:0;background:#151b4b;color:#c6d7ff;font-family:var(--su-font-heading);box-shadow:none;scroll-snap-align:start}
-#storm-social-dialog .social-unit[aria-pressed=true]{border-image-source:url('./room-slot-blue.png?v=150');background:#12436a;color:#efffff;filter:drop-shadow(0 0 3px #37dfff66)}
+#storm-social-dialog .social-unit{box-sizing:border-box;flex:0 0 62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:82px;padding:4px 2px;border:5px solid transparent;border-image:url('./room-card.png?v=151') 15 stretch;border-radius:0;background:#151b4b;color:#c6d7ff;font-family:var(--su-font-heading);box-shadow:none;scroll-snap-align:start}
+#storm-social-dialog .social-unit[aria-pressed=true]{border-image-source:url('./room-slot-blue.png?v=151');background:#12436a;color:#efffff;filter:drop-shadow(0 0 3px #37dfff66)}
 #storm-social-dialog .social-unit canvas{display:block;width:40px;height:40px;max-width:100%;object-fit:contain;image-rendering:pixelated}
 #storm-social-dialog .social-unit strong{font:600 10px/1.2 var(--su-font-heading);white-space:normal;overflow-wrap:anywhere;text-align:center}
 #storm-social-dialog .social-unit small{font:400 9px/1.2 var(--su-font-body)}
 #storm-social-dialog .social-selected-count{margin:3px 0 0;text-align:center;font:500 10px/1.4 var(--su-font-body);color:#b8c4e4}
-body[data-game=storm] #storm-social-dialog #social-ready{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;width:100%;max-width:580px;height:auto;min-height:58px;aspect-ratio:577/134;margin:0 auto;padding:0 8% 0 26%;border:0;border-radius:0;box-shadow:none;background:url('./room-launch.png?v=150') center/100% 100% no-repeat,url('./room-launch-fill.png?v=150') center/auto 100% repeat-x;color:#fff7d2;text-shadow:0 2px 2px #7b3000;font:700 clamp(16px,5.4cqw,30px)/1.15 var(--su-font-heading);transition:transform .18s,filter .18s}
-#storm-social-dialog #social-ready:before{content:"";position:absolute;z-index:-1;inset:21% 8%;background:url('./room-launch-fill.png?v=150') center/auto 100% repeat-x;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)}
+body[data-game=storm] #storm-social-dialog #social-ready{position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;width:100%;max-width:580px;height:auto;min-height:58px;aspect-ratio:577/134;margin:0 auto;padding:0 8% 0 26%;border:0;border-radius:0;box-shadow:none;background:url('./room-launch.png?v=151') center/100% 100% no-repeat,url('./room-launch-fill.png?v=151') center/auto 100% repeat-x;color:#fff7d2;text-shadow:0 2px 2px #7b3000;font:700 clamp(16px,5.4cqw,30px)/1.15 var(--su-font-heading);transition:transform .18s,filter .18s}
+#storm-social-dialog #social-ready:before{content:"";position:absolute;z-index:-1;inset:21% 8%;background:url('./room-launch-fill.png?v=151') center/auto 100% repeat-x;clip-path:polygon(8% 0,92% 0,100% 50%,92% 100%,8% 100%,0 50%)}
 #storm-social-dialog #social-ready:after{display:none}
 #storm-social-dialog #social-ready:not(:disabled):hover{filter:brightness(1.15);transform:translateY(-2px)}
 #storm-social-dialog #social-ready:not(:disabled):active{transform:scale(.97)}
@@ -423,42 +423,42 @@ body[data-game=storm] #storm-social-dialog #social-ready{position:relative;isola
 #storm-social-dialog .social-friend-toggle{min-width:44px;min-height:44px}
 #storm-social-dialog .social-player>button:not(.social-friend-toggle){min-height:44px}
 #storm-social-dialog #social-player-search{min-height:44px}
-body[data-game=storm] #storm-social-dialog #social-ready:not(:disabled){border:0;border-radius:0;box-shadow:none;background:url('./room-launch.png?v=150') center/100% 100% no-repeat,url('./room-launch-fill.png?v=150') center/auto 100% repeat-x;color:#fff7d2;text-shadow:0 2px 2px #7b3000}
+body[data-game=storm] #storm-social-dialog #social-ready:not(:disabled){border:0;border-radius:0;box-shadow:none;background:url('./room-launch.png?v=151') center/100% 100% no-repeat,url('./room-launch-fill.png?v=151') center/auto 100% repeat-x;color:#fff7d2;text-shadow:0 2px 2px #7b3000}
 #storm-social-dialog #social-ready:before{display:none}
 
 /* v134 · Singleplayer: original reference borders with live team and skin content. */
-body[data-game=storm] #storm-roster-dialog{width:min(calc(100vw - 8px),587px);max-width:587px;height:min(calc(100dvh - 8px),1160px);max-height:calc(100dvh - 8px);border:16px solid transparent;border-image:url('./solo-panel.png?v=150') 34 28 40 fill / 16px stretch;border-radius:0;background:#070d28 url('./shop-space-background.jpg?v=150') center/cover;box-shadow:0 0 28px #7945d74a;color:#eff5ff}
+body[data-game=storm] #storm-roster-dialog{width:min(calc(100vw - 8px),587px);max-width:587px;height:min(calc(100dvh - 8px),1160px);max-height:calc(100dvh - 8px);border:16px solid transparent;border-image:url('./solo-panel.png?v=151') 34 28 40 fill / 16px stretch;border-radius:0;background:#070d28 url('./shop-space-background.jpg?v=151') center/cover;box-shadow:0 0 28px #7945d74a;color:#eff5ff}
 body[data-game=storm] #storm-roster-dialog .roster-head{padding:0 2px 12px;background:transparent;border:0;text-align:center}
 .roster-logo{display:block;width:min(75%,308px);height:auto;margin:0 auto 5px;image-rendering:pixelated}
-body[data-game=storm] #storm-roster-dialog .roster-head>small{display:flex;justify-content:center;align-items:center;width:205px;height:42px;margin:0 auto 15px;background:url('./solo-mode.png?v=150') center/contain no-repeat;font-size:0}
-body[data-game=storm] #storm-roster-dialog .roster-head h2{border:12px solid transparent;border-image:url('./solo-title.png?v=150') 15 30 fill /12px stretch;background:#071335;margin:0 0 8px 34px;font:600 clamp(18px,4.7vw,26px)/1.2 var(--st-font-heading,'Chakra Petch',sans-serif);position:relative;text-align:left;padding:2px 5px}
-body[data-game=storm] #storm-roster-dialog .roster-head h2:before{content:'';position:absolute;left:-47px;top:-11px;width:43px;height:62px;background:url('./solo-banner.png?v=150') center/contain no-repeat}
+body[data-game=storm] #storm-roster-dialog .roster-head>small{display:flex;justify-content:center;align-items:center;width:205px;height:42px;margin:0 auto 15px;background:url('./solo-mode.png?v=151') center/contain no-repeat;font-size:0}
+body[data-game=storm] #storm-roster-dialog .roster-head h2{border:12px solid transparent;border-image:url('./solo-title.png?v=151') 15 30 fill /12px stretch;background:#071335;margin:0 0 8px 34px;font:600 clamp(18px,4.7vw,26px)/1.2 var(--st-font-heading,'Chakra Petch',sans-serif);position:relative;text-align:left;padding:2px 5px}
+body[data-game=storm] #storm-roster-dialog .roster-head h2:before{content:'';position:absolute;left:-47px;top:-11px;width:43px;height:62px;background:url('./solo-banner.png?v=151') center/contain no-repeat}
 body[data-game=storm] #storm-roster-dialog .roster-head p{margin:0 4px 0 42px;text-align:left;font-size:12px;line-height:1.45;color:#c9d8f0}
 body[data-game=storm] #storm-roster-dialog .roster-scroll{padding:0 1px 12px;scrollbar-color:#a361dd #090f27}
-body[data-game=storm] #storm-roster-dialog .roster-scroll h3{position:relative;display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;box-sizing:border-box;min-height:35px;padding:3px 8px;margin:0 0 9px;border:9px solid transparent;border-image:url('./solo-section.png?v=150') 10 24 fill /9px stretch;background:#170b36;font-size:13px;line-height:1.2}
-body[data-game=storm] #storm-roster-dialog .roster-scroll h3:before{content:'';width:22px;height:22px;flex:none;background:url('./solo-troop-icon.png?v=150') center/contain no-repeat}
+body[data-game=storm] #storm-roster-dialog .roster-scroll h3{position:relative;display:flex;align-items:center;gap:7px;width:max-content;max-width:100%;box-sizing:border-box;min-height:35px;padding:3px 8px;margin:0 0 9px;border:9px solid transparent;border-image:url('./solo-section.png?v=151') 10 24 fill /9px stretch;background:#170b36;font-size:13px;line-height:1.2}
+body[data-game=storm] #storm-roster-dialog .roster-scroll h3:before{content:'';width:22px;height:22px;flex:none;background:url('./solo-troop-icon.png?v=151') center/contain no-repeat}
 body[data-game=storm] #storm-roster-dialog #roster-hero-count{margin-top:16px}
-body[data-game=storm] #storm-roster-dialog #roster-hero-count:before{background-image:url('./solo-hero-icon.png?v=150')}
+body[data-game=storm] #storm-roster-dialog #roster-hero-count:before{background-image:url('./solo-hero-icon.png?v=151')}
 body[data-game=storm] #storm-roster-dialog .roster-troops{gap:7px;grid-template-columns:repeat(2,minmax(0,1fr))}
-body[data-game=storm] #storm-roster-dialog .roster-card{border:10px solid transparent;border-image:url('./solo-troop-card.png?v=150') 15 18 fill /10px stretch;border-radius:0;background:transparent;box-shadow:none;padding:3px 2px;min-height:80px;gap:3px;overflow:visible}
+body[data-game=storm] #storm-roster-dialog .roster-card{border:10px solid transparent;border-image:url('./solo-troop-card.png?v=151') 15 18 fill /10px stretch;border-radius:0;background:transparent;box-shadow:none;padding:3px 2px;min-height:80px;gap:3px;overflow:visible}
 body[data-game=storm] #storm-roster-dialog .roster-card:before{display:none}
 body[data-game=storm] #storm-roster-dialog .roster-card canvas{width:clamp(34px,10vw,59px);height:56px;object-fit:contain;image-rendering:pixelated}
 body[data-game=storm] #storm-roster-dialog .roster-card-text{gap:4px;min-width:0;padding-right:3px}
 body[data-game=storm] #storm-roster-dialog .roster-card strong{font-size:clamp(10px,2.7vw,15px);line-height:1.15;overflow-wrap:normal;hyphens:auto}
 body[data-game=storm] #storm-roster-dialog .roster-card small{font-size:clamp(8px,2.2vw,11px);line-height:1.25;color:#c1d0ec}
 body[data-game=storm] #storm-roster-dialog .roster-card-text>span{font-size:clamp(9px,2.3vw,12px);line-height:1.2;color:#f2d8a8}
-body[data-game=storm] #storm-roster-dialog .roster-check{right:-6px;top:-7px;width:23px;height:23px;display:grid;place-items:center;background:url('./solo-plus.png?v=150') center/100% 100% no-repeat;color:white;font-size:0}
+body[data-game=storm] #storm-roster-dialog .roster-check{right:-6px;top:-7px;width:23px;height:23px;display:grid;place-items:center;background:url('./solo-plus.png?v=151') center/100% 100% no-repeat;color:white;font-size:0}
 body[data-game=storm] #storm-roster-dialog .roster-card[aria-pressed=true]{background:transparent;border-color:transparent;filter:none;box-shadow:none}
 body[data-game=storm] #storm-roster-dialog .roster-card[aria-pressed=true] .roster-check{font-size:16px;background-color:transparent;background-blend-mode:normal;color:#fff2af}
 body[data-game=storm] #storm-roster-dialog .roster-heroes{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
-body[data-game=storm] #storm-roster-dialog .roster-heroes .roster-card{border-image-source:url('./solo-hero-card.png?v=150');border-image-slice:18;min-height:132px;flex-direction:column;padding:2px;text-align:center}
+body[data-game=storm] #storm-roster-dialog .roster-heroes .roster-card{border-image-source:url('./solo-hero-card.png?v=151');border-image-slice:18;min-height:132px;flex-direction:column;padding:2px;text-align:center}
 body[data-game=storm] #storm-roster-dialog .roster-heroes .roster-card canvas{width:66px;height:62px;max-width:100%}
 body[data-game=storm] #storm-roster-dialog .roster-heroes .roster-card-text{padding:0;gap:4px}
 body[data-game=storm] #storm-roster-dialog .roster-footer{padding:8px 2px 2px;border-top:1px solid #467ab6;background:#090f27ed}
 body[data-game=storm] #storm-roster-dialog .roster-footer p{font-size:11px;min-height:29px;margin-bottom:8px;color:#d3dff5}
 body[data-game=storm] #storm-roster-dialog .roster-actions{gap:9px;grid-template-columns:1fr 1.8fr}
-body[data-game=storm] #storm-roster-dialog .roster-actions button,body[data-game=storm] #storm-roster-dialog .primary:not(:disabled){border:12px solid transparent;border-image:url('./solo-back.png?v=150') 20 28 fill /12px stretch;border-radius:0;background:#071a39;box-shadow:none;min-height:49px;padding:2px;font-size:14px;font-weight:600;color:#eef7ff}
-body[data-game=storm] #storm-roster-dialog #roster-play,body[data-game=storm] #storm-roster-dialog #roster-play:not(:disabled){border-image-source:url('./solo-play.png?v=150');border-image-slice:20 28;background:#1c2042}
+body[data-game=storm] #storm-roster-dialog .roster-actions button,body[data-game=storm] #storm-roster-dialog .primary:not(:disabled){border:12px solid transparent;border-image:url('./solo-back.png?v=151') 20 28 fill /12px stretch;border-radius:0;background:#071a39;box-shadow:none;min-height:49px;padding:2px;font-size:14px;font-weight:600;color:#eef7ff}
+body[data-game=storm] #storm-roster-dialog #roster-play,body[data-game=storm] #storm-roster-dialog #roster-play:not(:disabled){border-image-source:url('./solo-play.png?v=151');border-image-slice:20 28;background:#1c2042}
 body[data-game=storm] #storm-roster-dialog #roster-play:not(:disabled){background:#38294b;filter:drop-shadow(0 0 6px #aa63e8)}
 body[data-game=storm] #storm-roster-dialog #roster-play:disabled{opacity:.55}
 @media(max-width:350px){body[data-game=storm] #storm-roster-dialog .roster-card{min-height:86px}body[data-game=storm] #storm-roster-dialog .roster-card canvas{width:32px}body[data-game=storm] #storm-roster-dialog .roster-card strong{font-size:10px}body[data-game=storm] #storm-roster-dialog .roster-heroes .roster-card-text>span{font-size:8px}}
@@ -467,24 +467,24 @@ body[data-game=storm] #storm-roster-dialog .roster-card small{font-size:clamp(9p
 body[data-game=storm] #storm-roster-dialog .roster-card-text>span{font-size:clamp(10px,2.6vw,12px)}
 body[data-game=storm] #storm-roster-dialog .roster-check{font-size:16px;background-color:#181035}
 /* v135 · Original equipment row frames and owned skin cards. */
-body[data-game=storm] #storm-armory-dialog[data-view=gear]{width:min(calc(100vw - 8px),636px);max-width:636px;background:#070d28 url('./shop-space-background.jpg?v=150') center/cover;border-color:#a07ee4}
+body[data-game=storm] #storm-armory-dialog[data-view=gear]{width:min(calc(100vw - 8px),636px);max-width:636px;background:#070d28 url('./shop-space-background.jpg?v=151') center/cover;border-color:#a07ee4}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-header{background:transparent;border-bottom:1px solid #7c5bb7;padding:12px}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-header h2{border:12px solid transparent;border-image:url('./gear-title.png?v=150') 16 20 fill /12px stretch;background:transparent;font-size:26px;margin-top:8px;padding:1px 4px}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-header>div:first-child>small{display:block;background:url('./gear-logo.png?v=150') left center/contain no-repeat;width:210px;height:38px;font-size:0}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-header h2{border:12px solid transparent;border-image:url('./gear-title.png?v=151') 16 20 fill /12px stretch;background:transparent;font-size:26px;margin-top:8px;padding:1px 4px}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-header>div:first-child>small{display:block;background:url('./gear-logo.png?v=151') left center/contain no-repeat;width:210px;height:38px;font-size:0}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-station-art{display:none}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-top{background:#080d2caa;padding:10px}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button{border:12px solid transparent;border-image:url('./gear-tab-inactive.png?v=150') 15 18 fill /12px stretch;border-radius:0;background:transparent;color:#bddafa;min-height:54px;font-size:16px;box-shadow:none}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button[aria-pressed=true]{border-image-source:url('./gear-tab-active.png?v=150');background:transparent;color:white;filter:none}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button{border:12px solid transparent;border-image:url('./gear-tab-inactive.png?v=151') 15 18 fill /12px stretch;border-radius:0;background:transparent;color:#bddafa;min-height:54px;font-size:16px;box-shadow:none}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button[aria-pressed=true]{border-image-source:url('./gear-tab-active.png?v=151');background:transparent;color:white;filter:none}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-scroll{background:transparent;padding:8px 10px 18px}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop{background:transparent;border:0;border-radius:0;margin:0 0 8px;box-shadow:none;overflow:visible}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-heading{display:grid;grid-template-columns:36px minmax(0,1fr) 94px 18px;gap:7px;align-items:center;border:12px solid transparent;border-image:url('./gear-row.png?v=150') 18 22 fill /12px stretch;padding:3px 1px;min-height:76px;box-sizing:border-box;background:#07132b;background-clip:padding-box;list-style:none}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-heading{display:grid;grid-template-columns:36px minmax(0,1fr) 94px 18px;gap:7px;align-items:center;border:12px solid transparent;border-image:url('./gear-row.png?v=151') 18 22 fill /12px stretch;padding:3px 1px;min-height:76px;box-sizing:border-box;background:#07132b;background-clip:padding-box;list-style:none}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .gear-skin-row .armory-troop-heading{grid-template-columns:32px minmax(0,1fr) 58px 42px 14px;gap:5px}
 .gear-class-symbol{width:100%;height:40px;object-fit:contain;image-rendering:pixelated}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .gear-class-copy{min-width:0}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .gear-class-copy h3{font-size:clamp(12px,3.6vw,22px);line-height:1.2;margin:0 0 4px;overflow-wrap:anywhere;color:#f3f6ff}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .gear-class-copy p{font-size:clamp(9px,2.3vw,13px);line-height:1.3;margin:0;color:#bdcce8}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-equipment-role svg{display:none}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-heading>.skin-preview{width:58px;height:54px;object-fit:contain;background:#061d32;border:7px solid transparent;border-image:url('./gear-preview.png?v=150') 13 fill /7px stretch;box-sizing:border-box;image-rendering:pixelated}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-heading>.skin-preview{width:58px;height:54px;object-fit:contain;background:#061d32;border:7px solid transparent;border-image:url('./gear-preview.png?v=151') 13 fill /7px stretch;box-sizing:border-box;image-rendering:pixelated}
 .gear-skin-count{font-family:var(--st-font-heading,'Chakra Petch',sans-serif);text-align:center;color:#e2eaff;font-size:12px;border:1px solid #586493;padding:5px 1px;border-radius:5px;background:#09152c}
 .gear-skin-count small{display:block;font-size:9px;color:#a9bfdd}
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-chevron{font-size:22px;line-height:1;color:#e2efff}
@@ -513,15 +513,15 @@ body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-troop-options
 #home #home-diamonds{display:none!important}
 .stardust-balance{zoom:.7}
 /* v137 · Shared original-material dialog and action treatment. */
-:root{--st-shell-art:url('./solo-panel.png?v=150');--st-action-art:url('./solo-back.png?v=150');--st-section-art:url('./gear-row.png?v=150')}
-:is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm){box-sizing:border-box;width:min(calc(100vw - 16px),540px);max-height:calc(100dvh - 24px);overflow:auto;border:15px solid transparent;border-image:var(--st-shell-art) 34 28 40 fill /15px stretch;border-radius:0;background:linear-gradient(#07102bea,#090b22f5),url('./shop-space-background.jpg?v=150') center/cover;padding:16px;color:var(--su-text);box-shadow:0 12px 60px #020416b3}
+:root{--st-shell-art:url('./solo-panel.png?v=151');--st-action-art:url('./solo-back.png?v=151');--st-section-art:url('./gear-row.png?v=151')}
+:is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm){box-sizing:border-box;width:min(calc(100vw - 16px),540px);max-height:calc(100dvh - 24px);overflow:auto;border:15px solid transparent;border-image:var(--st-shell-art) 34 28 40 fill /15px stretch;border-radius:0;background:linear-gradient(#07102bea,#090b22f5),url('./shop-space-background.jpg?v=151') center/cover;padding:16px;color:var(--su-text);box-shadow:0 12px 60px #020416b3}
 :is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) h2{font-family:var(--su-font-heading);font-weight:600;letter-spacing:.015em;color:#f1e0ae;line-height:1.2;margin:4px 0 18px;overflow-wrap:anywhere}
 :is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) :is(p,li){line-height:1.5;color:#c0cee5;font-size:13px}
 :is(body[data-game],body:not([data-game])) :is(#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) :is(button.primary,button.text-button,#profile-save,#leaderboard-close,#game-help-close,#close-install){border:11px solid transparent;border-image:var(--st-action-art) 20 28 fill /11px stretch;border-radius:0;box-shadow:none;background:#0c2141;padding:4px 9px;min-height:48px;color:#e4f7ff;font:600 14px/1.3 var(--su-font-heading)}
 :is(body[data-game],body:not([data-game])) :is(#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) button:disabled{opacity:.48;filter:none}
 :is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) :is(input,select){box-sizing:border-box;max-width:100%;min-height:44px;border:1px solid #6a8bc8;background:#07162e;color:#e4f3ff;border-radius:6px;padding:10px 12px;font:500 14px/1.4 var(--su-font-body)}
 :is(body[data-game],body:not([data-game])) :is(#home-settings-dialog,#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm)::backdrop{background:#020715b8;backdrop-filter:blur(7px)}
-body[data-game=storm] #storm-upgrades-dialog{background:#08132b url('./shop-space-background.jpg?v=150') center/cover;border-color:#8d87d4}
+body[data-game=storm] #storm-upgrades-dialog{background:#08132b url('./shop-space-background.jpg?v=151') center/cover;border-color:#8d87d4}
 body[data-game=storm] #storm-upgrades-dialog :is(.storm-forge-header,.storm-forge-footer){background:#0b1732eb;border-color:#556c9b}
 body[data-game=storm] #storm-upgrades-dialog .storm-forge-group{background:#0a1634ef;border-color:#6378ac}
 body[data-game=storm] #storm-upgrades-dialog .primary:not(:disabled){border:11px solid transparent;border-image:var(--st-action-art) 20 28 fill /11px stretch;border-radius:0;background:#102545;box-shadow:none;padding:4px 12px}
@@ -537,18 +537,18 @@ body[data-game=storm] .armory-weapon-dialog:not(.skin-reward-dialog){border:15px
 :is(body[data-game],body:not([data-game])) :is(#pause-dialog,#game-help-dialog,#install-dialog,#profile-dialog,#leaderboard-dialog,#storm-inbox-dialog,#storm-terminal-confirm)::before{display:none}
 body[data-game] #storm-product-dialog:not(.skin-reward-dialog){border:15px solid transparent;border-image:var(--st-shell-art) 34 28 40 fill /15px stretch;border-radius:0;background:#0a1230;padding:16px;max-width:calc(100vw - 16px);box-sizing:border-box}
 body[data-game] #storm-product-dialog:not(.skin-reward-dialog)::before{display:none}
-body[data-game] #storm-product-dialog[data-rarity=epic]:not(.skin-reward-dialog){border-image-source:url('./frame-weapon-epic.png?v=150');border-image-slice:36}
-body[data-game] #storm-product-dialog[data-rarity=legendary]:not(.skin-reward-dialog){border-image-source:url('./frame-weapon-legendary.png?v=150');border-image-slice:36}
+body[data-game] #storm-product-dialog[data-rarity=epic]:not(.skin-reward-dialog){border-image-source:url('./frame-weapon-epic.png?v=151');border-image-slice:36}
+body[data-game] #storm-product-dialog[data-rarity=legendary]:not(.skin-reward-dialog){border-image-source:url('./frame-weapon-legendary.png?v=151');border-image-slice:36}
 :is(body[data-game],body:not([data-game])) :is(#profile-dialog,#leaderboard-dialog,#pause-dialog,#game-help-dialog,#install-dialog,#storm-inbox-dialog,#storm-terminal-confirm) button:not(.icon-button):not(.armory-close){border:11px solid transparent;border-image:var(--st-action-art) 20 28 fill /11px stretch;border-radius:0;box-shadow:none;background:#0c2141;padding:4px 9px;min-height:48px;color:#e4f7ff;font:600 14px/1.3 var(--su-font-heading)}
 body[data-game] #leaderboard-rows{padding:0;display:grid;gap:10px}
 body[data-game] #leaderboard-rows>li{position:relative;display:grid;grid-template-columns:36px minmax(0,1fr) auto;gap:8px;align-items:center;min-height:48px;padding:6px 9px;margin:0;font:600 16px/1.3 var(--su-font-heading);border-bottom:1px solid #5e6c9c55}
 body[data-game] #leaderboard-rows .ranking-name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;font:inherit}
 body[data-game] #leaderboard-rows :is(.ranking-score,.ranking-position){font:inherit;font-variant-numeric:tabular-nums}
-body[data-game] #leaderboard-rows .place-1{background:url('./home-first-place.png?v=150') center/100% 100% no-repeat;color:#f4d88f}
+body[data-game] #leaderboard-rows .place-1{background:url('./home-first-place.png?v=151') center/100% 100% no-repeat;color:#f4d88f}
 body[data-game] #leaderboard-rows .podium .ranking-position{color:transparent;width:30px;height:32px;background:var(--rank-medal) center/contain no-repeat}
-body[data-game] #leaderboard-rows .place-1{--rank-medal:url('./home-medal-1.png?v=150')}
-body[data-game] #leaderboard-rows .place-2{--rank-medal:url('./home-medal-2.png?v=150')}
-body[data-game] #leaderboard-rows .place-3{--rank-medal:url('./home-medal-3.png?v=150')}
+body[data-game] #leaderboard-rows .place-1{--rank-medal:url('./home-medal-1.png?v=151')}
+body[data-game] #leaderboard-rows .place-2{--rank-medal:url('./home-medal-2.png?v=151')}
+body[data-game] #leaderboard-rows .place-3{--rank-medal:url('./home-medal-3.png?v=151')}
 body[data-game=storm] #storm-upgrades-dialog{border:12px solid transparent;border-image:var(--st-shell-art) 34 28 40 fill /12px stretch;border-radius:0;max-width:calc(100vw - 12px)}
 body[data-game=storm] #storm-upgrades-dialog .storm-forge-group{border:9px solid transparent;border-image:var(--st-section-art) 18 22 fill /9px stretch;border-radius:0;background:#0b1730;box-shadow:none}
 body[data-game=storm] #storm-upgrades-dialog #storm-upgrades-close.primary:not(:disabled){border:11px solid transparent;border-image:var(--st-action-art) 20 28 fill /11px stretch;border-radius:0;background:#0c2141;box-shadow:none;color:#e4f7ff;padding:4px 10px}
@@ -560,8 +560,8 @@ body[data-game=storm] #storm-upgrades-dialog #storm-upgrades-close.primary:not(:
 /* Home v140: one Sternensturm landing page, with two genuine minigame entries. */
 body:has(#mode-art[data-mode=storm]) #home .home-main{gap:12px;padding:0;margin:0}
 body:has(#mode-art[data-mode=storm]) #home .home-card{gap:8px}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice{background-color:transparent;background-image:url('./home-mode-dark-frame.png?v=150'),url('./home-mode-dark-frame.png?v=150');background-size:50% 100%,50% 100%;background-position:left center,right center;background-repeat:no-repeat;isolation:isolate;min-height:48px}
-body:has(#mode-art[data-mode=storm]) #home .storm-play-choice:before{background-image:url('./home-mode-gold-frame.png?v=150');z-index:1}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice{background-color:transparent;background-image:url('./home-mode-dark-frame.png?v=151'),url('./home-mode-dark-frame.png?v=151');background-size:50% 100%,50% 100%;background-position:left center,right center;background-repeat:no-repeat;isolation:isolate;min-height:48px}
+body:has(#mode-art[data-mode=storm]) #home .storm-play-choice:before{background-image:url('./home-mode-gold-frame.png?v=151');z-index:1}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button{z-index:2;background:none!important;min-height:48px;font-size:clamp(10px,2.7vw,16px);gap:5px;padding:8px 9px}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice button:before{width:18px;height:20px}
 body:has(#mode-art[data-mode=storm]) #home .storm-play-choice [data-play=multi]:before{width:24px}
@@ -574,7 +574,7 @@ body:has(#mode-art[data-mode=storm]) #home .home-rankings{margin:0 0 8px}
 #home .home-mini-rule:last-child{transform:scaleX(-1)}
 #home .home-minigames-note{margin:6px 0 12px;text-align:center;color:var(--su-text-secondary);font:400 12px/1.5 var(--su-font-body)}
 #home .home-minigame-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-#home .home-minigame{display:flex;flex-direction:column;align-items:stretch;position:relative;min-width:0;min-height:44px;margin:0;padding:6px;border:9px solid transparent;border-image:url('./gear-preview.png?v=150') 20 fill /9px stretch;border-radius:0;background:#071329;box-shadow:none;text-align:left;color:var(--su-text);overflow:hidden;transition:filter .18s,transform .18s}
+#home .home-minigame{display:flex;flex-direction:column;align-items:stretch;position:relative;min-width:0;min-height:44px;margin:0;padding:6px;border:9px solid transparent;border-image:url('./gear-preview.png?v=151') 20 fill /9px stretch;border-radius:0;background:#071329;box-shadow:none;text-align:left;color:var(--su-text);overflow:hidden;transition:filter .18s,transform .18s}
 #home .home-minigame:before,#home .home-minigame:after{display:none}
 #home .home-minigame>canvas{display:block;width:100%;height:auto;aspect-ratio:9/5;border:0;border-radius:0;box-shadow:none;object-fit:contain;pointer-events:none}
 #home .home-minigame-copy{display:flex;flex-direction:column;gap:4px;padding:7px 3px 3px;min-width:0}
@@ -603,7 +603,7 @@ body:has(#mode-art[data-mode=storm]) #home #start:after{display:none}
 
 /* Gear tabs: transparent original silhouettes, separate selected-rim glow. */
 body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button{position:relative;isolation:isolate;overflow:visible}
-body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button[aria-pressed=true]:after{content:"";position:absolute;inset:-12px;pointer-events:none;border:12px solid transparent;border-image:url('./gear-tab-active.png?v=150') 15 18 fill /12px stretch;filter:drop-shadow(0 0 2px #f5dfff) drop-shadow(0 0 5px #bf56ff);animation:gear-tab-rim 3s ease-in-out infinite}
+body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button[aria-pressed=true]:after{content:"";position:absolute;inset:-12px;pointer-events:none;border:12px solid transparent;border-image:url('./gear-tab-active.png?v=151') 15 18 fill /12px stretch;filter:drop-shadow(0 0 2px #f5dfff) drop-shadow(0 0 5px #bf56ff);animation:gear-tab-rim 3s ease-in-out infinite}
 @keyframes gear-tab-rim{0%,100%{filter:drop-shadow(0 0 2px #f5dfff) drop-shadow(0 0 4px #bf56ff)}50%{filter:drop-shadow(0 0 2px #fff2ff) drop-shadow(0 0 8px #c56bff)}}
 @media(prefers-reduced-motion:reduce){body[data-game=storm] #storm-armory-dialog[data-view=gear] .armory-gear-tabs button[aria-pressed=true]:after{animation:none}}
 
@@ -626,39 +626,39 @@ body[data-game=storm] #storm-roster-dialog:has(#roster-play[data-launching=true]
 @media(prefers-reduced-motion:reduce){body[data-game=storm] #storm-roster-dialog #roster-play[data-launching=true]:after{animation:none;opacity:1}}
 
 /* Battle HUD v140 — original reference artwork, live values and portraits. */
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app{background:#070d22 url('./shop-space-background.jpg?v=150') center/cover;padding:6px 7px max(6px,env(safe-area-inset-bottom))}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app{background:#070d22 url('./shop-space-background.jpg?v=151') center/cover;padding:6px 7px max(6px,env(safe-area-inset-bottom))}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.storm-mode{grid-template-rows:82px minmax(120px,1fr) clamp(212px,29vh,300px);gap:7px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header{top:max(8px,env(safe-area-inset-top));left:82px;right:49px;height:44px;display:grid;grid-template-columns:minmax(0,1fr) 36px 36px;gap:3px;background:transparent;border:0;box-shadow:none}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header .app-brand{display:none}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop{box-sizing:border-box;width:100%;min-width:0;max-width:none;min-height:44px;padding:1px 2px;display:flex;justify-content:space-evenly;gap:3px;border:7px solid transparent;border-image:url('./battle-wallet-frame.png?v=150') 18 34 fill /7px stretch;background:transparent;border-radius:0;box-shadow:none;overflow:visible;font-size:12px}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop{box-sizing:border-box;width:100%;min-width:0;max-width:none;min-height:44px;padding:1px 2px;display:flex;justify-content:space-evenly;gap:3px;border:7px solid transparent;border-image:url('./battle-wallet-frame.png?v=151') 18 34 fill /7px stretch;background:transparent;border-radius:0;box-shadow:none;overflow:visible;font-size:12px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop>[data-wallet]{min-width:0;display:flex;align-items:center}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop .su-money{gap:2px;font-size:clamp(10px,2.8vw,15px);white-space:nowrap}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #game-help,body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #home-settings,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .pause{width:36px;height:44px;min-height:44px;border:0;border-radius:0;padding:0;background:transparent center/contain no-repeat;box-shadow:none}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #game-help{background-image:url('./battle-help.png?v=150')}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #home-settings{background-image:url('./battle-settings.png?v=150')}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .pause{background-image:url('./battle-pause.png?v=150');position:absolute;right:0;top:2px}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #game-help{background-image:url('./battle-help.png?v=151')}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #home-settings{background-image:url('./battle-settings.png?v=151')}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .pause{background-image:url('./battle-pause.png?v=151');position:absolute;right:0;top:2px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) :is(#game-help,#home-settings,#pause)>svg{visibility:hidden}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .game-top{position:relative;height:44px;display:block}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .score{box-sizing:border-box;width:73px;height:44px;display:flex;justify-content:center;align-items:center;gap:4px;border:8px solid transparent;border-image:url('./battle-score-frame.png?v=150') 30 42 fill /8px stretch;background:transparent;border-radius:0;box-shadow:none;color:#ffe99e}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .score{box-sizing:border-box;width:73px;height:44px;display:flex;justify-content:center;align-items:center;gap:4px;border:8px solid transparent;border-image:url('./battle-score-frame.png?v=151') 30 42 fill /8px stretch;background:transparent;border-radius:0;box-shadow:none;color:#ffe99e}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .score>span:first-child{font-size:clamp(16px,4vw,24px);line-height:1}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .score-star{font-size:16px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-hud{top:54px;left:3px;right:3px;font-size:12px;padding:0;display:grid;gap:5px;text-align:center}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-rank{display:flex;align-items:center;justify-content:center;gap:10px;color:#ded6ee;line-height:16px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-rank:before,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-rank:after{content:'';height:1px;background:linear-gradient(90deg,transparent,#c6a77a,transparent);flex:1}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-hud .nova-xp{box-sizing:border-box;height:9px;margin:0;border:3px solid transparent;border-image:url('./battle-progress-frame.png?v=150') 6 14 fill /3px stretch;background:#0c1427;border-radius:0;overflow:hidden}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #nova-hud .nova-xp{box-sizing:border-box;height:9px;margin:0;border:3px solid transparent;border-image:url('./battle-progress-frame.png?v=151') 6 14 fill /3px stretch;background:#0c1427;border-radius:0;overflow:hidden}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .nova-xp>i{height:3px;background:linear-gradient(#fff1b2,#ffb657);box-shadow:0 0 5px #ffc26c}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .nova-field{box-sizing:border-box;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=150') 24 24 fill /4px stretch;border-radius:0;overflow:hidden;background:transparent}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .nova-field{box-sizing:border-box;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=151') 24 24 fill /4px stretch;border-radius:0;overflow:hidden;background:transparent}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-market{grid-template-rows:34px minmax(0,1fr);grid-template-columns:minmax(0,1fr) 108px;gap:7px;position:relative}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-tactics{grid-row:1;grid-column:1;display:flex;align-items:center;gap:8px;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-income-frame.png?v=150') 16 20 fill /6px stretch;background:#0b1429;background-clip:padding-box;border-radius:0;padding:0 2px;margin:0;min-height:34px;line-height:1.2;font-size:9px;overflow:hidden}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-tactics{grid-row:1;grid-column:1;display:flex;align-items:center;gap:8px;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-income-frame.png?v=151') 16 20 fill /6px stretch;background:#0b1429;background-clip:padding-box;border-radius:0;padding:0 2px;margin:0;min-height:34px;line-height:1.2;font-size:9px;overflow:hidden}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-income{flex:none;color:#e7b582;font-weight:600;white-space:nowrap}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-jokes{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;border-left:1px solid #7f7899;padding-left:7px}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open{position:static;grid-column:2;grid-row:1;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-forge-frame.png?v=150') 20 25 fill /6px stretch;background:#0e1325;background-clip:padding-box;border-radius:0;box-shadow:none;min-height:34px;padding:0 2px 0 19px;font:600 13px/1.15 var(--su-font-heading);color:#f9dc98;overflow:visible}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open:before{content:'';position:absolute;width:20px;height:20px;margin-left:-22px;background:url('./battle-forge-icon.png?v=150') center/contain no-repeat}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop-items,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop-items.has-loadout{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;gap:0;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-panel-frame.png?v=150') 24 28 fill /7px stretch;background:#08132b;background-clip:padding-box;border-radius:0;padding:4px;overflow:hidden}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open{position:static;grid-column:2;grid-row:1;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-forge-frame.png?v=151') 20 25 fill /6px stretch;background:#0e1325;background-clip:padding-box;border-radius:0;box-shadow:none;min-height:34px;padding:0 2px 0 19px;font:600 13px/1.15 var(--su-font-heading);color:#f9dc98;overflow:visible}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open:before{content:'';position:absolute;width:20px;height:20px;margin-left:-22px;background:url('./battle-forge-icon.png?v=151') center/contain no-repeat}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop-items,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop-items.has-loadout{grid-column:1/-1;grid-row:2;display:grid;grid-template-columns:1fr;grid-template-rows:1fr;gap:0;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-panel-frame.png?v=151') 24 28 fill /7px stretch;background:#08132b;background-clip:padding-box;border-radius:0;padding:4px;overflow:hidden}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop-items .army-loadout-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:5px;height:100%;min-height:0}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy{box-sizing:border-box;position:relative;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=150') 18 fill /6px stretch;background:#0a1b33;background-clip:padding-box;border-radius:0;box-shadow:none;padding:1px;display:grid;grid-template-rows:minmax(25px,1fr) 14px 16px 11px;gap:1px;height:100%;min-height:0;overflow:visible;align-content:stretch;color:#e0e9f8}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy[data-kind=heroes]{border-image-source:url('./battle-hero-frame.png?v=150');background:#1b1232;background-clip:padding-box}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy:not(:disabled):hover,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy:not(:disabled):active{border-image-source:url('./battle-unit-active-frame.png?v=150');filter:drop-shadow(0 0 3px #5be4ff);box-shadow:none}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy{box-sizing:border-box;position:relative;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=151') 18 fill /6px stretch;background:#0a1b33;background-clip:padding-box;border-radius:0;box-shadow:none;padding:1px;display:grid;grid-template-rows:minmax(25px,1fr) 14px 16px 11px;gap:1px;height:100%;min-height:0;overflow:visible;align-content:stretch;color:#e0e9f8}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy[data-kind=heroes]{border-image-source:url('./battle-hero-frame.png?v=151');background:#1b1232;background-clip:padding-box}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy:not(:disabled):hover,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy:not(:disabled):active{border-image-source:url('./battle-unit-active-frame.png?v=151');filter:drop-shadow(0 0 3px #5be4ff);box-shadow:none}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy:disabled{opacity:.52;box-shadow:none;filter:saturate(.5)}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy strong{font-size:clamp(9px,2.6vw,14px);line-height:14px;white-space:nowrap;max-width:100%;letter-spacing:-.15px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy .army-portrait{width:64px;height:100%;min-height:0;max-height:54px;max-width:100%;object-fit:contain;image-rendering:pixelated}
@@ -666,40 +666,40 @@ body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #stor
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy small{font-size:9px;line-height:11px;white-space:nowrap}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy .su-money{gap:3px;justify-content:center;align-items:center}
 :is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency]:before{content:'';display:inline-block;width:18px;height:18px;flex:none;background:center/contain no-repeat}
-:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=coins]:before{background-image:url('./battle-bronze.png?v=150')}
-:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=silver]:before{background-image:url('./battle-silver.png?v=150')}
-:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=gold]:before{background-image:url('./battle-gold.png?v=150')}
-:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=stars]:before{background-image:url('./battle-stars.png?v=150')}
+:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=coins]:before{background-image:url('./battle-bronze.png?v=151')}
+:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=silver]:before{background-image:url('./battle-silver.png?v=151')}
+:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=gold]:before{background-image:url('./battle-gold.png?v=151')}
+:is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money[data-currency=stars]:before{background-image:url('./battle-stars.png?v=151')}
 :is(body[data-game=storm]:has(#game.storm-mode:not([hidden])),#storm-duel-dialog) .su-money:is([data-currency=coins],[data-currency=silver],[data-currency=gold],[data-currency=stars])>svg{display:none}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) :is(#storm-upgrades-open,#game-help,#home-settings,#pause):active{filter:brightness(1.35) drop-shadow(0 0 4px #d9baff)}
 @media(max-width:350px){body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header{left:67px;right:42px;grid-template-columns:minmax(0,1fr) 31px 31px;gap:1px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .score{width:61px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #game-help,body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app>header #home-settings,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game .pause{width:31px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop{border-width:5px;padding:0;gap:1px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop .su-money{gap:1px;font-size:10px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop .su-money:before{width:12px;height:12px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-market{grid-template-columns:minmax(0,1fr) 97px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-jokes{display:none}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-tactics{font-size:10px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy strong{font-size:8px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy small{font-size:8px}}
 @media(max-height:650px){body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.storm-mode{grid-template-rows:76px minmax(100px,1fr) 190px;gap:4px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-market{grid-template-rows:30px minmax(0,1fr);gap:4px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-tactics,body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open{min-height:30px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy{grid-template-rows:minmax(20px,1fr) 11px 13px 9px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy strong{font-size:9px;line-height:11px}body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode #storm-shop-items .army-buy small{font-size:8px;line-height:9px}}
 /* Cooperative battle uses the same extracted frame set and existing live team. */
-#storm-duel-dialog:has(.duel-game:not([hidden])){width:min(100%,760px);max-width:760px;border:0;border-radius:0;background:#070d22 url('./shop-space-background.jpg?v=150') center/cover;padding:5px;gap:4px}
+#storm-duel-dialog:has(.duel-game:not([hidden])){width:min(100%,760px);max-width:760px;border:0;border-radius:0;background:#070d22 url('./shop-space-background.jpg?v=151') center/cover;padding:5px;gap:4px}
 #storm-duel-dialog:has(.duel-game:not([hidden])) .duel-heading{min-height:44px;padding:0 3px;background:transparent;border:0;gap:5px}
 #storm-duel-dialog:has(.duel-game:not([hidden])) .duel-heading h2{font-size:17px;margin:0}
 #storm-duel-dialog:has(.duel-game:not([hidden])) .duel-heading small{font-size:9px}
-#storm-duel-dialog:has(.duel-game:not([hidden])) .duel-heading .duel-exit{width:36px;height:40px;min-height:40px;border:6px solid transparent;border-image:url('./solo-back.png?v=150') 20 28 fill /6px stretch;background:transparent;border-radius:0}
+#storm-duel-dialog:has(.duel-game:not([hidden])) .duel-heading .duel-exit{width:36px;height:40px;min-height:40px;border:6px solid transparent;border-image:url('./solo-back.png?v=151') 20 28 fill /6px stretch;background:transparent;border-radius:0}
 #storm-duel-dialog:has(.duel-game:not([hidden])) .duel-status{font-size:10px;line-height:13px;padding:0 4px;margin:0}
 #storm-duel-dialog .duel-game:not([hidden]){display:grid;grid-template-columns:1fr;grid-template-rows:40px 22px minmax(140px,1fr) 16px clamp(190px,27vh,270px) auto;padding:0 2px max(5px,env(safe-area-inset-bottom));gap:5px;overflow:hidden}
-#storm-duel-dialog #duel-wallet{grid-row:1;display:flex;align-items:center;justify-content:space-around;gap:5px;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-wallet-frame.png?v=150') 18 34 fill /7px stretch;background:transparent;padding:0;flex-wrap:nowrap}
+#storm-duel-dialog #duel-wallet{grid-row:1;display:flex;align-items:center;justify-content:space-around;gap:5px;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-wallet-frame.png?v=151') 18 34 fill /7px stretch;background:transparent;padding:0;flex-wrap:nowrap}
 #storm-duel-dialog #duel-wallet .su-money{font-size:14px;gap:4px}
-#storm-duel-dialog .duel-hud{grid-row:2;align-items:center;font-size:11px;border-bottom:3px solid transparent;border-image:url('./battle-progress-frame.png?v=150') 6 14 /3px stretch;padding:0 4px 4px}
+#storm-duel-dialog .duel-hud{grid-row:2;align-items:center;font-size:11px;border-bottom:3px solid transparent;border-image:url('./battle-progress-frame.png?v=151') 6 14 /3px stretch;padding:0 4px 4px}
 #storm-duel-dialog .duel-hud strong{color:#e6d4ae}
-#storm-duel-dialog #duel-canvas{grid-row:3;box-sizing:border-box;min-height:0;max-height:none;height:100%;width:100%;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=150') 24 fill /4px stretch;border-radius:0;background:transparent}
+#storm-duel-dialog #duel-canvas{grid-row:3;box-sizing:border-box;min-height:0;max-height:none;height:100%;width:100%;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=151') 24 fill /4px stretch;border-radius:0;background:transparent}
 #storm-duel-dialog .duel-hint{grid-row:4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;text-align:center}
-#storm-duel-dialog #duel-shop{grid-row:5;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-panel-frame.png?v=150') 24 28 fill /7px stretch;background:#08132b;background-clip:padding-box;padding:4px;min-height:0;display:block}
+#storm-duel-dialog #duel-shop{grid-row:5;box-sizing:border-box;border:7px solid transparent;border-image:url('./battle-panel-frame.png?v=151') 24 28 fill /7px stretch;background:#08132b;background-clip:padding-box;padding:4px;min-height:0;display:block}
 #storm-duel-dialog #duel-shop .duel-shop-row{height:100%;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:repeat(2,minmax(0,1fr));gap:5px}
-#storm-duel-dialog #duel-shop button{display:grid;grid-template-rows:minmax(25px,1fr) 14px 16px 11px;gap:1px;align-items:center;box-sizing:border-box;min-height:0;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=150') 18 fill /6px stretch;background:#0a1b33;background-clip:padding-box;border-radius:0;padding:1px;box-shadow:none;overflow:visible}
+#storm-duel-dialog #duel-shop button{display:grid;grid-template-rows:minmax(25px,1fr) 14px 16px 11px;gap:1px;align-items:center;box-sizing:border-box;min-height:0;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=151') 18 fill /6px stretch;background:#0a1b33;background-clip:padding-box;border-radius:0;padding:1px;box-shadow:none;overflow:visible}
 #storm-duel-dialog #duel-shop button[hidden]{display:none}
-#storm-duel-dialog #duel-shop button[data-kind=heroes]{border-image-source:url('./battle-hero-frame.png?v=150');background:#1b1232;background-clip:padding-box}
+#storm-duel-dialog #duel-shop button[data-kind=heroes]{border-image-source:url('./battle-hero-frame.png?v=151');background:#1b1232;background-clip:padding-box}
 #storm-duel-dialog #duel-shop button:disabled{opacity:.52;filter:saturate(.5)}
-#storm-duel-dialog #duel-shop button:not(:disabled):is(:hover,:active){border-image-source:url('./battle-unit-active-frame.png?v=150');filter:drop-shadow(0 0 3px #5be4ff)}
+#storm-duel-dialog #duel-shop button:not(:disabled):is(:hover,:active){border-image-source:url('./battle-unit-active-frame.png?v=151');filter:drop-shadow(0 0 3px #5be4ff)}
 #storm-duel-dialog #duel-shop canvas{width:64px;height:100%;min-height:0;max-height:54px;object-fit:contain}
 #storm-duel-dialog #duel-shop strong{font-size:clamp(9px,2.6vw,14px);line-height:14px;white-space:nowrap}
 #storm-duel-dialog #duel-shop span{font-size:13px;line-height:16px}
 #storm-duel-dialog #duel-shop small{font-size:9px;line-height:11px;color:#bbc8e2}
-#storm-duel-dialog .duel-upgrades{grid-row:6;max-height:120px;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-forge-frame.png?v=150') 20 25 fill /6px stretch;border-radius:0;background:#0c1528;background-clip:padding-box;padding:1px 4px;font-size:11px;color:#f5dc9c}
+#storm-duel-dialog .duel-upgrades{grid-row:6;max-height:120px;box-sizing:border-box;border:6px solid transparent;border-image:url('./battle-forge-frame.png?v=151') 20 25 fill /6px stretch;border-radius:0;background:#0c1528;background-clip:padding-box;padding:1px 4px;font-size:11px;color:#f5dc9c}
 #storm-duel-dialog .duel-upgrades summary{min-height:24px;display:flex;align-items:center}
 @media(max-width:350px){#storm-duel-dialog #duel-shop strong{font-size:8px}#storm-duel-dialog #duel-shop small{font-size:8px}#storm-duel-dialog #duel-wallet .su-money{font-size:12px}}
 @media(max-height:650px){#storm-duel-dialog .duel-game:not([hidden]){grid-template-rows:34px 19px minmax(95px,1fr) 13px 174px auto;gap:3px}#storm-duel-dialog #duel-shop button{grid-template-rows:minmax(20px,1fr) 12px 13px 9px}#storm-duel-dialog #duel-shop small{font-size:8px;line-height:9px}}
@@ -712,7 +712,7 @@ body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.stor
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop .su-money{font-size:12px}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open{position:relative}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open:before{left:3px;top:50%;transform:translateY(-50%);margin:0;width:18px;height:18px}
-body[data-game=storm]:has(#game.storm-mode:not([hidden])) .nova-xp>i{background:url('./battle-progress-fill.png?v=150') center/100% 100% no-repeat;box-shadow:0 0 5px #ffc26c}
+body[data-game=storm]:has(#game.storm-mode:not([hidden])) .nova-xp>i{background:url('./battle-progress-fill.png?v=151') center/100% 100% no-repeat;box-shadow:0 0 5px #ffc26c}
 @media(max-width:350px){body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-shop .su-money{font-size:10px}}
 @media(max-height:650px){body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.storm-mode{grid-template-rows:76px minmax(100px,1fr) 204px}}
 
@@ -726,18 +726,18 @@ body[data-game=storm]:has(#game.storm-mode:not([hidden])) #storm-upgrades-open{i
 #storm-social-dialog .social-slot{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);padding:1px;overflow:hidden}
 #storm-social-dialog .social-slot canvas{box-sizing:border-box;display:block;min-width:0;min-height:0;width:100%;height:100%;max-width:100%;max-height:100%;align-self:center;justify-self:center;object-fit:contain;object-position:center}
 #storm-social-dialog .social-troop-bar{gap:6px;scroll-padding-inline:0;padding-block:6px;scrollbar-width:none}
-#storm-social-dialog .social-troop-bar .social-unit{flex:0 0 calc((100% - 12px)/3);height:106px;min-height:106px;position:relative;isolation:isolate;justify-content:center;gap:4px;padding:4px 1px;border-image-source:url('./room-card.png?v=150');background:transparent;overflow:visible}
+#storm-social-dialog .social-troop-bar .social-unit{flex:0 0 calc((100% - 12px)/3);height:106px;min-height:106px;position:relative;isolation:isolate;justify-content:center;gap:4px;padding:4px 1px;border-image-source:url('./room-card.png?v=151');background:transparent;overflow:visible}
 #storm-social-dialog .social-troop-bar .social-unit canvas{width:48px;height:42px;max-width:100%;flex:none;object-fit:contain;object-position:center}
 #storm-social-dialog .social-unit strong{white-space:nowrap;overflow-wrap:normal;word-break:normal;hyphens:none;font-size:10px;line-height:14px}
-#storm-social-dialog .social-troop-bar .social-unit[aria-pressed=true]{border-image-source:url('./room-card.png?v=150');background:transparent;border-color:transparent;filter:none;color:#efffff}
-#storm-social-dialog .social-troop-bar .social-unit[aria-pressed=true]:after{content:'';position:absolute;inset:-5px;border:5px solid transparent;border-image:url('./room-card.png?v=150') 15 stretch;background:none;pointer-events:none;filter:brightness(1.6) drop-shadow(0 0 3px #6cecff)}
+#storm-social-dialog .social-troop-bar .social-unit[aria-pressed=true]{border-image-source:url('./room-card.png?v=151');background:transparent;border-color:transparent;filter:none;color:#efffff}
+#storm-social-dialog .social-troop-bar .social-unit[aria-pressed=true]:after{content:'';position:absolute;inset:-5px;border:5px solid transparent;border-image:url('./room-card.png?v=151') 15 stretch;background:none;pointer-events:none;filter:brightness(1.6) drop-shadow(0 0 3px #6cecff)}
 @container(max-width:350px){#storm-social-dialog .social-troop-bar .social-unit{flex-basis:calc((100% - 6px)/2)}}
 @container(min-width:600px){#storm-social-dialog .social-troop-bar .social-unit{flex-basis:calc((100% - 24px)/5)}}
 
 /* iPhone/WebKit: canvas bitmap dimensions never participate in grid sizing. */
 #storm-duel-dialog:has(.duel-game:not([hidden])){height:var(--device-height,100dvh);max-height:var(--device-height,100dvh);padding:max(5px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(5px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left));box-sizing:border-box}
 #storm-duel-dialog .duel-game:not([hidden]){flex:1 1 0%;height:0;min-height:0;min-width:0;grid-template-rows:40px 22px minmax(0,1fr) 16px clamp(174px,27dvh,270px) auto;overflow:hidden}
-#storm-duel-dialog #duel-field{grid-row:3;position:relative;box-sizing:border-box;min-height:0;min-width:0;width:100%;height:100%;contain:size layout paint;overflow:hidden;isolation:isolate;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=150') 24 fill /4px stretch;background:#101426;border-radius:0}
+#storm-duel-dialog #duel-field{grid-row:3;position:relative;box-sizing:border-box;min-height:0;min-width:0;width:100%;height:100%;contain:size layout paint;overflow:hidden;isolation:isolate;border:4px solid transparent;border-image:url('./battle-field-frame.png?v=151') 24 fill /4px stretch;background:#101426;border-radius:0}
 #storm-duel-dialog #duel-field #duel-canvas{position:absolute;inset:0;display:block;grid-row:auto;box-sizing:border-box;min-width:0;min-height:0;max-width:none;max-height:none;width:100%;height:100%;margin:0;padding:0;border:0;border-image:none;border-radius:0;flex:none}
 #storm-duel-dialog #duel-shop{min-width:0;min-height:0;position:relative;isolation:isolate}
 #storm-duel-dialog .duel-heading,#storm-duel-dialog .duel-status{flex-shrink:0}
@@ -755,7 +755,7 @@ body:is([data-game],:not([data-game])) :is(#profile-dialog,#leaderboard-dialog,#
 
 /* Sharper multiplayer header: real text, original frame and separate original icon. */
 #storm-social-dialog .social-room-header>img{image-rendering:auto;width:min(100%,340px);max-width:340px;max-height:48px}
-#storm-social-dialog .social-room-title{box-sizing:border-box;width:min(90%,420px);min-height:50px;height:auto;aspect-ratio:auto;display:flex;align-items:center;justify-content:center;gap:10px;border:9px solid transparent;border-image:url('./room-title-frame.png?v=150') 20 30 fill /9px stretch;background:#081d50;background-clip:padding-box;padding:3px 10px;margin:1px auto 12px;color:#f0f6ff;font:600 clamp(20px,4.8cqw,28px)/1.15 var(--su-font-heading);letter-spacing:.01em;text-shadow:0 1px 2px #030819}
+#storm-social-dialog .social-room-title{box-sizing:border-box;width:min(90%,420px);min-height:50px;height:auto;aspect-ratio:auto;display:flex;align-items:center;justify-content:center;gap:10px;border:9px solid transparent;border-image:url('./room-title-frame.png?v=151') 20 30 fill /9px stretch;background:#081d50;background-clip:padding-box;padding:3px 10px;margin:1px auto 12px;color:#f0f6ff;font:600 clamp(20px,4.8cqw,28px)/1.15 var(--su-font-heading);letter-spacing:.01em;text-shadow:0 1px 2px #030819}
 #storm-social-dialog .social-room-title>img{display:block;width:32px;height:32px;object-fit:contain;image-rendering:auto;flex:none}
 #storm-social-dialog .social-room-title>span{font:inherit;line-height:inherit;white-space:nowrap}
 #storm-social-dialog .social-room-tabs img{image-rendering:auto;width:22px;height:22px}
@@ -766,18 +766,18 @@ body:is([data-game],:not([data-game])) :is(#profile-dialog,#leaderboard-dialog,#
 /* Room overlay: separated banner / formation / readiness rows with original cutouts. */
 #storm-social-dialog .social-lineups{--room-name-top:clamp(84px,calc(24 * var(--room-cq,1cqw)),170px);--room-name-height:clamp(30px,calc(8.61 * var(--room-cq,1cqw)),62px);--room-slot-height:clamp(44px,calc(8.6 * var(--room-cq,1cqw)),62px);--room-slot-gap:clamp(3px,calc(.6 * var(--room-cq,1cqw)),5px);--room-stack:calc(4 * var(--room-slot-height) + 3 * var(--room-slot-gap));--room-status-height:clamp(32px,calc(9.58 * var(--room-cq,1cqw)),69px);min-height:calc(var(--room-name-top) + var(--room-name-height) + 10px + var(--room-stack) + 14px + var(--room-status-height) + 12px)}
 #storm-social-dialog .social-team:before{top:calc(var(--room-name-top) - calc(6.39 * var(--room-cq,1cqw)) + 5px);image-rendering:auto}
-#storm-social-dialog .social-team>h3{top:var(--room-name-top);height:var(--room-name-height);border:7px solid transparent;border-image:url('./room-name-blue.png?v=150') 13 22 fill /7px stretch;background:#0c1948;background-clip:padding-box;padding:0 2px;overflow:visible}
-#storm-social-dialog .social-team:nth-child(2)>h3{border-image-source:url('./room-name-purple.png?v=150');background:#201038;background-clip:padding-box}
+#storm-social-dialog .social-team>h3{top:var(--room-name-top);height:var(--room-name-height);border:7px solid transparent;border-image:url('./room-name-blue.png?v=151') 13 22 fill /7px stretch;background:#0c1948;background-clip:padding-box;padding:0 2px;overflow:visible}
+#storm-social-dialog .social-team:nth-child(2)>h3{border-image-source:url('./room-name-purple.png?v=151');background:#201038;background-clip:padding-box}
 #storm-social-dialog .social-slots{top:calc(var(--room-name-top) + var(--room-name-height) + 10px);--slot-h:var(--room-slot-height);--slot-gap:var(--room-slot-gap)}
 #storm-social-dialog .social-slot,#storm-social-dialog .social-team:nth-child(2) .social-slot{background-clip:padding-box}
-#storm-social-dialog .social-team>p{bottom:12px;height:var(--room-status-height);gap:5px;border:6px solid transparent;border-image:url('./room-ready.png?v=150') 15 22 fill /6px stretch;background:#121943;background-clip:padding-box;padding:0 2px;font-size:clamp(9px,calc(2.2 * var(--room-cq,1cqw)),16px)}
-#storm-social-dialog .social-team>p:before{content:'';display:block;flex:none;width:clamp(11px,calc(3 * var(--room-cq,1cqw)),21px);height:clamp(11px,calc(3 * var(--room-cq,1cqw)),21px);background:url('./room-ready-ring.png?v=150') center/contain no-repeat}
+#storm-social-dialog .social-team>p{bottom:12px;height:var(--room-status-height);gap:5px;border:6px solid transparent;border-image:url('./room-ready.png?v=151') 15 22 fill /6px stretch;background:#121943;background-clip:padding-box;padding:0 2px;font-size:clamp(9px,calc(2.2 * var(--room-cq,1cqw)),16px)}
+#storm-social-dialog .social-team>p:before{content:'';display:block;flex:none;width:clamp(11px,calc(3 * var(--room-cq,1cqw)),21px);height:clamp(11px,calc(3 * var(--room-cq,1cqw)),21px);background:url('./room-ready-ring.png?v=151') center/contain no-repeat}
 /* One sizing container for both row reservations and their children. */
 #storm-social-dialog .social-lineups{width:100%;margin:0;container-type:normal}
 #storm-social-dialog .social-hero{width:clamp(48px,calc(18 * var(--room-cq,1cqw)),132px)}
 #storm-social-dialog .social-team>h3{display:block;text-align:center;line-height:calc(var(--room-name-height) - 14px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#storm-social-dialog .social-lineups:before{background-image:url('./room-scene-clean.png?v=150')}
-#storm-social-dialog .social-lineups:before{background-image:url('./room-scene-clean.png?v=150'),linear-gradient(#070d28b8,#070d28b8),url('./shop-space-background.jpg?v=150');background-size:100% auto,cover,cover;background-position:center bottom,center,center;background-repeat:no-repeat}
+#storm-social-dialog .social-lineups:before{background-image:url('./room-scene-clean.png?v=151')}
+#storm-social-dialog .social-lineups:before{background-image:url('./room-scene-clean.png?v=151'),linear-gradient(#070d28b8,#070d28b8),url('./shop-space-background.jpg?v=151');background-size:100% auto,cover,cover;background-position:center bottom,center,center;background-repeat:no-repeat}
 #storm-social-dialog .social-lineups:before{background-size:100% auto,cover,180% auto;background-position:center bottom,center,50% 25%}
 
 #storm-social-dialog .social-hero{left:calc(30 * var(--room-cq,1cqw))}
@@ -807,9 +807,9 @@ body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testpl
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-header select{font:inherit;color:#dcefff;background:#101e38;border:1px solid #6386a5;border-radius:6px;padding:4px 8px;min-height:32px}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:6px;overflow-y:auto;min-height:0;overscroll-behavior:contain;scrollbar-width:thin;padding:4px;touch-action:pan-y}
 html.storm-viewport #game.storm-testplay [data-testplay-album] *{touch-action:pan-y}
-body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card{position:relative;display:flex;align-items:center;gap:5px;min-height:66px;min-width:0;padding:3px;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=150') 18 fill /6px stretch;background:#09172d;background-clip:padding-box;color:#e0e9f8;text-align:left;box-shadow:none;border-radius:0}
-body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-kind=heroes],body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-rarity=legendary]{border-image-source:url('./battle-hero-frame.png?v=150')}
-body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[aria-pressed=true]{border-image-source:url('./battle-unit-active-frame.png?v=150');filter:drop-shadow(0 0 3px #5be4ff)}
+body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card{position:relative;display:flex;align-items:center;gap:5px;min-height:66px;min-width:0;padding:3px;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=151') 18 fill /6px stretch;background:#09172d;background-clip:padding-box;color:#e0e9f8;text-align:left;box-shadow:none;border-radius:0}
+body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-kind=heroes],body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-rarity=legendary]{border-image-source:url('./battle-hero-frame.png?v=151')}
+body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[aria-pressed=true]{border-image-source:url('./battle-unit-active-frame.png?v=151');filter:drop-shadow(0 0 3px #5be4ff)}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[aria-pressed=true]:after{content:'✓';position:absolute;right:0;top:-3px;color:#8cf1df;font-size:12px}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[hidden]{display:none}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card canvas{width:46px;height:42px;object-fit:contain;image-rendering:pixelated;flex:none}
