@@ -87,7 +87,7 @@
     prepareStorm(){
       if(this.sampleReady)return this.sampleReady;
       if(!this.fetchSample||!this.ctx.decodeAudioData)return Promise.resolve(false);
-      this.sampleReady=Promise.all(Object.keys(BATTLE_SAMPLES).map(async name=>{try{const response=await this.fetchSample('./battle-'+name+'.m4a?v=138');if(!response.ok)throw new Error('Audio download failed');const buffer=await this.ctx.decodeAudioData(await response.arrayBuffer());this.sampleBank[name]=buffer;return true;}catch{return false;}})).then(results=>{this.samplesLoaded=results.every(Boolean);if(!this.samplesLoaded)this.sampleReady=null;return this.samplesLoaded;});return this.sampleReady;
+      this.sampleReady=Promise.all(Object.keys(BATTLE_SAMPLES).map(async name=>{try{const response=await this.fetchSample('./battle-'+name+'.m4a?v=139');if(!response.ok)throw new Error('Audio download failed');const buffer=await this.ctx.decodeAudioData(await response.arrayBuffer());this.sampleBank[name]=buffer;return true;}catch{return false;}})).then(results=>{this.samplesLoaded=results.every(Boolean);if(!this.samplesLoaded)this.sampleReady=null;return this.samplesLoaded;});return this.sampleReady;
     }
     instrument(name,pitch,time,duration,volume,pan=0){
       const buffer=this.sampleBank[name],meta=BATTLE_SAMPLES[name];
