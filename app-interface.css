@@ -166,3 +166,11 @@ dialog:not(#storm-reveal-dialog) :is(p,li){font-family:var(--su-font-body);color
 
 /* Boss details belong to the canvas panel at the top; transient round notices sit below the fight. */
 .storm-mode #nova-upgrade-notice{top:auto;bottom:var(--su-space-3);left:var(--su-space-3);right:var(--su-space-3);font:var(--su-weight-ui) var(--su-text-label)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-text);text-shadow:0 1px 3px var(--su-bg);overflow-wrap:anywhere}
+
+/* Skin rarity: shared reference-column tiers, without changing the figure artwork. */
+.skin-rarity-badge{display:inline-flex;align-items:center;justify-content:center;justify-self:start;gap:var(--su-space-1);padding:2px 7px;border:1px solid var(--skin-color);border-radius:var(--su-radius-small);color:var(--skin-color);font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading);letter-spacing:var(--su-tracking-label);background:var(--su-panel-inset);max-width:100%;box-sizing:border-box}
+.skin-album-card[data-rarity]{grid-template-rows:none;grid-auto-rows:max-content}
+.skin-album-card[data-rarity] .skin-art-button{background:linear-gradient(135deg,var(--skin-color),#344761 65%,var(--skin-color))}
+.skin-album-card[data-rarity] .skin-art-button:hover,.skin-album-card[data-rarity] .skin-art-button:focus-visible{background:var(--skin-color)}
+.skin-detail-preview+.skin-rarity-badge{display:flex;width:max-content;margin:var(--su-space-2) auto}
+.armory-troop-heading .skin-rarity-badge{margin-top:var(--su-space-1)}
