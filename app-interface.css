@@ -62,3 +62,25 @@ dialog:not(#storm-reveal-dialog) :is(p,li){font-family:var(--su-font-body);color
 .help-details summary::after{content:'+';margin-left:auto}.help-details[open] summary::after{content:'−'}
 @container(max-width:350px){.armory-dialog .armory-rarity{position:static;display:table;margin-top:var(--su-space-1)}}
 #duel-wallet{display:flex;flex-wrap:wrap;gap:var(--su-space-3);padding:var(--su-space-2) 0}
+/* Skin shop and collection: same navigation and surfaces as the weapon shop. */
+.skin-chest-card{display:grid;grid-template-columns:88px minmax(0,1fr);gap:var(--su-space-3);padding:var(--su-space-4);border:var(--su-line-width) solid var(--su-gold);border-radius:var(--su-radius-control);background:linear-gradient(120deg,var(--su-panel-raised),var(--su-panel-inset));margin-bottom:var(--su-space-3)}
+.skin-chest-art{display:grid;place-items:center}.skin-chest-art svg{width:100%;max-width:100px;image-rendering:pixelated}
+.skin-eyebrow{font:var(--su-weight-ui) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-cyan);letter-spacing:var(--su-tracking-label)}
+.skin-chest-card h3{font-size:var(--su-text-card);color:var(--su-gold);margin:var(--su-space-2) 0}
+.skin-chest-card .armory-buy{width:100%;min-height:var(--su-touch);margin-top:var(--su-space-2)}
+.skin-album{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--su-space-3)}
+.skin-album-card{min-width:0;overflow:hidden;border:var(--su-line-width) solid var(--skin-color,var(--su-line));border-radius:var(--su-radius-control);background:var(--su-panel);padding:var(--su-space-2)}
+.skin-album-card h3{font:var(--su-weight-ui) var(--su-text-body)/var(--su-leading-ui) var(--su-font-heading);color:var(--su-text);margin:var(--su-space-1) 0;overflow-wrap:anywhere}
+.skin-album-card>small{font:var(--su-weight-label) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-muted)}
+.skin-art-button{display:grid;place-items:center;width:100%;min-height:110px;padding:0;border:0;background:var(--su-panel-inset);border-radius:var(--su-radius-small);margin:0 0 var(--su-space-2);cursor:pointer}
+.skin-art-button:disabled{opacity:1;background:var(--su-panel-inset)}
+.skin-preview{display:block;width:112px;height:96px;max-width:100%;object-fit:contain;image-rendering:pixelated;pointer-events:none}
+.skin-owned{font:var(--su-weight-label) var(--su-text-compact)/var(--su-leading-ui) var(--su-font-body);color:var(--su-success)}
+.armory-troop-heading:has(>.skin-preview){grid-template-columns:64px minmax(0,1fr) 16px}.armory-troop-heading>.skin-preview{width:64px;height:auto}
+.skin-detail-preview,.skin-reveal{width:224px;height:192px;margin:var(--su-space-4) auto}
+.skin-preview-controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--su-space-2)}
+.skin-preview-controls .armory-equip{margin:0;min-height:var(--su-touch);padding:var(--su-space-2);font-size:var(--su-text-label)}
+.skin-preview-controls [aria-pressed=true]{border-color:var(--su-gold);color:var(--su-gold);background:var(--su-gold-fill)}
+.skin-reveal{animation:skin-reveal 600ms ease-out}@keyframes skin-reveal{from{opacity:0;transform:translateY(12px) scale(.85)}to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){.skin-reveal{animation:none}}
+@container(max-width:350px){.skin-chest-card{grid-template-columns:64px minmax(0,1fr);padding:var(--su-space-3)}.skin-album{gap:var(--su-space-2)}}

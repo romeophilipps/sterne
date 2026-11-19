@@ -71,7 +71,7 @@ body[data-game=storm] :is(.icon-button,.armory-close,#storm-upgrades-dismiss,.du
 .armory-dialog .armory-active-weapon{font:var(--su-weight-label) var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body);color:var(--su-cyan)}
 .armory-dialog .armory-role-svg{color:var(--su-cyan)}
 .armory-dialog .armory-gear-tabs button{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-panel-raised);border-color:var(--su-line);color:var(--su-muted)}
-.armory-dialog .armory-gear-tabs button:first-child{background:var(--su-gold-fill);color:var(--su-gold);border-color:var(--su-gold)}
+.armory-dialog .armory-gear-tabs button[aria-pressed=true]{background:var(--su-gold-fill);color:var(--su-gold);border-color:var(--su-gold)}
 .armory-dialog .armory-gear-tabs button:disabled{opacity:1;background:var(--su-panel-inset);color:var(--su-disabled);border-color:var(--su-line)}
 .armory-dialog .armory-equip{font:var(--su-weight-ui) var(--su-text-ui)/var(--su-leading-ui) var(--su-font-heading);background:var(--su-panel-raised);color:var(--su-cyan);border-color:var(--su-line-strong)}
 .armory-dialog .armory-status{font:var(--su-weight-regular) var(--su-text-label)/var(--su-leading-body) var(--su-font-body);color:var(--su-success)}
