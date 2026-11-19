@@ -78,9 +78,9 @@ body[data-game=storm] :is(.market-buy,.skin-direct-buy,.armory-buy,.skin-chest-b
 @container(min-width:600px){.market-nav button{flex-direction:row;min-height:48px;font-size:var(--su-text-ui);gap:8px}.market-chest-card{grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);padding:20px}.market-chest-art{max-width:340px;margin:auto}.market-chest-copy h3{font-size:var(--su-text-title)}.market-chest-copy .armory-note{font-size:var(--su-text-body)}.market-daily .skin-featured-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}.market-category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.market-category{grid-template-columns:26px minmax(0,1fr) 12px;gap:8px;padding:12px}.market-category strong{font-size:var(--su-text-ui)}}
 @media(prefers-reduced-motion:reduce){.market-frame-star,.market-frame-spark{animation:none!important}body[data-game=storm] :is(.market-buy,.skin-direct-buy,.armory-buy,.skin-chest-buy,.primary){transition:none!important}}
 
-body[data-game=storm]{background-image:linear-gradient(#050b1bcf,#050b1be8),url('storm-reveal-space.png?v=126');background-position:center;background-size:cover;background-attachment:fixed}
+body[data-game=storm]{background-image:linear-gradient(#050b1bcf,#050b1be8),url('storm-reveal-space.png?v=127');background-position:center;background-size:cover;background-attachment:fixed}
 body[data-game=storm]:has(dialog[open]){overflow:hidden}
-body[data-game=storm] .armory-station-art{background:linear-gradient(90deg,#10192c 20%,#10192c77 70%),url('storm-reveal-space.png?v=126') right 8%/cover no-repeat;opacity:.72}
+body[data-game=storm] .armory-station-art{background:linear-gradient(90deg,#10192c 20%,#10192c77 70%),url('storm-reveal-space.png?v=127') right 8%/cover no-repeat;opacity:.72}
 .skin-album-card:not([data-rarity]) .skin-art-button{margin-top:24px;min-height:150px;grid-template-rows:100px minmax(24px,auto)}
 .skin-album-card:not([data-rarity]) .skin-preview{height:100px}
 

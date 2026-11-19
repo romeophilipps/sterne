@@ -1,6 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarSkins=api;})(globalThis,()=>{
- const CHEST_COST=100,DIRECT_COST=200;
+ const CHEST_COST=100,DIRECT_COSTS=Object.freeze({rare:80,epic:200,legendary:500});
  const TROOPS=Object.freeze([
   {type:0,name:'Rekrut',skins:['Weihnachtssoldat','Wüstenranger','Galaktischer Ritter','Sternenrekrut']},
   {type:1,name:'Wächter',skins:['Santa-Wächter','Zenit-Wache','Aegis-Paladin','Sternenwächter']},
@@ -31,5 +31,6 @@
  const DAILY_CHEST=false;
  function chestPool(now=Date.now()){return DAILY_CHEST?rotationInfo(now).skins:AVAILABLE;}
  function statePose(state){return ({idle:'idle',run:'run',jump:'jump',attack:'attack',aim:'attack',special:'special',ability:'special',ultimate:'special',hit:'hit',block:'hit',death:'death',cloak:'special',reload:'idle',rise:'jump'})[state]||'idle';}
- return {TROOPS,CATALOG,AVAILABLE,RARITIES,collection,CHEST_COST,DIRECT_COST,DAILY_CHEST,rotationInfo,isDailyOffer,chestPool,get,normalize,choose,statePose};
+ function price(value){const skin=get(typeof value==='object'&&value?value.id:value);return skin?DIRECT_COSTS[skin.rarity]:null;}
+ return {TROOPS,CATALOG,AVAILABLE,RARITIES,collection,CHEST_COST,DIRECT_COSTS,price,DAILY_CHEST,rotationInfo,isDailyOffer,chestPool,get,normalize,choose,statePose};
 });

@@ -13,7 +13,7 @@
   if(kind==='weapons')for(const w of W.CATALOG)if(!profile.owned.includes(w.id))rewards.push({...w,kind:'weapon',rarity:weaponRarity(w.id)});
   return rewards;
  }
- const DROP_WEIGHTS=Object.freeze({rare:75,epic:20,legendary:5});
+ const DROP_WEIGHTS=Object.freeze({rare:77,epic:20,legendary:3});
  function chances(pool){const counts={rare:0,epic:0,legendary:0};for(const item of pool){if(!(item.rarity in DROP_WEIGHTS))throw Error('Unbekannte Seltenheit.');counts[item.rarity]++;}const total=Object.keys(counts).reduce((n,k)=>n+(counts[k]?DROP_WEIGHTS[k]:0),0);return Object.fromEntries(Object.keys(counts).map(k=>[k,{count:counts[k],probability:counts[k]?DROP_WEIGHTS[k]/total:0}]));}
  function choose(pool,random=Math.random){if(!pool.length)return null;const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');const odds=chances(pool);let start=0;for(const rarity of Object.keys(DROP_WEIGHTS)){const group=pool.filter(s=>s.rarity===rarity),chance=odds[rarity].probability;if(!group.length)continue;if(n<start+chance)return group[Math.min(group.length-1,Math.floor((n-start)/chance*group.length))];start+=chance;}return pool[pool.length-1];}
  function bundleMissing(profile){return WINTER_BUNDLE.ids.filter(id=>!profile.skins.owned.includes(id));}
