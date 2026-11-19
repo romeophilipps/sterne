@@ -41,17 +41,17 @@
   close(){if(this.closed)return;this.cancelInvite();if(this.incoming)this.finishIncoming('decline');this.send('offline');this.closed=true;clearInterval(this.timer);this.channel.close();}
  }
  class Lobby{
-  constructor(config,{host,id,peer,code,ChannelClass=O.Channel,clock=()=>Date.now()}={}){Object.assign(this,{host,id,peer,code,clock,own:{warriors:[],heroes:[0]},other:null,ready:false,peerReady:false,seq:0,peerSeq:-1,connected:false,closed:false,launched:false,lastPeer:clock(),lastSend:-Infinity});this.onchange=()=>{};this.onlaunch=()=>{};this.onleave=()=>{};this.channel=new ChannelClass(config,code+'-TEAM');this.channel.onstatus=s=>{this.connected=s==='connected';if(!this.connected){this.ready=false;this.peerReady=false;}else this.publish();this.onchange(this);};this.channel.onmessage=m=>this.receive(m);}
+  constructor(config,{host,id,peer,code,equipment=globalThis.StarArmoryUI?.equipment?.()||{},ChannelClass=O.Channel,clock=()=>Date.now()}={}){Object.assign(this,{host,id,peer,code,clock,ownEquipment:D.normalizeEquipment(equipment),otherEquipment:D.normalizeEquipment({}),own:{warriors:[],heroes:[0]},other:null,ready:false,peerReady:false,seq:0,peerSeq:-1,connected:false,closed:false,launched:false,lastPeer:clock(),lastSend:-Infinity});this.onchange=()=>{};this.onlaunch=()=>{};this.onleave=()=>{};this.channel=new ChannelClass(config,code+'-TEAM');this.channel.onstatus=s=>{this.connected=s==='connected';if(!this.connected){this.ready=false;this.peerReady=false;}else this.publish();this.onchange(this);};this.channel.onmessage=m=>this.receive(m);}
   start(){this.channel.connect();this.timer=setInterval(()=>this.tick(),250);return this;}
   send(type,data={}){return this.channel.send({lobby:1,type,from:this.id,to:this.peer,...data});}
-  publish(){this.send('team',{team:clone(this.own),ready:this.ready,seq:this.seq});this.lastSend=this.clock();}
+  publish(){this.send('team',{team:clone(this.own),equipment:D.normalizeEquipment(this.ownEquipment),ready:this.ready,seq:this.seq});this.lastSend=this.clock();}
   select(team){if(this.closed||this.launched||this.ready||!draft(team))return false;this.own=clone(team);this.seq++;this.publish();this.onchange(this);return true;}
   setReady(value){if(!this.connected||this.launched||!D.validLoadout(this.own))return false;this.ready=!!value;this.seq++;this.publish();this.onchange(this);this.maybeLaunch();return true;}
   maybeLaunch(){if(!this.host||this.launched||!this.ready||!this.peerReady||!D.validLoadout(this.other))return;this.send('launch',{hostTeam:this.own,guestTeam:this.other,hostSeq:this.seq,guestSeq:this.peerSeq});}
-  launch(){if(this.launched)return;this.launched=true;this.onlaunch({host:this.host,id:this.id,expectedPeer:this.peer,code:this.code,loadout:clone(this.own)});}
+  launch(){if(this.launched)return;this.launched=true;this.onlaunch({host:this.host,id:this.id,expectedPeer:this.peer,code:this.code,loadout:clone(this.own),equipment:D.normalizeEquipment(this.ownEquipment)});}
   receive(m){if(this.closed||m?.lobby!==1||m.from!==this.peer||m.to!==this.id)return;this.lastPeer=this.clock();
    if(m.type==='leave'&&!this.launched){this.ready=false;this.peerReady=false;this.onleave('Dein Mitspieler hat das Startmenü verlassen.');return;}
-   if(m.type==='team'&&draft(m.team)&&Number.isInteger(m.seq)&&m.seq>=this.peerSeq){this.peerSeq=m.seq;this.other=clone(m.team);this.peerReady=m.ready===true&&D.validLoadout(this.other);this.onchange(this);this.maybeLaunch();}
+   if(m.type==='team'&&draft(m.team)&&D.validEquipment(m.equipment||{})&&Number.isInteger(m.seq)&&m.seq>=this.peerSeq){this.peerSeq=m.seq;this.other=clone(m.team);this.otherEquipment=D.normalizeEquipment(m.equipment||{});this.peerReady=m.ready===true&&D.validLoadout(this.other);this.onchange(this);this.maybeLaunch();}
    if(m.type==='launch'&&!this.host&&this.ready&&this.peerReady&&m.guestSeq===this.seq&&m.hostSeq===this.peerSeq&&same(m.guestTeam,this.own)&&same(m.hostTeam,this.other)){this.send('launch-ack',{hostSeq:m.hostSeq,guestSeq:m.guestSeq});this.launch();}
    if(m.type==='launch-ack'&&this.host&&this.ready&&this.peerReady&&m.hostSeq===this.seq&&m.guestSeq===this.peerSeq)this.launch();
   }
