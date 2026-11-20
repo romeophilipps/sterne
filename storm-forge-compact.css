@@ -1,0 +1,32 @@
+/* Four compact upgrades per row; original portraits and existing frame art. */
+#storm-upgrades-dialog #storm-upgrades-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:start}
+#storm-upgrades-list>#storm-core-forge{grid-column:1/-1;min-width:0}
+#storm-upgrades-dialog .storm-forge-scroll{padding:8px}
+#storm-upgrades-dialog .storm-upgrade-card{min-width:0;margin:0;padding:5px;border-radius:9px}
+#storm-upgrades-dialog .storm-upgrade-heading{display:flex;flex-direction:column;gap:5px;align-items:stretch}
+#storm-upgrades-dialog .storm-upgrade-details-open{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-width:0;width:100%;min-height:104px;margin:0;padding:2px;border:0;border-radius:6px;background:transparent;box-shadow:none;color:inherit;cursor:pointer}
+#storm-upgrades-dialog .storm-upgrade-details-open:focus-visible{outline:2px solid #82d8ed;outline-offset:1px}
+#storm-upgrades-dialog .storm-upgrade-portrait{width:44px;height:46px;flex:none}
+#storm-upgrades-dialog .storm-upgrade-title{width:100%;gap:4px;text-align:center}
+#storm-upgrades-dialog .storm-upgrade-title strong{font-size:10px;line-height:1.15;min-height:24px;display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere}
+#storm-upgrades-dialog .storm-upgrade-title>span:not(.storm-upgrade-track){font-size:8px;letter-spacing:0;white-space:nowrap}
+#storm-upgrades-dialog .storm-upgrade-track{width:100%;height:3px}
+body[data-game=storm] #storm-upgrades-dialog .storm-upgrade-action{width:100%;max-width:none;min-height:44px;padding:3px 1px;font-size:10px;line-height:1.25;border-radius:7px;overflow-wrap:normal}
+body[data-game=storm] #storm-upgrade-detail{box-sizing:border-box;width:min(92vw,430px);max-height:86dvh;padding:0;border:12px solid transparent;border-image:var(--st-shell-art) 34 28 40 fill /12px stretch;border-radius:0;background:#0b1730;color:#e1edf8;overflow:hidden;box-shadow:0 20px 80px #000a;text-align:left}
+body[data-game=storm] #storm-upgrade-detail[open]{display:flex;flex-direction:column}
+body[data-game=storm] #storm-upgrade-detail::backdrop{background:#050b1bc9;backdrop-filter:blur(5px)}
+.storm-upgrade-detail-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid #526b91}
+.storm-upgrade-detail-header h2{font:600 22px/1.2 var(--su-font-heading);margin:0;color:#e8cb8d}
+.storm-upgrade-detail-header button{width:44px;height:44px;padding:0;flex:none;border:1px solid #82d8ed;border-radius:10px;background:#17253b;color:#e1edf8;font-size:28px}
+.storm-upgrade-detail-content{padding:14px;overflow:auto;min-height:0;overscroll-behavior:contain}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-portrait{display:block;width:88px;height:88px;margin:0 auto 8px;object-fit:contain}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-title{text-align:center;margin-bottom:14px}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-title strong{font-size:18px}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-track{margin:auto}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-stats span{font-size:12px}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-stats strong{font-size:14px;overflow-wrap:anywhere}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-future{display:block;font-size:13px;line-height:1.5}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-future>strong{font-size:14px;color:#b7a4e5}
+body[data-game=storm] #storm-upgrade-detail .storm-upgrade-future p{margin:6px 0 0;color:#a1b6cc}
+
+#storm-upgrades-dialog #storm-upgrades-note{font-size:10px;line-height:1.4;margin:6px 2px 8px}
