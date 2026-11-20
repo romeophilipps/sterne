@@ -6,3 +6,5 @@ body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testpl
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay #storm-tactics{grid-column:1}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay #storm-upgrades-open{display:flex;grid-column:2;grid-row:1}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-header{flex-wrap:wrap;gap:4px}
+
+.core-battle-status{position:absolute;left:50%;bottom:var(--su-space-2);transform:translateX(-50%);max-width:calc(100% - 24px);width:max-content;padding:var(--su-space-1) var(--su-space-2);border-radius:var(--su-radius-small);background:var(--su-panel);color:var(--su-cyan);font:500 var(--su-text-micro)/var(--su-leading-ui) var(--su-font-body);text-align:center;pointer-events:none;z-index:3;overflow-wrap:anywhere}
