@@ -16,3 +16,6 @@ body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money .en
 body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money>span,#storm-duel-dialog #duel-shop .su-money>span{font-size:inherit;line-height:inherit;font-weight:inherit;color:inherit}
 
 body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money,body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money>span,#storm-duel-dialog #duel-shop .su-money,#storm-duel-dialog #duel-shop .su-money>span{font-size:11px!important}
+
+#nova-field>.storm-energy-pending,#duel-field>.storm-energy-pending{aspect-ratio:auto;height:auto}
+.storm-energy-pending>.storm-energy-amount{position:static;display:block;transform:none;text-align:center;font-size:11px;color:#bfd4e4}
