@@ -42,7 +42,7 @@
    const crit=p.crit||0;if(crit&&this.run.random()<crit){factor*=p.criticalMultiplier||2;u.critical=true;}else u.critical=false;
    let chance=true;if(p.chance){if(this.id===96){if(u.doubleAttack!==u.attacks){u.doubleAttack=u.attacks;u.doubleAllowed=this.run.random()<p.chance;}chance=u.doubleAllowed;}else chance=this.run.random()<p.chance;}u.proc=chance&&(!p.killCharge||s.quickKills>=p.killCharge);u.first=false;if(p.afterKill)u.charged=false;if(p.firstElite)s.eliteUsed=true;return n*factor;
   }
-  afterHit(t,e,damage){const p=this.p,u=this.unit(t),s=this.state;if(this.id===143&&t.hero===2)e.slowUntil=Math.max(e.slowUntil||0,this.run.elapsed+3000+p.slowDuration);
+  afterHit(t,e,damage){const p=this.p,u=this.unit(t),s=this.state;
    if(this.id===187&&t.type===2&&this.team(p,t)&&this.run.random()<p.crit)this.damage(e,damage,t);
    if(e.itemMarkedUntil>this.run.elapsed)this.damage(e,damage*(e.itemMark||0),t);
    if(ranged(t)&&e.itemRangedUntil>this.run.elapsed)this.damage(e,damage*(e.itemRanged||0),t);
@@ -94,7 +94,7 @@
  function attach(run,wallets=[run.army]){run.itemWallets=wallets.length>1?wallets:null;Object.defineProperty(run,'itemEngines',{configurable:true,writable:true,enumerable:false,value:wallets.flatMap((w,i)=>[...Object.keys(w.items||{}).map(target=>new Engine(run,w,i,target)),new Engine(run,w,i,'unassigned')])});return run.itemEngines;}
  function engines(run){if(!run.itemEngines)attach(run);return run.itemEngines;}
  function engine(run,t=null){const list=engines(run);const owner=t?.owner??(run.itemWallets?run.itemWallets.indexOf(run.army):0);return list.find(e=>e.owner===owner&&e.target!=='unassigned'&&e.own(t))||list.find(e=>e.owner===owner&&e.target==='unassigned')||new Engine(run,run.itemWallets?.[owner]||run.army,owner,'unassigned');}
- function install(Round,stats){const proto=Round.prototype;proto.itemStats=stats;proto.restoreHealth=function(t,amount){const before=t.hp;t.hp=Math.min(t.max,t.hp+amount);if(t.hp>before)for(const handler of engines(this))handler.healed(t,t.hp-before);return t.hp-before;};
+ function install(Round,stats){const proto=Round.prototype;proto.itemStats=stats;proto.itemSlowDuration=function(t){const eng=engine(this,t);return t?.hero===2&&eng.id===143?eng.p.slowDuration:0;};proto.restoreHealth=function(t,amount){const before=t.hp;t.hp=Math.min(t.max,t.hp+amount);if(t.hp>before)for(const handler of engines(this))handler.healed(t,t.hp-before);return t.hp-before;};
   proto.knockback=function(t,dx,dz,low=.04,high=.94){const eng=engine(this,t),factor=eng.id===65?1-eng.p.knockback:1;t.z=Math.max(low,Math.min(high,t.z+dz*factor));t.x+=dx*factor;};
   function wrap(name,fn){const original=proto[name];proto[name]=function(...args){return fn.call(this,original,...args);};}
   wrap('setEquipment',function(old,e){const ok=old.call(this,e);if(ok){delete this.itemEngines;attach(this);}return ok;});
