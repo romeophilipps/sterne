@@ -841,3 +841,24 @@ body[data-game=storm] #storm-armory-dialog .market-nav button[data-market-page=s
 .item-roster-group{margin:12px 0;padding:8px;border:1px solid #2c435d;background:#0b1428;border-radius:10px}.item-roster-group summary{padding:8px;font:600 18px 'Chakra Petch',sans-serif;cursor:pointer}.item-roster-entry{display:grid;grid-template-columns:36px 1fr;gap:4px 8px;align-items:center;width:100%;min-height:56px;margin:6px 0;padding:8px;background:#111c30;color:#e1edf8;border:1px solid #2c435d;border-radius:8px;text-align:left;font:inherit}.item-roster-entry[aria-pressed=true]{border-color:#82d8ed}.item-roster-entry img{grid-row:span 2;width:32px;height:32px;object-fit:contain}.item-roster-entry small{color:#a1b6cc}.item-restrictions{max-width:calc(100% - 12px);flex-wrap:wrap;justify-content:flex-end}.item-restrictions img{width:20px;height:20px}
 .item-search-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.item-search-form .market-buy{min-width:0;min-height:44px;margin:0;padding:8px 12px}
 .item-restrictions:has(img:only-child) img{width:28px;height:28px}
+
+/* Compact collection: four original item pictures per row; details open separately. */
+.item-collection{grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.item-tile{position:relative;display:grid;place-items:center;box-sizing:border-box;min-width:0;width:100%;aspect-ratio:1;padding:3px;border:1px solid color-mix(in srgb,var(--item-color) 65%,#152340);border-radius:9px;background:#0b1428;color:#e1edf8;cursor:pointer;touch-action:manipulation}
+.item-tile .item-picture{display:block;width:100%;height:auto;aspect-ratio:1}
+.item-tile .item-frame{inset:0}
+.item-tile[data-owned=false] .item-picture{opacity:.55}
+.item-tile[data-assigned=true]{border-color:#a9f5ff;box-shadow:0 0 10px #6ce4ff66}
+.item-tile:focus-visible{outline:3px solid #a9f5ff;outline-offset:2px}
+.item-tile .item-restrictions{top:2px;right:2px;max-width:calc(100% - 4px);align-items:center;flex-wrap:nowrap;gap:1px}
+.item-tile .item-restrictions img{width:18px;height:18px}
+.item-tile .item-restrictions small{font:700 10px/1.2 system-ui;background:#0b1428;border-radius:3px;padding:1px}
+.item-tile-assigned{position:absolute;bottom:2px;right:3px;font:700 13px/1 system-ui;color:#a9f5ff;background:#081527;border-radius:4px;padding:2px}
+body[data-game=storm] .item-detail-dialog{width:min(92vw,410px);margin:auto;inset:0;max-height:85dvh;padding-top:40px!important}
+.item-detail-dialog>.armory-note{margin:0 12px 12px;font-size:13px}
+.item-detail-dialog .item-card{min-height:0;gap:12px;padding:16px}
+.item-detail-dialog .item-card .item-picture{width:128px;height:128px}
+.item-detail-dialog .item-card h4{font-size:22px}
+.item-detail-dialog .item-card p{font-size:15px}
+.item-detail-dialog .armory-close{position:absolute;top:8px;right:8px}
+@media(max-width:350px){.item-collection{gap:6px}.item-tile{padding:1px;border-radius:6px}.item-tile .item-restrictions img{width:15px;height:15px}}
