@@ -26,6 +26,18 @@
  };
  for(const [id,range]of Object.entries({shadow:.15,guard:.5,hunter:.6,runner:.55,brood:.14,skyrazor:.6,nexusling:.28}))ABILITIES[id].range=range;
  const clamp=(n,a,b)=>Math.max(a,Math.min(b,n)),distance=(a,b)=>Math.hypot((a.x-b.x)*.45,a.z-b.z);
+ const ENDGAME={startWave:300,tierWaves:50,maxTier:15,initialCooldown:18000,minCooldown:9000,minWarning:1400,shieldStartWave:350,gravityStartWave:400};
+ function endgameTier(r,e){return e.boss&&r.wave>=ENDGAME.startWave?Math.min(ENDGAME.maxTier,1+Math.floor((r.wave-ENDGAME.startWave)/ENDGAME.tierWaves)):0;}
+ function catastrophe(r,e,forced=false){const tier=endgameTier(r,e);if(!tier||r.frozen||e.hp<=0||r.isDimensionHeld(e)||(e.bornUntil||0)>r.elapsed||e.castUntil>r.elapsed)return false;
+  const cycle=e.cataclysmCount||0,style=e.apex?['missile','tide','judgment'][cycle%3]:r.wave>=ENDGAME.gravityStartWave&&cycle%2?'tide':'missile',delay=e.apex?2000:Math.max(ENDGAME.minWarning,2000-(tier-1)*60),count=Math.min(4,1+Math.floor((tier-1)/2)+(e.apex?1:0)),selected=targets(r,{...e,skin:style==='tide'?'leviathan':style==='judgment'?'astraea':'tyrant'}).slice(0,count);
+  // Use the common target selector, then fill to the escalating target cap without duplicate marks.
+  for(const t of r.troops.filter(t=>t.hp>0&&!r.isCloaked(t)).sort((a,b)=>b.max-a.max||a.id-b.id))if(selected.length<count&&!selected.includes(t))selected.push(t);
+  const name=e.apex?'Weltenurteil · '+({missile:'Sternenfall',tide:'Gravitationsbruch',judgment:'Lichtgericht'}[style]):style==='tide'?'Kataklysmus · Gravitationssog':'Kataklysmus · Sternensalve';
+  e.castCount=(e.castCount||0)+1;e.cataclysmCount=cycle+1;e.castStyle=style;e.castAt=r.elapsed;e.castUntil=r.elapsed+delay;e.abilityName=name;
+  selected.forEach((t,i)=>{const h=r.warn(e,t.x,t.z,style==='tide'?.12:.085,style,0,delay+i*120);if(h)Object.assign(h,{tactical:true,targetId:t.id,limit:1,fromX:e.x,fromZ:e.z,color:style==='tide'?'#76eaff':'#fff0b4',ability:name,cast:e.castCount,index:i,total:selected.length,skin:e.skin,effectDuration:850,cataclysm:true,healthFraction:Math.min(.45,.23+tier*.015+(e.apex?.04:0)),pullDistance:.065});});
+  r.events.push({kind:'ability',name:e.name+' · '+name});return true;
+ }
+ function phaseTransition(r,e,L){if(!e.apex)return;const cores=[];for(let i=0;i<e.combatPhase;i++){const core=r.spawnLegion(L.byId.nexusling,{x:clamp(e.x+(i-(e.combatPhase-1)/2)*.12,.1,.9),z:Math.min(.8,e.z+.06),summoned:true});if(core){core.apexOwner=e.id;core.name='Weltenkern';cores.push(core.id);}}e.apexCoreIds=cores;e.apexCoresActive=cores.length>0;e.cataclysmReadyAt=r.elapsed;e.abilityClock=Math.max(e.abilityClock,2500);r.events.push({kind:'ability',name:'Weltenrichterin · '+cores.length+' Weltenkerne schützen sie'});}
  function ability(e){return ABILITIES[e.skin||e.id]||{name:'Energiehieb',style:e.skill||'duel',color:'#dc98ff',cooldown:11000,delay:1600,targets:1,power:1.2,counter:'Deckung hält den Angriff ab.'};}
  function covers(r,g,target){if(g===target||g.hp<=0||g.role!=='guard'||g.z<=target.z||g.z-target.z>=.16||Math.abs(g.x-target.x)>=.3)return false;return r.enemies.filter(e=>e!==g&&e.hp>0&&e.z<g.z&&g.z-e.z<.16&&Math.abs(g.x-e.x)<.3).sort((a,b)=>distance(a,g)-distance(b,g)||a.id-b.id).slice(0,2).includes(target);}
  function targets(r,e){const list=r.troops.filter(t=>t.hp>0&&!r.isCloaked(t)&&!(t.hero<0&&t.type===5&&t.cloaked)&&distance(t,e)<(ability(e).range??.95)),m=ability(e),dps=t=>(t.damage||0)/Math.max(100,t.cooldown||1000)+(t.type>=7? .02:0),front=t=>t.max||1;
@@ -49,10 +61,10 @@
  if(style==='brace'){for(const a of r.enemies.filter(a=>a!==e&&a.hp>0).sort((a,b)=>distance(a,e)-distance(b,e)).slice(0,2))a.wardUntil=r.elapsed+1800;return;}
  const marked=h.targetId===r.base.id?r.base:r.friendlyTargets().find(t=>t.id===h.targetId&&t.hp>0&&!r.isCloaked(t));let victims=marked&&distance(marked,h)<h.r+.025?[marked]:[];h.missed=!victims.length;
  if(marked&&['snipe','missile','duel','mirror','ambush','leap'].includes(style))victims=victims.map(t=>protectedTarget(r,t));
- for(const t of victims){const base=t===r.base,limit=base?t.max*.07:t.kind==='shield'?Infinity:t.max*(e.boss?.5:.4),already=t.skillCastSource===e.id&&t.skillCastId===h.cast;if(already)continue;t.skillCastSource=e.id;t.skillCastId=h.cast;h.impactX=t.x;h.impactZ=t.z;h.intercepted=t.id!==h.targetId;const before=t.hp;let damage=Math.min(h.damage,limit);if(t.kind==='shield'&&['quake','tide','breath'].includes(style))damage*=.65;r.wound(t,damage,e,true);
+ for(const t of victims){const base=t===r.base,limit=base?t.max*.07:t.kind==='shield'?Infinity:t.max*(e.boss?.5:.4),already=t.skillCastSource===e.id&&t.skillCastId===h.cast;if(already)continue;t.skillCastSource=e.id;t.skillCastId=h.cast;h.impactX=t.x;h.impactZ=t.z;h.intercepted=t.id!==h.targetId;const before=t.hp;let damage=h.cataclysm?Math.min(t.max*(base?.06:h.healthFraction),limit):Math.min(h.damage,limit);if(t.kind==='shield'&&['quake','tide','breath'].includes(style))damage*=.65;r.wound(t,damage,e,true);
   if(style==='time')control(r,t,'stunUntil',1200);if(style==='frost'){control(r,t,'slowAttackUntil',1400);t.slowUntil=r.elapsed+1800;}if(style==='judgment')control(r,t,'silenceUntil',1400);
   if(['quake','storm'].includes(style)&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0))r.knockback(t,0,.025);
-  if(style==='tide'&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0)){r.knockback(t,(h.x-t.x)*.3,-.035);}
+  if(style==='tide'&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0)){r.knockback(t,(h.x-t.x)*.3,-(h.pullDistance||.035));}
   if(['breath','fire'].includes(style)&&!base){t.burnUntil=r.elapsed+1600;t.burnDamage=Math.min(e.damage*.12,t.max*.04);}
   if(style==='duel'&&e.boss&&!base)t.fractureUntil=r.elapsed+1800;
   if(style==='frost')e.hp=Math.min(e.max,e.hp+Math.min(e.max*.02,Math.max(0,before-t.hp)*.4));
@@ -62,7 +74,12 @@
  if(style==='crystal'){e.abilityShield=0;e.shieldUntil=0;e.exposedUntil=r.elapsed+3500;}
  if(style==='reactor'&&h.index===h.total-1){e.detonated=true;r.hit(e,e.max*2,-1,true);}
  }
- function step(r,dt){for(const e of r.enemies){if(e.hp<=0)continue;if(e.expiresAt&&r.elapsed>=e.expiresAt){e.hp=0;continue;}if(e.shieldUntil<=r.elapsed)e.abilityShield=0;if(e.skin==='nexusling'&&e.hp<e.max*.5&&e.castCount===undefined)e.abilityClock=0;}}
- function hit(r,e,damage,pure){if(pure)return damage;if(e.exposedUntil>r.elapsed)damage*=1.18;if(e.abilityShield>0&&e.shieldUntil>r.elapsed){const block=Math.min(e.abilityShield,damage);e.abilityShield-=block;damage-=block;if(e.abilityShield<=0)e.exposedUntil=r.elapsed+2800;}return damage;}
- return {ABILITIES,ability,targets,covers,cast,resolve,control,step,hit};
+ function step(r,dt){for(const e of r.enemies){if(e.hp<=0)continue;if(e.expiresAt&&r.elapsed>=e.expiresAt){e.hp=0;continue;}if(e.shieldUntil<=r.elapsed)e.abilityShield=0;if(e.skin==='nexusling'&&e.hp<e.max*.5&&e.castCount===undefined)e.abilityClock=0;
+ const tier=endgameTier(r,e);if(!tier||r.isDimensionHeld(e))continue;
+ if(e.apexCoresActive&&!r.enemies.some(a=>e.apexCoreIds.includes(a.id)&&a.hp>0)){e.apexCoresActive=false;e.exposedUntil=r.elapsed+5000;r.events.push({kind:'ability',name:'Weltenkerne zerstört · 5 Sekunden verwundbar'});}
+ e.cataclysmReadyAt??=r.elapsed+7000;if(r.elapsed>=e.cataclysmReadyAt&&catastrophe(r,e))e.cataclysmReadyAt=r.elapsed+Math.max(ENDGAME.minCooldown,ENDGAME.initialCooldown-(tier-1)*700)/(e.apex?1+(e.combatPhase-1)*.12:1);
+ if(r.wave>=ENDGAME.shieldStartWave){e.starShieldReadyAt??=r.elapsed+12000;if(r.elapsed>=e.starShieldReadyAt&&!(e.exposedUntil>r.elapsed)){e.abilityShield=e.max*Math.min(.18,.06+tier*.01);e.shieldUntil=r.elapsed+4500;e.starShieldReadyAt=r.elapsed+Math.max(14000,24000-tier*600);r.events.push({kind:'ability',name:e.name+' · Sternenpanzer für 4,5 Sekunden'});}if(e.starShieldWasActive&&e.shieldUntil<=r.elapsed)e.exposedUntil=Math.max(e.exposedUntil||0,r.elapsed+3000);e.starShieldWasActive=e.shieldUntil>r.elapsed&&e.abilityShield>0;}
+}}
+ function hit(r,e,damage,pure){if(pure)return damage;if(e.apexCoresActive&&r.enemies.some(a=>e.apexCoreIds.includes(a.id)&&a.hp>0))damage*=.65;if(e.exposedUntil>r.elapsed)damage*=1.18;if(e.abilityShield>0&&e.shieldUntil>r.elapsed){const block=Math.min(e.abilityShield,damage);e.abilityShield-=block;damage-=block;if(e.abilityShield<=0)e.exposedUntil=r.elapsed+2800;}return damage;}
+ return {ENDGAME,endgameTier,catastrophe,phaseTransition,ABILITIES,ability,targets,covers,cast,resolve,control,step,hit};
 });

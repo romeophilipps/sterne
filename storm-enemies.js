@@ -36,7 +36,7 @@
  // Three introductory minibosses, then seven alternating mid/miniboss pairs per major.
  // Completing a wave requires every planned boss to be defeated, so later stages cannot skip them.
  const MAJOR_ORDER=['umbra','leviathan','tyrant','astraea','kronos'];
- function encounterPlan(wave){if(!Number.isSafeInteger(wave)||wave<4||wave%4!==0)return [];const slot=wave/4-1;if(slot<elite.length)return [elite[slot]];
+ function encounterPlan(wave){if(wave===500)return [{...byId.astraea,name:'Astraea · Weltenrichterin',apex:true,hint:'Drei Phasen: Salven, Gravitationssog und Sternentribunal. Zerstöre ihre Nexuskerne, um den Schutz zu brechen.'}];if(!Number.isSafeInteger(wave)||wave<4||wave%4!==0)return [];const slot=wave/4-1;if(slot<elite.length)return [elite[slot]];
  const offset=slot-elite.length,stage=Math.floor(offset/15),position=offset%15;
  if(position===14){const leader=byId[MAJOR_ORDER[stage%MAJOR_ORDER.length]],team=[leader];if(stage>=2){team.push(mid[(stage*2)%mid.length],mid[(stage*2+3)%mid.length]);if(stage>=5&&stage%2===0)team.push(elite[stage%elite.length]);}return team;}
  const pair=Math.floor(position/2),leader=position%2===0?mid[pair]:elite[(pair+stage)%elite.length],team=[leader];
@@ -49,7 +49,7 @@
 
  // Difficulty depends on completed progression, never time spent waiting or arena currency.
  // Keep waves 1–12 intact. Continuous quadratic pressure then outgrows the capped army.
- const BALANCE=Object.freeze({rampAfterWave:12,regularHpBase:2.25,regularHpPerWave:.035,regularDamageBase:1.1,regularDamagePerWave:.01,bossHpBase:2.4,bossHpPerWave:.055,bossDamageBase:1.15,bossDamagePerWave:.018,hpRamp:.025,hpAcceleration:.0009,bossHpRamp:.02,bossHpAcceleration:.0006,damageRamp:.018,damageAcceleration:.0003,speedPerWave:.008,maxSpeedBonus:.65,endgameAfterWave:120,hpDoublingWaves:90,damageDoublingWaves:45,maxExponent:40,attackTempoRamp:.004,attackTempoAcceleration:.00004,maxAttackTempoBonus:3,minAttackCooldown:400});
+ const BALANCE=Object.freeze({rampAfterWave:12,regularHpBase:2.25,regularHpPerWave:.035,regularDamageBase:1.1,regularDamagePerWave:.01,bossHpBase:2.4,bossHpPerWave:.055,bossDamageBase:1.15,bossDamagePerWave:.018,hpRamp:.025,hpAcceleration:.0009,bossHpRamp:.02,bossHpAcceleration:.0006,damageRamp:.018,damageAcceleration:.0003,speedPerWave:.008,maxSpeedBonus:.65,endgameAfterWave:120,hpDoublingWaves:160,damageDoublingWaves:160,maxExponent:40,attackTempoRamp:.004,attackTempoAcceleration:.00004,maxAttackTempoBonus:3,minAttackCooldown:400});
  const waveIndex=wave=>Math.max(0,Math.floor(Math.min(Number.MAX_SAFE_INTEGER,Number.isFinite(wave)?wave:1))-1);
  function pressure(wave,boss=false){const d=Math.max(0,waveIndex(wave)-(BALANCE.rampAfterWave-1));const late=Math.max(0,waveIndex(wave)-(BALANCE.endgameAfterWave-1));return {hp:(1+(boss?BALANCE.bossHpRamp:BALANCE.hpRamp)*d+(boss?BALANCE.bossHpAcceleration:BALANCE.hpAcceleration)*d*d)*2**Math.min(BALANCE.maxExponent,late/BALANCE.hpDoublingWaves),damage:(1+BALANCE.damageRamp*d+BALANCE.damageAcceleration*d*d)*2**Math.min(BALANCE.maxExponent,late/BALANCE.damageDoublingWaves)};}
  function attackTempo(wave){const d=Math.max(0,waveIndex(wave)-(BALANCE.rampAfterWave-1));return 1+Math.min(BALANCE.maxAttackTempoBonus,BALANCE.attackTempoRamp*d+BALANCE.attackTempoAcceleration*d*d);}

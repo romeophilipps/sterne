@@ -1,16 +1,16 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarCore=api;})(globalThis,()=>{
- const CONFIG={maxLevel:5,defaultRange:.7,upgradeRatios:[.4,.6,.9,1.2],power:[1,1.3,1.6,2,2.5],goldCosts:[60,40,60],goldBonus:[0,.1,.15,.2],novaCost:20,novaCooldown:[0,90000,85000,80000],novaRadius:.2,novaFractions:{regular:.5,elite:.3,mid:.08,major:.08},shieldRechargeDelay:3500,shieldRechargeRate:.08,shieldAllyReduction:.25};
+ const CONFIG={maxLevel:5,defaultRange:.7,upgradeRatios:[.4,.6,.9,1.2],upgradeCosts:[[10,15,20,25],[20,30,45,55],[40,55,85,110],[30,40,60,80],[60,85,130,170],[95,140,210,280],[50,75,110,145],[75,110,165,220],[160,240,360,480]],power:[1,1.3,1.6,2,2.5],goldCosts:[60,40,60],goldBonus:[0,.1,.15,.2],novaCost:20,novaCooldown:[0,90000,85000,80000],novaRadius:.2,novaFractions:{regular:.5,elite:.3,mid:.08,major:.08},shieldRechargeDelay:3500,shieldRechargeRate:.08,shieldAllyReduction:.25};
  const CATALOG=[
-  {id:1,name:'Zwillingskanonen',cost:20,damage:8,interval:1500,range:CONFIG.defaultRange,fire:[50,200],kind:'bolt'},
-  {id:2,name:'Sternenlanze',cost:45,damage:32,interval:2500,range:.85,fire:[150],kind:'lance',pierceFraction:.4},
-  {id:3,name:'Raketenbatterie',cost:90,damage:24,interval:4000,range:CONFIG.defaultRange,fire:[50,250,450],kind:'rocket',radius:.08},
-  {id:4,name:'Orbitalklingen',cost:65,damage:16,interval:800,range:.3,fire:[0],kind:'blades',targetCap:4},
-  {id:5,name:'Tesla-Spulen',cost:140,damage:36,interval:2200,range:CONFIG.defaultRange,fire:[200],kind:'tesla',links:3,linkFraction:.5,linkRange:.18},
-  {id:6,name:'Prismenwerfer',cost:230,damage:120,interval:4000,range:CONFIG.defaultRange,fire:[800],kind:'prism'},
-  {id:7,name:'Schildbastion',cost:120,damage:140,interval:0,range:CONFIG.defaultRange,fire:[],kind:'shield'},
-  {id:8,name:'Drohnenstation',cost:180,damage:24,interval:1500,range:CONFIG.defaultRange,fire:[250,550,850],kind:'drone'},
-  {id:9,name:'Belagerungskanone',cost:400,damage:320,interval:5500,range:.95,fire:[450],kind:'siege',radius:.1}
+  {id:1,name:'Zwillingskanonen',cost:70,damage:8,interval:1500,range:CONFIG.defaultRange,fire:[50,200],kind:'bolt'},
+  {id:2,name:'Sternenlanze',cost:110,damage:32,interval:2500,range:.85,fire:[150],kind:'lance',pierceFraction:.4},
+  {id:3,name:'Raketenbatterie',cost:180,damage:24,interval:4000,range:CONFIG.defaultRange,fire:[50,250,450],kind:'rocket',radius:.08},
+  {id:4,name:'Orbitalklingen',cost:140,damage:16,interval:800,range:.3,fire:[0],kind:'blades',targetCap:4},
+  {id:5,name:'Tesla-Spulen',cost:240,damage:36,interval:2200,range:CONFIG.defaultRange,fire:[200],kind:'tesla',links:3,linkFraction:.5,linkRange:.18},
+  {id:6,name:'Prismenwerfer',cost:420,damage:120,interval:4000,range:CONFIG.defaultRange,fire:[800],kind:'prism'},
+  {id:7,name:'Schildbastion',cost:210,damage:140,interval:0,range:CONFIG.defaultRange,fire:[],kind:'shield'},
+  {id:8,name:'Drohnenstation',cost:330,damage:24,interval:1500,range:CONFIG.defaultRange,fire:[250,550,850],kind:'drone'},
+  {id:9,name:'Belagerungskanone',cost:600,damage:320,interval:5500,range:.95,fire:[450],kind:'siege',radius:.1}
  ];
  const number=n=>n.toLocaleString('de-DE',{maximumFractionDigits:2});
  function describe(w){const reach=' Reichweite '+Math.round(w.range*100)+' %.',cycle=number(w.interval/1000)+' s',n=w.damage;
@@ -25,10 +25,10 @@
  function state(r){return r.core??=initial();}
  function power(r,id){const s=state(r),level=s.levels[id-1];return (r.unitStrength||1)*(CONFIG.power[level-1]||1)*(1+CONFIG.goldBonus[s.gold]);}
  const changeable=r=>r.elapsed===0||r.rest>0||!!r.developerMode;
- function offer(r,id){const s=state(r),w=get(id);if(!w)return null;const level=s.levels[id-1];return {level,cost:level?level<CONFIG.maxLevel?Math.max(5,Math.ceil(w.cost*CONFIG.upgradeRatios[level-1]/5)*5):0:w.cost,currency:'silver',available:!r.ended&&level<5,canEquip:!r.ended&&(s.active===id||!s.active||changeable(r))};}
+ function offer(r,id){const s=state(r),w=get(id);if(!w)return null;const level=s.levels[id-1];return {level,cost:level?level<CONFIG.maxLevel?CONFIG.upgradeCosts[id-1][level-1]:0:w.cost,currency:level?'gold':'silver',available:!r.ended&&level<5,canEquip:!r.ended&&(s.active===id||!s.active||changeable(r))};}
  function equip(r,id){const s=state(r);if(id===0){if(r.ended||s.active===0||!changeable(r))return false;if(s.active===7)s.shieldExitAt=r.elapsed;s.active=0;s.action=null;s.queue=[];return true;}if(!get(id)||!s.levels[id-1]||r.ended||s.active===id||s.active&&!changeable(r))return false;if(s.active===7)s.shieldExitAt=r.elapsed;s.active=id;r.alignTestTarget?.(get(id).range);s.action=null;s.queue=[];if(id===7){s.shieldExitAt=-1e9;s.action={weapon:7,start:r.elapsed};s.shieldReadyAt=r.elapsed+600;s.shieldPhase='aufbau';s.shieldAt=r.elapsed;}return true;}
  function buy(r,id){const s=state(r),o=offer(r,id);if(!o||s.levels[id-1]||(!Number.isFinite(r.army.silver)||r.army.silver<o.cost)||r.ended)return false;r.army.silver-=o.cost;s.levels[id-1]=1;if(id===8)s.droneBorn=r.elapsed;if(!s.active||changeable(r))equip(r,id);if(id===7){s.shieldMax=get(7).damage*power(r,7);s.shield=s.shieldMax;}return true;}
- function upgrade(r,id){const s=state(r),o=offer(r,id);if(!o||!o.level||!o.available||(!Number.isFinite(r.army.silver)||r.army.silver<o.cost))return false;r.army.silver-=o.cost;s.levels[id-1]++;return true;}
+ function upgrade(r,id){const s=state(r),o=offer(r,id);if(!o||!o.level||!o.available||(!Number.isFinite(r.army.gold)||r.army.gold<o.cost))return false;r.army.gold-=o.cost;s.levels[id-1]++;return true;}
  function ascend(r){const s=state(r),cost=CONFIG.goldCosts[s.gold];if(r.ended||cost===undefined||(!Number.isFinite(r.army.gold)||r.army.gold<cost))return false;r.army.gold-=cost;s.gold++;s.ascendAt=r.elapsed;return true;}
  function novaOffer(r){const s=state(r);return {cost:CONFIG.novaCost,cooldown:Math.max(0,s.novaReadyAt-r.elapsed),available:!r.ended&&s.gold>0&&r.elapsed>=s.ascendAt+2000&&!s.nova&&s.novaReadyAt<=r.elapsed&&Number.isFinite(r.army.gold)&&r.army.gold>=CONFIG.novaCost&&r.enemies.some(e=>live(r,e))};}
  function nova(r){const s=state(r);if(!novaOffer(r).available)return false;const target=r.enemies.filter(e=>live(r,e)).sort((a,b)=>b.max-a.max||a.id-b.id)[0];r.army.gold-=CONFIG.novaCost;s.novaReadyAt=r.elapsed+CONFIG.novaCooldown[s.gold];s.nova={x:target.x,z:target.z,start:r.elapsed,impact:r.elapsed+800,end:r.elapsed+2600,done:false,afterglow:false};visual(r,21,target,{phase:'vorzeichen',size:190});return true;}
