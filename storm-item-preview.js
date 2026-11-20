@@ -1,6 +1,7 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm.js'):root.StarStorm,typeof module==='object'&&module.exports?require('./storm-items.js'):root.StarItems);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarItemPreview=api;})(globalThis,(S,I)=>{
  const CYCLE=42000,SPEED=4;
+ const cycleFor=item=>item.number===79?12000:CYCLE,speedFor=item=>item.number===79?1:SPEED;
  function random(seed=71261){return ()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
  function targetFor(item,preferred){const allowed=I.allowedTargets(item);return allowed.includes(preferred)?preferred:allowed[0];}
  function createSide(item,target,enabled){
@@ -28,6 +29,7 @@
   if(item.number===181){const eng=run.itemEngines.find(e=>e.id===181);if(eng)eng.state.spent=99;side.event='Bereits 99 Bronze ausgegeben';}
   if(item.number===89)run.wound(side.unit,1,{range:.1});
   for(const eng of run.itemEngines)eng.waveStart();
+  if(item.number===79){side.unit.attack=1e9;side.unit.cloakUntil=0;side.unit.cloakReadyAt=1e9;side.unit.nextDimensionAt=1e9;run.heroClocks.fill(1e9);side.event='Erster tödlicher Treffer steht bevor';}
   if(item.number===199){const memory=new Map();side.store=new S.Armory.Store({getItem:k=>memory.get(k)||null,setItem:(k,v)=>memory.set(k,v)},'preview-only');const profile=side.store.read();profile.diamonds=50;profile.items.owned=enabled?['199']:[];side.store.save(profile);side.store.finishItems('preview-round',enabled?{[target]:'199'}:{});side.event='Rundenende → nächste Item-Kiste';}
   return side;
  }
@@ -45,12 +47,14 @@
  function advance(side,dt){const r=side.run;side.clock+=dt;if(side.item.number===199){if(side.clock>=800&&!side.opening){side.opening=true;side.store.openItemChest('preview-open',random()).then(result=>{side.chestResult=result;});}return;}
   // Incoming training hits expose defense/last-stand effects without altering either half's rules.
   const before=side.unit.z;r.tick(dt);side.travel+=Math.abs(side.unit.z-before);
-  const interval=side.item.trigger==='kill'?500:1800;if(Math.floor(side.clock/interval)>side.step)event(side);
+  if(side.item.number===79){const at=[1800,2800,7800][side.step];if(at!==undefined&&side.clock>=at){side.step++;if(side.unit.hp>0)r.wound(side.unit,side.unit.max*100,{range:.1});side.event=side.step===1?(side.unit.hp>0?'Wiederbelebt · volles Leben':'Erster tödlicher Treffer · gefallen'):side.step===2?(side.unit.hp>0?'Treffer während der 2 Sekunden Schutz · abgewehrt':'Ohne Item bleibt der Träger gefallen'):(side.enabled?'Zweiter tödlicher Treffer · Wiederbelebung dieser Welle verbraucht':'Ohne Item bleibt der Träger gefallen');}}
+  else{const interval=side.item.trigger==='kill'?500:1800;if(Math.floor(side.clock/interval)>side.step)event(side);}
   if(r.enemies.filter(e=>e.hp>0).length<1)side.enemy();
  }
  function create(id,preferred){const item=I.get(id);if(!item)throw Error('Unbekanntes Item');const target=targetFor(item,preferred);return {item,target,elapsed:0,sides:[createSide(item,target,false),createSide(item,target,true)],tick(dt){this.elapsed+=dt;for(const s of this.sides)advance(s,dt);}};}
  function values(side){const r=side.run,t=side.unit,eng=S.ItemEngine.engine(r,t),a=eng.aura(t),p=side.item.params;
   const result=[['Leben',Math.max(0,t.hp),t.max],['Schaden',side.dealt],['Angriffe',side.attacks]];
+  if(side.item.number===79)result.push(['Wiederbelebungen übrig',side.enabled?Math.max(0,p.perWave-(eng.state.revives||0)):0],['Schutz (s)',Math.max(0,(t.itemInvulnerableUntil||0)-r.elapsed)/1000]);
   if(side.item.scope==='resource'||side.item.effectType==='resource'||side.item.number===199)result.unshift(['Bronze',r.army.coins],['Silber',r.army.silver],['Gold',r.army.gold],['Sterne',r.army.stars]);
   if(p.move||p.chasing)result.push(['Bewegung %',100*(1+(a.move||0))]);
   if(p.move||p.speed||p.attack||p.afterHit||p.chasing)result.push(['Weg (%)',side.travel*100],['Angriffstempo %',100*(1+(a.attack||0))*(S.leveledStats(t.type,1).cooldown||t.cooldown)/t.cooldown]);
@@ -69,7 +73,8 @@
  }
  function displayValues(side){
   const valuesByName=new Map(values(side).map(v=>[v[0],v])),p=side.item.params,id=side.item.number;let keys;
-  if(id===199)keys=['Auswahl'];
+  if(id===79)keys=['Leben','Wiederbelebungen übrig','Schutz (s)'];
+  else if(id===199)keys=['Auswahl'];
   else if(id===172)keys=['Wellenpause (s)'];
   else if(p.discount!==undefined||p.flat!==undefined)keys=['Nächster Kauf',p.hero?'Sterne':'Bronze'];
   else if(side.item.effectType==='resource'||side.item.scope==='resource')keys=p.allCurrencies?['Bronze','Silber','Gold']:[p.currency==='gold'?'Gold':'Bronze'];
@@ -90,16 +95,16 @@
   const node=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
   const box=node('section',undefined,'item-preview'),title=node('h5','Im Spiel: Ohne / Mit Item'),intro=node('p','Beispiel: '+globalThis.StarItemGuide.name(model.target)+' · gleiche Ausgangslage','item-preview-caption'),row=node('div',undefined,'item-preview-row');box.setAttribute('aria-label','Animierter Itemvergleich für '+item.name);
   const panels=model.sides.map((side,i)=>{const panel=node('div',undefined,'item-preview-side'),h=node('strong',i?'Mit Item':'Ohne Item'),canvas=node('canvas'),stats=node('dl'),event=node('p',undefined,'item-preview-event');canvas.setAttribute('aria-label',(i?'Mit ':'Ohne ')+item.name+' – Beispielkampf');const focus=node('p',undefined,'item-preview-focus');panel.append(h,focus,canvas,event,stats);row.append(panel);return {panel,canvas,stats,event,focus,renderer:new S.Renderer(canvas)};});
-  const guide=I.explain(item,model.target),trigger=node('p',guide.activation,'item-preview-caption'),note=node('p','Trainingskampf · 4× Zeitraffer, Wellenwechsel verkürzt. Zufallseffekte zeigen eine mögliche Auslösung, nicht ihre Häufigkeit. Dein Konto bleibt unberührt.','item-preview-caption'),controls=node('div',undefined,'item-preview-controls'),pause=node('button','Pause'),replay=node('button','Neu abspielen');pause.type=replay.type='button';controls.append(pause,replay);box.append(title,intro,row,trigger,note,controls);host.append(box);
+  const guide=I.explain(item,model.target),trigger=node('p',guide.activation,'item-preview-caption'),note=node('p',item.number===79?'Echtzeit-Beispiel in einer Welle: erster tödlicher Treffer → Wiederbelebung, Treffer während des 2-Sekunden-Schutzes → abgewehrt, späterer tödlicher Treffer → endgültig gefallen. Danach startet das Beispiel neu. Dein Konto bleibt unberührt.':'Trainingskampf · 4× Zeitraffer, Wellenwechsel verkürzt. Zufallseffekte zeigen eine mögliche Auslösung, nicht ihre Häufigkeit. Dein Konto bleibt unberührt.','item-preview-caption'),controls=node('div',undefined,'item-preview-controls'),pause=node('button','Pause'),replay=node('button','Neu abspielen');pause.type=replay.type='button';controls.append(pause,replay);box.append(title,intro,row,trigger,note,controls);host.append(box);
   function reset(){for(const side of current.sides)for(const e of side.run.itemEngines)e.finish();current=create(id,preferred);last=0;for(const p of panels)p.renderer.poses.clear();}
   pause.onclick=()=>{paused=!paused;pause.textContent=paused?'Abspielen':'Pause';pause.setAttribute('aria-pressed',String(paused));};replay.onclick=()=>{reset();paused=false;pause.textContent='Pause';};
   const observer=new IntersectionObserver(entries=>{visible=entries.some(e=>e.isIntersecting);},{threshold:.2});observer.observe(box);
   const reduced=matchMedia('(prefers-reduced-motion: reduce)');paused=reduced.matches;if(paused)pause.textContent='Abspielen';
   function render(){current.sides.forEach((side,i)=>{const p=panels[i];if(item.number!==199)p.renderer.paint(side.run);else{const c=p.canvas.getContext('2d');if(side.clock<3200&&globalThis.StarChestArt){StarChestArt.draw(p.canvas,Math.min(19,Math.floor(side.clock/3200*20)),side.clock/3200,'weapons');}else{const w=p.canvas.clientWidth,h=p.canvas.clientHeight,d=Math.min(2,devicePixelRatio||1);p.canvas.width=w*d;p.canvas.height=h*d;c.setTransform(d,0,0,d,0,0);c.fillStyle='#0a1428';c.fillRect(0,0,w,h);const found=side.chestResult,ids=found?.pending?found.choices:found?.id?[found.id]:[];ids.forEach((id,j)=>{const item=I.get(id),frameId='frame-'+item.rarity;if(!imageCache.has(id)){const img=new Image();img.src=item.icon;imageCache.set(id,img);}if(!imageCache.has(frameId)){const img=new Image();img.src='./item-frame-'+(item.rarity==='common'?'rare':item.rarity)+'.png?v=154';imageCache.set(frameId,img);}const img=imageCache.get(id),border=imageCache.get(frameId),size=ids.length===1?Math.min(90,w-12):Math.min(55,(w-8)/3),x=ids.length===1?(w-size)/2:4+j*(w-8)/3,y=(h-size)/2-10;c.globalAlpha=Math.min(1,(side.clock-3200)/400);if(border.complete&&border.naturalWidth){c.filter=item.rarity==='common'?'grayscale(1)':'none';c.drawImage(border,x,y,size,size);c.filter='none';}if(img.complete&&img.naturalWidth)c.drawImage(img,x+size*.12,y+size*.12,size*.76,size*.76);c.globalAlpha=1;});}}
    const focus=displayValues(side)[0];p.focus.textContent=focus[0]+': '+focus[1].toLocaleString('de-DE',{maximumFractionDigits:2});p.event.textContent=side.event;p.stats.replaceChildren();for(const [label,n,max]of displayValues(side)){if(!Number.isFinite(n))continue;const cell=node('div');cell.append(node('dt',label),node('dd',n.toLocaleString('de-DE',{maximumFractionDigits:2})+(max!==undefined?' / '+max.toLocaleString('de-DE',{maximumFractionDigits:2}):'')));p.stats.append(cell);}});}
-  function frame(now){if(dead)return;if(!host.isConnected){dispose();return;}if(!last)last=now;if(now-last>=50){const delta=Math.min(100,now-last);last=now;if(!paused&&visible&&!document.hidden){let left=delta*SPEED;while(left>0){const dt=Math.min(100,left);current.tick(dt);left-=dt;}if(current.elapsed>=CYCLE)reset();}render();}raf=requestAnimationFrame(frame);}
+  function frame(now){if(dead)return;if(!host.isConnected){dispose();return;}if(!last)last=now;if(now-last>=50){const delta=Math.min(100,now-last);last=now;if(!paused&&visible&&!document.hidden){let left=delta*speedFor(item);while(left>0){const dt=Math.min(100,left);current.tick(dt);left-=dt;}if(current.elapsed>=cycleFor(item))reset();}render();}raf=requestAnimationFrame(frame);}
   function dispose(){if(dead)return;dead=true;observer.disconnect();cancelAnimationFrame(raf);for(const side of current.sides)for(const e of side.run.itemEngines)e.finish();}
   raf=requestAnimationFrame(frame);return {dispose,model:current,element:box};
  }
- return {create,advance,values,displayValues,targetFor,mount,CYCLE,SPEED};
+ return {create,advance,values,displayValues,targetFor,mount,CYCLE,SPEED,cycleFor,speedFor};
 });
