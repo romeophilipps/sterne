@@ -862,3 +862,6 @@ body[data-game=storm] .item-detail-dialog{width:min(92vw,410px);margin:auto;inse
 .item-detail-dialog .item-card p{font-size:15px}
 .item-detail-dialog .armory-close{position:absolute;top:8px;right:8px}
 @media(max-width:350px){.item-collection{gap:6px}.item-tile{padding:0;border-radius:0}.item-tile .item-restrictions img{width:15px;height:15px}}
+
+/* End-of-round score earnings and enemy loot use one readable breakdown. */
+.diamond-reward{white-space:pre-line;overflow-wrap:anywhere}
