@@ -1,6 +1,6 @@
 'use strict';
 (() => {
-  const VERSION='v181', $=id=>document.getElementById(id);
+  const VERSION='v182', $=id=>document.getElementById(id);
   const standalone=()=>window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
   let preparing, promptEvent, ready=false, updatePending=false;
   function status(text,ok=false){ready=ok;$('offline-status').textContent=text;$('offline-status').dataset.ready=String(ok);$('download-status').textContent=ok?'Auf diesem Gerät gespeichert.':text;$('download-status').dataset.ready=String(ok);$('download-retry').hidden=ok||text.startsWith('Wird gespeichert …');$('install').hidden=ok&&standalone();$('install-steps').hidden=standalone();$('native-install').disabled=!ok;}
