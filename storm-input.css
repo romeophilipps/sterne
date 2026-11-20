@@ -1,0 +1,3 @@
+/* Keep the code field at a readable native input size on iPhone.
+   Do not disable pinch zoom or change the document viewport. */
+#storm-armory-dialog #shop-gift-code{font-size:16px!important;line-height:1.5;min-width:0;max-width:100%;box-sizing:border-box}
