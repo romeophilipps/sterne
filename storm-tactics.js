@@ -51,8 +51,8 @@
  if(marked&&['snipe','missile','duel','mirror','ambush','leap'].includes(style))victims=victims.map(t=>protectedTarget(r,t));
  for(const t of victims){const base=t===r.base,limit=base?t.max*.07:t.kind==='shield'?Infinity:t.max*(e.boss?.5:.4),already=t.skillCastSource===e.id&&t.skillCastId===h.cast;if(already)continue;t.skillCastSource=e.id;t.skillCastId=h.cast;h.impactX=t.x;h.impactZ=t.z;h.intercepted=t.id!==h.targetId;const before=t.hp;let damage=Math.min(h.damage,limit);if(t.kind==='shield'&&['quake','tide','breath'].includes(style))damage*=.65;r.wound(t,damage,e,true);
   if(style==='time')control(r,t,'stunUntil',1200);if(style==='frost'){control(r,t,'slowAttackUntil',1400);t.slowUntil=r.elapsed+1800;}if(style==='judgment')control(r,t,'silenceUntil',1400);
-  if(['quake','storm'].includes(style)&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0))t.z=clamp(t.z+.025,.04,.94);
-  if(style==='tide'&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0)){t.z=clamp(t.z-.035,.04,.94);t.x+=(h.x-t.x)*.3;}
+  if(['quake','storm'].includes(style)&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0))r.knockback(t,0,.025);
+  if(style==='tide'&&!base&&t.kind!=='shield'&&!(t.type===1&&t.shield?.hp>0)){r.knockback(t,(h.x-t.x)*.3,-.035);}
   if(['breath','fire'].includes(style)&&!base){t.burnUntil=r.elapsed+1600;t.burnDamage=Math.min(e.damage*.12,t.max*.04);}
   if(style==='duel'&&e.boss&&!base)t.fractureUntil=r.elapsed+1800;
   if(style==='frost')e.hp=Math.min(e.max,e.hp+Math.min(e.max*.02,Math.max(0,before-t.hp)*.4));
