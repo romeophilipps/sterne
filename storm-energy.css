@@ -1,7 +1,6 @@
-/* Original user-supplied energy artwork, with a separate readable numeric label. */
-#nova-field>.storm-energy,#duel-field>.storm-energy{position:absolute;z-index:8;bottom:8px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:600px;aspect-ratio:643/85;pointer-events:none;isolation:isolate}
-#nova-field>.storm-energy>canvas,#duel-field>.storm-energy>canvas{position:static!important;display:block;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0;padding:0;border:0;image-rendering:pixelated;background:transparent}
-.storm-energy-amount{position:absolute;left:51.63%;top:23.53%;transform:translate(-50%,-50%);font-family:'Chakra Petch',sans-serif;font-size:clamp(9px,3vw,16px);font-weight:700;line-height:1;color:#c7f7ff;text-shadow:0 1px 2px #06122b;white-space:nowrap}
+/* Original supplied frames, including their embedded numbers; no replacement bar or number overlay. */
+#nova-field>.storm-energy,#duel-field>.storm-energy{position:absolute;z-index:8;bottom:8px;left:50%;transform:translateX(-50%);width:calc(100% - 16px);max-width:600px;aspect-ratio:1280/220;pointer-events:none;isolation:isolate}
+#nova-field>.storm-energy>canvas,#duel-field>.storm-energy>canvas{position:static!important;display:block;width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;margin:0;padding:0;border:0;image-rendering:auto;background:transparent}
 .su-money .energy-price-icon{display:inline-block;width:16px;height:20px;object-fit:contain;vertical-align:middle;image-rendering:pixelated;flex:none}
 @media(prefers-reduced-motion:reduce){.storm-energy{transition:none;animation:none}}
 
@@ -17,5 +16,5 @@ body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money>spa
 
 body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money,body[data-game=storm] #game.storm-mode #storm-shop-items .army-buy .su-money>span,#storm-duel-dialog #duel-shop .su-money,#storm-duel-dialog #duel-shop .su-money>span{font-size:11px!important}
 
-#nova-field>.storm-energy-pending,#duel-field>.storm-energy-pending{aspect-ratio:auto;height:auto}
-.storm-energy-pending>.storm-energy-amount{position:static;display:block;transform:none;text-align:center;font-size:11px;color:#bfd4e4}
+#nova-field>.storm-energy>canvas[hidden],#duel-field>.storm-energy>canvas[hidden],.storm-energy-fallback[hidden]{display:none!important}
+.storm-energy-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 11px/1.3 var(--su-font-body,Arial,sans-serif);color:#bfd4e4}
