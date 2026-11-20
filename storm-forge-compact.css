@@ -30,3 +30,6 @@ body[data-game=storm] #storm-upgrade-detail .storm-upgrade-future>strong{font-si
 body[data-game=storm] #storm-upgrade-detail .storm-upgrade-future p{margin:6px 0 0;color:#a1b6cc}
 
 #storm-upgrades-dialog #storm-upgrades-note{font-size:10px;line-height:1.4;margin:6px 2px 8px}
+
+#storm-upgrades-dialog #storm-upgrades-wallet{flex-wrap:wrap;gap:5px}
+#storm-upgrades-dialog .storm-forge-wallet{padding:5px 7px;font-size:11px}
