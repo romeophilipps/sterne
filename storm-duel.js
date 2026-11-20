@@ -1,6 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm.js'):root.StarStorm);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarDuel=api;})(globalThis,S=>{
- const VERSION=22,MAX_UNITS=30;
+ const VERSION=23,MAX_UNITS=30;
  const DEFAULT_LOADOUT=Object.freeze({warriors:Object.freeze([0,1,2,3]),heroes:Object.freeze([0])});
  const validLoadout=p=>S.validLoadout(p,4,1);
  const freezeLoadout=p=>Object.freeze({warriors:Object.freeze([...p.warriors]),heroes:Object.freeze([...p.heroes])});

@@ -29,7 +29,7 @@
  function troopCount(troops,type){return troops.filter(t=>t.hp>0&&t.hero<0&&t.type===type).length;}
  const ASSASSIN={cloakDuration:2000,cloakCycle:8000,visibleMinimum:6000,approachRange:.14,huntRange:.18,approachSpeed:1.35,ambush:1.2,killHaste:500,minimumRecovery:1500},ARCANE_CAST_DURATION=1900;
  const HERO_WAVES=2,HERO_ARRIVAL_DURATION=4000,HERO_RECALL_COST=30;
- const ENERGY={max:100,initial:10,interval:2000};
+ const ENERGY={max:100,initial:10,interval:3000};
  const ECONOMY={bronzeStartInterval:2000,bronzeMiddleWave:61,bronzeMiddleInterval:1500,bronzeFastWave:90,bronzeFastInterval:1000,silverStartWave:31,silverInterval:2000,silverFastWave:61,silverFastInterval:1500,goldStartWave:61,goldInterval:2000,starStartWave:120,starInterval:10000,bossStarMin:1,bossStarMax:3};
  function incomeForWave(wave){return {coins:wave>=ECONOMY.bronzeFastWave?ECONOMY.bronzeFastInterval:wave>=ECONOMY.bronzeMiddleWave?ECONOMY.bronzeMiddleInterval:ECONOMY.bronzeStartInterval,silver:wave<ECONOMY.silverStartWave?0:wave>=ECONOMY.silverFastWave?ECONOMY.silverFastInterval:ECONOMY.silverInterval,gold:wave>=ECONOMY.goldStartWave?ECONOMY.goldInterval:0,stars:wave>=ECONOMY.starStartWave?ECONOMY.starInterval:0};}
  const CURRENCY_WAVES=30;
