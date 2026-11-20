@@ -5,7 +5,7 @@
  function random(seed=71261){return ()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
  function targetFor(item,preferred){const allowed=I.allowedTargets(item);return allowed.includes(preferred)?preferred:allowed[0];}
  function createSide(item,target,enabled){
-  const run=S.create(item.number===70?()=>.005:random(),{lootSeed:71261});run.army.coins=150;run.army.stars=150;run.base.hp=run.base.max=1e6;
+  const run=S.create(item.number===70?()=>.005:random(),{lootSeed:71261});run.army.energy=100;run.army.coins=150;run.army.stars=150;run.base.hp=run.base.max=1e6;
   if(item.number===174)run.wave=4;else if(item.number===19)run.wave=61;else if(item.number===23||item.params.everyWave||item.number===200)run.wave=5;else if(item.number===180)run.wave=3;
   run.remaining=1;run.spawnClock=1e9;run.rest=1e9;
   run.setEquipment({items:enabled?{[target]:item.id}:{}});
@@ -25,8 +25,8 @@
    const e=run.spawnLegion({...info,hp:500,damage:item.number===120?0:.1,speed:.003},{x:.5,z:.48});e.bornUntil=0;if(item.number===55)e.hp=e.max*.15;if(item.number===105)e.abilityShield=50;e.damage=item.number===120?0:.1;e.abilityClock=1e9;e.weak=Array(10).fill(1);e.heroWeak=Array(5).fill(1);return e;};
   for(let i=0;i<(p.chain||p.area||p.blast||item.number===128?4:1);i++){const e=side.enemy();e.x=.32+i*.12;e.z=(item.number===148?.56:.48)-i*.05;}
   
-  if(item.number===13)run.army.coins=0;if(item.number===143)run.heroClocks[2]=1e9;
-  if(item.number===181){const eng=run.itemEngines.find(e=>e.id===181);if(eng)eng.state.spent=99;side.event='Bereits 99 Bronze ausgegeben';}
+  if(item.number===13)run.army.energy=0;if(item.number===143)run.heroClocks[2]=1e9;
+  if(item.number===181){const eng=run.itemEngines.find(e=>e.id===181);if(eng)eng.state.spent=99;side.event='Bereits 99 Energie ausgegeben';}
   if(item.number===89)run.wound(side.unit,1,{range:.1});
   for(const eng of run.itemEngines)eng.waveStart();
   if(item.number===79){side.unit.attack=1e9;side.unit.cloakUntil=0;side.unit.cloakReadyAt=1e9;side.unit.nextDimensionAt=1e9;run.heroClocks.fill(1e9);side.event='Erster tödlicher Treffer steht bevor';}
@@ -37,7 +37,7 @@
   const engines=r.itemEngines;
   if(item.trigger==='wave'||item.number===172){r.completed+=1;side.event='Welle '+r.completed+' beendet';for(const e of engines)e.waveEnd();}
   else if(item.trigger==='waveStart'){side.event='Wellenbeginn '+r.wave;for(const e of engines)e.waveStart();}
-  else if(item.trigger==='purchase'){side.event='Kauf '+(side.step+1)+' der Beispielklasse';if(t.hero<0&&t.type>=5)r.troops=r.troops.filter(u=>u!==side.unit);if(item.number!==13){r.army.coins+=100;r.army.stars+=40;}const u=side.deploy(side.target);if(u){side.unit=u;u.x=.5;u.z=.7;} }
+  else if(item.trigger==='purchase'){side.event='Kauf '+(side.step+1)+' der Beispielklasse';if(t.hero<0&&t.type>=5)r.troops=r.troops.filter(u=>u!==side.unit);if(item.number!==13){r.army.energy=100;r.army.coins+=100;r.army.stars+=40;}const u=side.deploy(side.target);if(u){side.unit=u;u.x=.5;u.z=.7;} }
   else if(item.trigger==='death'){const victim=p.healer?r.troops.find(u=>u!==t):t;if(victim?.hp>0){side.event='Ein Verbündeter fällt';r.wound(victim,victim.max*100,{range:.1});}}
   else if(item.trigger==='wound'||p.defense||p.shield){side.event='Gegnerischer Treffer';if(t.hp>0){r.wound(t,t.max*.06,{range:p.ranged?.3:.05});if(item.number===65)r.knockback(t,0,.03);}}
   else if(item.trigger==='heal'||[141,146,154,157,189].includes(item.number)){side.event='Heilung';r.restoreHealth(t,t.max*.08);if(t.hero===0){t.castCount=(t.castCount||0)+1;r.heroVisual(t);}}
@@ -55,7 +55,7 @@
  function values(side){const r=side.run,t=side.unit,eng=S.ItemEngine.engine(r,t),a=eng.aura(t),p=side.item.params;
   const result=[['Leben',Math.max(0,t.hp),t.max],['Schaden',side.dealt],['Angriffe',side.attacks]];
   if(side.item.number===79)result.push(['Wiederbelebungen übrig',side.enabled?Math.max(0,p.perWave-(eng.state.revives||0)):0],['Schutz (s)',Math.max(0,(t.itemInvulnerableUntil||0)-r.elapsed)/1000]);
-  if(side.item.scope==='resource'||side.item.effectType==='resource'||side.item.number===199)result.unshift(['Bronze',r.army.coins],['Silber',r.army.silver],['Gold',r.army.gold],['Sterne',r.army.stars]);
+  if(side.item.scope==='resource'||side.item.effectType==='resource'||side.item.number===199)result.unshift(['Energie',r.army.energy],['Bronze',r.army.coins],['Silber',r.army.silver],['Gold',r.army.gold],['Sterne',r.army.stars]);
   if(p.move||p.chasing)result.push(['Bewegung %',100*(1+(a.move||0))]);
   if(p.move||p.speed||p.attack||p.afterHit||p.chasing)result.push(['Weg (%)',side.travel*100],['Angriffstempo %',100*(1+(a.attack||0))*(S.leveledStats(t.type,1).cooldown||t.cooldown)/t.cooldown]);
   if(side.item.effectType==='healing'||side.item.trigger==='death'||[135,141,146,151,154,157,159].includes(side.item.number))result.push(['Teamleben',r.troops.reduce((n,t)=>n+Math.max(0,t.hp),0)]);
