@@ -35,6 +35,29 @@
  spec([144],'hit',{first:true,hero:true,bonus:.03},'hero');
  spec([181],'purchase',{spent:100,amount:2},'resource');spec([189],'heal',{type:6,bonus:.3});spec([199],'finish',{forge:true},'collection');
  for(const id of [46,54,108,112,130,178,198])SPECS[id].params.counter='hit';SPECS[171].params.perTarget=true;
+ // Reviewed balance: stable IDs; explicit roles and scalable legendary abilities.
+ SPECS[8].params={every:5,amount:12};
+ SPECS[19].params={production:1,allCurrencies:true};
+ SPECS[25].params.flat=1;
+ SPECS[34].params={every:5,duration:8000,power:.75};
+ SPECS[39].params.every=3;
+ SPECS[40].params={every:4,duration:0,power:1.5};
+ SPECS[57].params.comboWindow=5000;
+ SPECS[158].params.teamWide=true;
+ SPECS[59].params={every:10,area:.24,fraction:4};
+ SPECS[60].params={every:4,echo:true,echoFactor:1.5};
+ SPECS[79].params={revive:1,perWave:1,invulnerable:2000};
+ SPECS[81].params.move=.25;
+ SPECS[99].params={interval:30000,reset:true,teamReset:true,cleanse:true};
+ SPECS[100].params.teamWide=true;
+ SPECS[119].params.damageFactor=2;SPECS[119].params.burnFactor=.3;
+ SPECS[140].params.damageFactor=3;SPECS[140].params.damageOverTime=true;
+ SPECS[154].params.damageFactor=1.25;SPECS[156].params.damageFactor=1.5;
+ SPECS[159].params.damageFactor=3;SPECS[159].params.healTeam=.2;
+ SPECS[160].params.damageFactor=4;SPECS[160].params.heroTeamPower=true;
+ SPECS[164].trigger='aura';SPECS[164].params={attack:.04,duration:5000,wave:true};
+ SPECS[179].params.damageFactor=6;SPECS[179].params.maxHpFraction=.03;SPECS[179].params.pure=true;
+ SPECS[180].params={every:3,freeze:4000};
  for(const def of Object.values(SPECS)){const p=def.params;def.effectType=p.amount||p.rate||p.production||p.discount||p.flat?'resource':p.forge?'collection':def.scope==='summon'||p.power?'summon':p.preview?'information':p.shield||p.defense||p.block?'defense':p.heal||p.healTeam||p.transfer?'healing':p.damage||p.bonus||p.fraction||p.crit||p.pierce?'damage':p.slow||p.push||p.freeze||p.pull||p.eliteFreeze?'status':p.reset||p.attack||p.speed||p.abilitySpeed?'cooldown':'stat';def.duration=def.params.duration||0;def.cooldown=def.params.interval||0;def.prerequisites=[...(def.params.type!==undefined?['troop:'+def.params.type]:[]),...(def.params.hero!==undefined?['hero:'+def.params.hero]:[]),...(def.params.types||[]).map(t=>'team:'+t)];}
  return SPECS;
 });

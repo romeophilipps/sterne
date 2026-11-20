@@ -1,10 +1,10 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm.js'):root.StarStorm);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarDuel=api;})(globalThis,S=>{
- const VERSION=8,MAX_UNITS=30;
+ const VERSION=9,MAX_UNITS=30;
  const DEFAULT_LOADOUT=Object.freeze({warriors:Object.freeze([0,1,2,3]),heroes:Object.freeze([0])});
  const validLoadout=p=>S.validLoadout(p,4,1);
  const freezeLoadout=p=>Object.freeze({warriors:Object.freeze([...p.warriors]),heroes:Object.freeze([...p.heroes])});
- const fieldKeys=['loot','elapsed','wave','completed','base','army','baseSafeUntil','heroArrivals','heroDepartures','heroFx','bossDeaths','hammerWaves','meleeWaves','healingProjectiles','healingZones','droneMissions','droneExplosions','dimensionFields','dimensionBursts','corpses','fx','shots','frozen','armored','troops','enemies','hazards','legionFx','banishments','rockets','projectiles','bossName','score','xp','needed','rank','rest'];
+ const fieldKeys=['vfx','itemFields','itemFreezeUntil','loot','elapsed','wave','completed','base','army','baseSafeUntil','heroArrivals','heroDepartures','heroFx','bossDeaths','hammerWaves','meleeWaves','healingProjectiles','healingZones','droneMissions','droneExplosions','dimensionFields','dimensionBursts','corpses','fx','shots','frozen','armored','troops','enemies','hazards','legionFx','banishments','rockets','projectiles','bossName','score','xp','needed','rank','rest'];
  const clean=o=>JSON.parse(JSON.stringify(o,(key,value)=>(['pending','to','_raw'].includes(key)||key==='source'&&typeof value==='object')?undefined:typeof value==='number'&&!Number.isFinite(value)?0:value));
  function random(seed){let n=seed>>>0;return ()=>{n=(n*1664525+1013904223)>>>0;return n/4294967296;};}
  class Match{
