@@ -36,7 +36,7 @@
  // Three introductory minibosses, then seven alternating mid/miniboss pairs per major.
  // Completing a wave requires every planned boss to be defeated, so later stages cannot skip them.
  const MAJOR_ORDER=['umbra','leviathan','tyrant','astraea','kronos'];
- function encounterPlan(wave){if(wave===500)return [{...byId.astraea,name:'Astraea · Weltenrichterin',apex:true,hint:'Drei Phasen: Salven, Gravitationssog und Sternentribunal. Zerstöre ihre Nexuskerne, um den Schutz zu brechen.'}];if(!Number.isSafeInteger(wave)||wave<4||wave%4!==0)return [];const slot=wave/4-1;if(slot<elite.length)return [elite[slot]];
+ function encounterPlan(wave){if(wave===500)return [{...byId.astraea,name:'Die Weltenrichterin',apex:true,hint:'Drei Phasen: Salven, Gravitationssog und Sternentribunal. Zerstöre ihre Nexuskerne, um den Schutz zu brechen.'}];if(!Number.isSafeInteger(wave)||wave<4||wave%4!==0)return [];const slot=wave/4-1;if(slot<elite.length)return [elite[slot]];
  const offset=slot-elite.length,stage=Math.floor(offset/15),position=offset%15;
  if(position===14){const leader=byId[MAJOR_ORDER[stage%MAJOR_ORDER.length]],team=[leader];if(stage>=2){team.push(mid[(stage*2)%mid.length],mid[(stage*2+3)%mid.length]);if(stage>=5&&stage%2===0)team.push(elite[stage%elite.length]);}return team;}
  const pair=Math.floor(position/2),leader=position%2===0?mid[pair]:elite[(pair+stage)%elite.length],team=[leader];
