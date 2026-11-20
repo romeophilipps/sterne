@@ -809,8 +809,8 @@ body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testpl
 html.storm-viewport #game.storm-testplay [data-testplay-album] *{touch-action:pan-y}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card{position:relative;display:flex;align-items:center;gap:5px;min-height:66px;min-width:0;padding:3px;border:6px solid transparent;border-image:url('./battle-unit-frame.png?v=154') 18 fill /6px stretch;background:#09172d;background-clip:padding-box;color:#e0e9f8;text-align:left;box-shadow:none;border-radius:0}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-kind=heroes],body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-rarity=legendary]{border-image-source:url('./battle-hero-frame.png?v=154')}
-body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[aria-pressed=true]{border-image-source:url('./battle-unit-active-frame.png?v=154');filter:drop-shadow(0 0 3px #5be4ff)}
-body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[aria-pressed=true]:after{content:'✓';position:absolute;right:0;top:-3px;color:#8cf1df;font-size:12px}
+body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-active=true]{border-image-source:url('./battle-unit-active-frame.png?v=154');filter:drop-shadow(0 0 3px #5be4ff)}
+body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[data-active=true]:after{content:none;position:absolute;right:0;top:-3px;color:#8cf1df;font-size:12px}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card[hidden]{display:none}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card canvas{width:46px;height:42px;object-fit:contain;image-rendering:pixelated;flex:none}
 body[data-game=storm]:has(#game.storm-testplay:not([hidden])) #game.storm-testplay .test-album-card span{display:grid;gap:3px;min-width:0}
