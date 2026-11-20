@@ -1,0 +1,61 @@
+/* Shared battle artwork and the singleplayer HUD rhythm, scoped to co-op. */
+#storm-duel-dialog.duel-playing{width:min(100%,760px);max-width:760px;height:var(--device-height,100dvh);max-height:var(--device-height,100dvh);padding:6px 7px max(6px,env(safe-area-inset-bottom));gap:7px}
+#storm-duel-dialog.duel-playing .duel-heading{display:grid;grid-template-columns:65px minmax(0,1fr) 36px 36px;gap:3px;min-height:44px;height:44px;padding:0;flex:none}
+#storm-duel-dialog.duel-playing .duel-heading>div:first-child{display:none}
+#storm-duel-dialog .duel-score,#storm-duel-dialog .duel-heading #duel-wallet{display:none}
+#storm-duel-dialog.duel-playing .duel-score{display:flex;align-items:center;justify-content:center;box-sizing:border-box;height:44px;border:8px solid transparent;border-image:url('./battle-score-frame.png?v=154') 30 42 fill /8px stretch;background:transparent;color:#ffe99e;font:600 18px/1 var(--su-font-heading)}
+#storm-duel-dialog.duel-playing .duel-heading #duel-wallet{display:flex;align-items:center;justify-content:space-evenly;box-sizing:border-box;height:44px;min-width:0;padding:0;gap:2px;border:7px solid transparent;border-image:url('./battle-wallet-frame.png?v=154') 18 34 fill /7px stretch;flex-wrap:nowrap}
+#storm-duel-dialog.duel-playing #duel-wallet .su-money{font-size:clamp(9px,2.8vw,15px);gap:2px;min-width:0;white-space:nowrap}
+#storm-duel-dialog.duel-playing #duel-wallet .su-money:before{width:13px;height:13px}
+#storm-duel-dialog.duel-playing .duel-heading .duel-exit{width:36px;height:44px;min-height:44px;border:6px solid transparent;border-image:url('./solo-back.png?v=154') 20 28 fill /6px stretch;font-size:20px}
+#storm-duel-dialog.duel-playing .duel-status{display:none}
+#storm-duel-dialog.duel-playing[data-paused=true] .duel-status{display:block;color:#ffe99e;text-align:center;padding:0;margin:0;line-height:15px}
+#storm-duel-dialog.duel-playing .duel-game:not([hidden]){display:grid;flex:1 1 0%;height:0;min-height:0;grid-template-columns:1fr;grid-template-rows:31px minmax(120px,1fr) 34px clamp(174px,24dvh,240px) auto;gap:7px;padding:0;overflow:hidden}
+#storm-duel-dialog.duel-playing .duel-hud{grid-row:1;display:grid;grid-template-columns:1fr;gap:4px;border:0;padding:0;min-height:0;position:relative;text-align:center}
+#storm-duel-dialog.duel-playing #duel-my-star{position:absolute;width:1px;height:1px;clip-path:inset(50%);overflow:hidden;white-space:nowrap}
+#storm-duel-dialog.duel-playing #duel-their-star{font:400 12px/16px var(--su-font-body);color:#ded6ee;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#storm-duel-dialog.duel-playing .duel-wave-progress{height:9px;box-sizing:border-box;border:3px solid transparent;border-image:url('./battle-progress-frame.png?v=154') 6 14 fill /3px stretch;background:#0c1427;overflow:hidden}
+.duel-wave-progress>i{display:block;height:3px;background:linear-gradient(#fff1b2,#ffb657)}
+#storm-duel-dialog.duel-playing #duel-field{grid-row:2;min-height:0;height:100%}
+#storm-duel-dialog.duel-playing .duel-toolbar{grid-row:3;display:grid;grid-template-columns:minmax(0,1fr) 108px;gap:7px;min-height:0}
+#storm-duel-dialog.duel-playing .duel-hint{grid-row:auto;box-sizing:border-box;margin:0;display:flex;align-items:center;text-align:left;overflow:hidden;white-space:nowrap;padding:0 2px;font-size:9px;border:6px solid transparent;border-image:url('./battle-income-frame.png?v=154') 16 20 fill /6px stretch;background:#0b1429;background-clip:padding-box}
+#storm-duel-dialog.duel-playing .duel-forge-open{box-sizing:border-box;min-height:34px;padding:0 2px 0 20px;border:6px solid transparent;border-image:url('./battle-forge-frame.png?v=154') 20 25 fill /6px stretch;background:#0e1325;background-clip:padding-box;color:#f9dc98;border-radius:0;font:600 13px/1.15 var(--su-font-heading);position:relative}
+.duel-forge-open:before{content:'';position:absolute;width:20px;height:20px;left:0;top:50%;transform:translateY(-50%);background:url('./battle-forge-icon.png?v=154') center/contain no-repeat}
+#storm-duel-dialog.duel-playing #duel-shop{grid-row:4}
+#storm-duel-dialog.duel-playing #duel-shop canvas{max-width:100%;margin:auto}
+#storm-duel-dialog.duel-playing #duel-result{grid-row:5}
+body[data-game=storm] dialog#duel-forge-dialog,body[data-game=storm] dialog#duel-unit-detail{box-sizing:border-box;width:min(94vw,560px);max-height:90dvh;padding:0;border:12px solid transparent;border-image:url('./solo-panel.png?v=154') 34 28 40 fill /12px stretch;border-radius:0;background:#0b1730;color:#e1edf8;font-family:var(--su-font-body);overflow:hidden}
+#duel-forge-dialog[open],#duel-unit-detail[open]{display:flex;flex-direction:column}
+#duel-forge-dialog::backdrop,#duel-unit-detail::backdrop{background:#050b1bc9;backdrop-filter:blur(5px)}
+.duel-forge-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px;border-bottom:1px solid #526b91;flex:none}
+.duel-forge-head h2{font:600 22px/1.2 var(--su-font-heading);margin:0;color:#e8cb8d}
+.duel-forge-head button{width:44px;height:44px;min-height:44px;padding:0;border:1px solid #82d8ed;border-radius:10px;background:#17253b;color:#e1edf8;font-size:28px}
+.duel-forge-note{font-size:11px;line-height:1.4;padding:6px 8px;margin:0;color:#a1b6cc}
+#duel-forge-dialog .duel-upgrades{padding:8px;overflow:auto;min-height:0;overscroll-behavior:contain}
+#duel-upgrade-list{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.duel-upgrade-card{min-width:0;padding:5px;border:1px solid #2c435d;border-radius:9px;background:#111c30}
+.duel-upgrade-card[hidden]{display:none}
+.duel-upgrade-details{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;min-height:104px;background:transparent;border:0;color:#e1edf8;padding:2px;box-shadow:none}
+.duel-upgrade-details canvas{width:44px;height:46px;object-fit:contain;image-rendering:pixelated}
+.duel-upgrade-details strong{font-size:10px;line-height:1.15;min-height:24px;overflow-wrap:anywhere}
+.duel-upgrade-details small{font-size:8px;white-space:nowrap}
+.duel-upgrade-buy{width:100%;min-height:44px;padding:3px 1px;font:600 10px/1.25 var(--su-font-heading);border:1px solid #e8cb8d;border-radius:7px;background:#16365b;color:#e1edf8}
+.duel-upgrade-buy:disabled{opacity:.5}
+.duel-unit-content{padding:14px;overflow:auto;font-size:13px;line-height:1.5}
+.duel-unit-content>canvas{display:block;width:88px;height:88px;object-fit:contain;image-rendering:pixelated;margin:auto}
+@media(max-height:650px){#storm-duel-dialog.duel-playing .duel-game:not([hidden]){grid-template-rows:25px minmax(95px,1fr) 30px 174px auto;gap:4px}}
+#storm-duel-dialog.duel-playing .duel-score{grid-column:1;grid-row:1}
+#storm-duel-dialog.duel-playing .duel-heading #duel-wallet{grid-column:2;grid-row:1}
+#storm-duel-dialog.duel-playing .duel-heading>.duel-exit:nth-last-child(2){grid-column:3;grid-row:1}
+#storm-duel-dialog.duel-playing .duel-heading>.duel-exit:last-child{grid-column:4;grid-row:1}
+#storm-duel-dialog.duel-playing #duel-wallet .su-money{font-size:10px;flex:1 1 0%;justify-content:center}
+
+#storm-duel-dialog.duel-playing .duel-heading>.duel-exit{min-width:0;width:36px}
+
+body[data-game=storm] dialog#duel-forge-dialog{height:min(90dvh,800px);max-width:560px}
+body[data-game=storm] dialog:is(#duel-forge-dialog,#duel-unit-detail)::before{display:none}
+#duel-forge-dialog .duel-upgrades{flex:1 1 0%;max-height:none;height:auto;min-height:0;border:0;background:transparent;border-radius:0}
+#duel-core-forge{display:block;grid-template-columns:none;margin-bottom:8px}
+#duel-forge-dialog .duel-upgrade-details{display:flex;flex-direction:column;align-items:center;gap:4px;width:100%;min-height:104px;background:transparent;border:0;padding:2px;box-shadow:none}
+#duel-forge-dialog .duel-upgrade-buy{min-height:44px;width:100%;padding:3px 1px;font-size:10px;line-height:1.25;border:1px solid #e8cb8d;background:#16365b}
+#duel-forge-dialog .duel-forge-note{flex:none}
