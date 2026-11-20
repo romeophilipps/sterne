@@ -47,11 +47,15 @@
  function encounter(wave){return encounterPlan(wave)[0]||null;}
  function isSwarmWave(wave){return Number.isSafeInteger(wave)&&wave>=9&&wave%10===9;}
 
- // One wave-based curve per enemy class. Arena currency and waiting time never multiply combat stats.
- const waveIndex=wave=>Math.max(0,Math.floor(Number.isFinite(wave)?wave:1)-1);
- function bossWaveMultiplier(wave=1){return 2.4+.055*waveIndex(wave);}
- function bossScaling(wave=1,group='elite'){const n=waveIndex(wave),hpWeight=group==='major'?1.35:group==='mid'?1.15:1,damageWeight=group==='major'?1.1:group==='mid'?1.05:1;return {hp:bossWaveMultiplier(wave)*hpWeight,damage:(1.15+.018*n)*damageWeight};}
- function scaling(wave=1,elapsed=0,tier=0){const n=waveIndex(wave);return {hp:2.25+.035*n,damage:1.1+.01*n,speed:1+Math.min(.65,n*.008),rank:1+Math.floor(n/12)};}
+ // Difficulty depends on completed progression, never time spent waiting or arena currency.
+ // Keep waves 1–12 intact. Continuous quadratic pressure then outgrows the capped army.
+ const BALANCE=Object.freeze({rampAfterWave:12,regularHpBase:2.25,regularHpPerWave:.035,regularDamageBase:1.1,regularDamagePerWave:.01,bossHpBase:2.4,bossHpPerWave:.055,bossDamageBase:1.15,bossDamagePerWave:.018,hpRamp:.025,hpAcceleration:.0009,bossHpRamp:.02,bossHpAcceleration:.0006,damageRamp:.018,damageAcceleration:.0003,speedPerWave:.008,maxSpeedBonus:.65,endgameAfterWave:120,hpDoublingWaves:90,damageDoublingWaves:45,maxExponent:40,attackTempoRamp:.004,attackTempoAcceleration:.00004,maxAttackTempoBonus:3,minAttackCooldown:400});
+ const waveIndex=wave=>Math.max(0,Math.floor(Math.min(Number.MAX_SAFE_INTEGER,Number.isFinite(wave)?wave:1))-1);
+ function pressure(wave,boss=false){const d=Math.max(0,waveIndex(wave)-(BALANCE.rampAfterWave-1));const late=Math.max(0,waveIndex(wave)-(BALANCE.endgameAfterWave-1));return {hp:(1+(boss?BALANCE.bossHpRamp:BALANCE.hpRamp)*d+(boss?BALANCE.bossHpAcceleration:BALANCE.hpAcceleration)*d*d)*2**Math.min(BALANCE.maxExponent,late/BALANCE.hpDoublingWaves),damage:(1+BALANCE.damageRamp*d+BALANCE.damageAcceleration*d*d)*2**Math.min(BALANCE.maxExponent,late/BALANCE.damageDoublingWaves)};}
+ function attackTempo(wave){const d=Math.max(0,waveIndex(wave)-(BALANCE.rampAfterWave-1));return 1+Math.min(BALANCE.maxAttackTempoBonus,BALANCE.attackTempoRamp*d+BALANCE.attackTempoAcceleration*d*d);}
+ function bossWaveMultiplier(wave=1){return (BALANCE.bossHpBase+BALANCE.bossHpPerWave*waveIndex(wave))*pressure(wave,true).hp;}
+ function bossScaling(wave=1,group='elite'){const n=waveIndex(wave),hpWeight=group==='major'?1.35:group==='mid'?1.15:1,damageWeight=group==='major'?1.1:group==='mid'?1.05:1;return {tempo:attackTempo(wave),hp:bossWaveMultiplier(wave)*hpWeight,damage:(BALANCE.bossDamageBase+BALANCE.bossDamagePerWave*n)*damageWeight*pressure(wave,true).damage};}
+ function scaling(wave=1,elapsed=0,tier=0){const n=waveIndex(wave),p=pressure(wave);return {tempo:attackTempo(wave),hp:(BALANCE.regularHpBase+BALANCE.regularHpPerWave*n)*p.hp,damage:(BALANCE.regularDamageBase+BALANCE.regularDamagePerWave*n)*p.damage,speed:1+Math.min(BALANCE.maxSpeedBonus,n*BALANCE.speedPerWave),rank:1+Math.floor(n/12)};}
  function squad(wave){if(!Number.isSafeInteger(wave)||wave<1)return [];const boss=encounter(wave);let ids;
  if(wave===1)ids=['shadow','shadow','shadow','shadow'];else if(wave===2)ids=['guard','shadow','brood','shadow'];else if(wave===3)ids=['hunter','guard','shadow','shadow'];
  else if(boss){ids=boss.id==='priest'?['guard','brood']:boss.id==='obsidian'?['runner','hunter']:boss.group==='major'?['guard','hunter']:boss.group==='mid'?['guard','hunter','shadow']:['hunter','shadow'];}
@@ -61,5 +65,5 @@
  }
  function squadName(wave){const boss=encounter(wave);return boss?'Bossformation · '+boss.name:wave===1?'Schattenvorhut':wave===2?'Schild-Eskorte':wave===3?'Geschützte Jäger':isSwarmWave(wave)?'Flankenüberfall':['Geschützte Jäger','Flankenkeil','Kern-Eskorte','Luftüberfall','Panzer-Durchbruch','Sabotagekommando'][(wave-1)%6];}
  const MODIFIERS=[{id:'corrupt',name:'Korruptiert',color:'#ff527e',hp:1,damage:1.3},{id:'frozen',name:'Gefroren',color:'#8bdcff',hp:1.1,damage:1,slow:true},{id:'armored',name:'Verstärkt',color:'#ffd377',hp:1.4,damage:1},{id:'elite',name:'Elite',color:'#ed79ff',hp:1.2,damage:1.15}];
- return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,scaling,bossScaling,bossWaveMultiplier,squad,squadName,MODIFIERS};
+ return {regular,elite,mid,major,all,byId,unlocked,encounter,encounterPlan,isSwarmWave,MAJOR_ORDER,BALANCE,scaling,bossScaling,bossWaveMultiplier,squad,squadName,MODIFIERS};
 });
