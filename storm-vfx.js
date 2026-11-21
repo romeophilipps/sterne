@@ -1,5 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm-vfx-data.js'):root.StarVFXData);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarVFX=api;})(globalThis,data=>{
+ const Combat=typeof module==='object'&&module.exports?require('./storm-combat-vfx.js'):globalThis.StarCombatVFX;
  const MAX_EVENTS=80,MAX_IMAGES=12,cache=new Map();let stamp=0;
  const itemFamily=id=>id<=20?49:id<=40?50:id<=60?({49:9,51:4,52:2,54:9,56:37,58:8,59:20,60:34}[id]||3):id<=80?({64:23,67:23,75:25,77:26,78:23,79:28}[id]||26):id<=100?([83,95,99].includes(id)?31:30):id<=120?({101:11,102:14,103:16,104:17,105:3,106:11,107:14,108:16,109:18,110:23,111:17,112:14,113:19,114:13,115:16,116:15,117:18,118:40,119:22,120:21}[id]):id<=140?({122:9,124:27,126:37,128:8,130:18,131:30,132:33,133:9,134:9,135:23,136:28,137:37,138:38,139:39,140:42}[id]||50):id<=160?({141:23,142:16,143:14,144:3,145:25,146:23,147:16,148:19,149:31,150:43,151:23,152:19,153:50,154:40,155:41,156:42,157:23,158:50,159:40,160:45}[id]):id<=180?({161:30,162:37,163:30,164:31,165:2,166:37,167:2,168:5,169:49,170:14,171:37,172:31,173:32,174:30,175:8,176:9,177:50,178:3,179:47,180:32}[id]):({181:49,182:50,183:50,184:50,185:49,186:30,187:27,188:18,189:40,190:37,191:25,192:30,193:26,194:9,195:50,196:43,197:21,198:34,199:50,200:36}[id]||50);
  const impactPhase={11:'start',12:'start',15:'aufbau',19:'start',20:'einschlag',21:'ausbruch',22:'start',25:'aufbau',27:'aufbau',30:'start',32:'start',33:'erscheinen',35:'oeffnen',37:'erfassen',38:'treffer',39:'aufnahme',40:'ausbruch',42:'entstehen',43:'aufbau',45:'einschlag',46:'einblenden',47:'strahl',49:'aufnahme'};
@@ -21,6 +22,7 @@
  wrap('heroVisual',function(old,t,...args){const result=old.call(this,t,...args);emit(this,[40,41,42,43,44][t.hero],t.x,t.z,{size:160});return result;});
  wrap('damageBase',function(old,...args){const hp=this.base.hp,result=old.apply(this,args);if(this.base.hp<hp)emit(this,52,this.base.x,this.base.z,{size:130});return result;});
  wrap('step',function(old,dt){const wave=this.completed,result=old.call(this,dt);if(this.completed>wave)emit(this,48,.5,.5,{size:170});this.vfx=(this.vfx||[]).filter(e=>e.end>this.elapsed);return result;});
+ Combat?.install(Round);
  }
  return {data,MAX_EVENTS,MAX_IMAGES,itemFamily,emit,item,frame,draw,statuses,persistent,install,cache};
 });
