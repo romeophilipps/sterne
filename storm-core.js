@@ -1,5 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarCore=api;})(globalThis,()=>{
+ const Arena=typeof module==='object'&&module.exports?require('./storm-arena.js'):globalThis.StarArena;
  const CONFIG={maxLevel:5,defaultRange:.7,upgradeRatios:[.4,.6,.9,1.2],upgradeCosts:[[10,15,20,25],[20,30,45,55],[40,55,85,110],[30,40,60,80],[60,85,130,170],[95,140,210,280],[50,75,110,145],[75,110,165,220],[160,240,360,480]],power:[1,1.3,1.6,2,2.5],goldCosts:[60,40,60],goldBonus:[0,.1,.15,.2],novaCost:20,novaCooldown:[0,90000,85000,80000],novaRadius:.2,novaFractions:{regular:.5,elite:.3,mid:.08,major:.08},shieldRechargeDelay:3500,shieldRechargeRate:.08,shieldAllyReduction:.25};
  const CATALOG=[
   {id:1,name:'Zwillingskanonen',cost:70,damage:8,interval:1500,range:CONFIG.defaultRange,fire:[50,200],kind:'bolt'},
@@ -37,7 +38,7 @@
  function area(r,center,n,radius){for(const e of r.enemies.filter(e=>live(r,e)&&distance(e,center)<=radius).sort((a,b)=>distance(a,center)-distance(b,center)||a.id-b.id).slice(0,4))damage(r,e,n);}
  function lineTargets(r,tx,tz){const dx=tx-r.base.x,dz=tz-r.base.z,length=Math.max(.001,Math.hypot(dx*.45,dz));return r.enemies.filter(e=>live(r,e)&&distance(e,r.base)<=get(6).range&&((e.x-r.base.x)*dx*.45*.45+(e.z-r.base.z)*dz)>=0&&Math.abs((e.x-r.base.x)*.45*dz-(e.z-r.base.z)*dx*.45)/length<.04).sort((a,b)=>b.z-a.z||a.id-b.id).slice(0,3);}
  function fire(r,w,event){const s=state(r),e=r.enemies.find(e=>e.id===event.target&&live(r,e)&&distance(e,r.base)<=w.range)||targets(r,w)[0];if(!e)return;const n=w.damage*power(r,w.id),start=r.elapsed;r.events.push({kind:w.kind==='blades'?'ability':'shot',name:w.name});
-  if(w.kind==='blades'){for(const foe of targets(r,w).slice(0,w.targetCap)){damage(r,foe,n);if(!foe.boss)foe.z=Math.max(.01,foe.z-.01);visual(r,9,foe,{size:55});}return;}
+  if(w.kind==='blades'){for(const foe of targets(r,w).slice(0,w.targetCap)){damage(r,foe,n);if(!foe.boss)foe.z=Arena.clampZ(foe.z-.01);visual(r,9,foe,{size:55});}return;}
   if(w.kind==='tesla'){const used=new Set();let from={...r.base};for(let i=0;i<=w.links;i++){const target=i?r.enemies.filter(a=>live(r,a)&&!used.has(a.id)&&distance(a,from)<=w.linkRange).sort((a,b)=>distance(a,from)-distance(b,from)||a.id-b.id)[0]:e;if(!target)break;s.beams.push({kind:'tesla',weapon:w.id,slot:i?0:event.slot,start,end:start+450,x:from.x,z:from.z,tx:target.x,tz:target.z,base:i===0});damage(r,target,n*(i?w.linkFraction:1));used.add(target.id);visual(r,16,target,{size:55});from={...target};}return;}
   if(w.kind==='lance'){damage(r,e,n);const other=targets(r,w).filter(a=>a!==e&&a.z<e.z&&Math.abs(a.x-e.x)<.12)[0];if(other)damage(r,other,n*w.pierceFraction);s.beams.push({kind:'lance',weapon:w.id,slot:0,start,end:start+400,tx:other?.x??e.x,tz:other?.z??e.z,base:true});return;}
   if(w.kind==='prism'){const line=lineTargets(r,e.x,e.z),end=line.at(-1)||e;s.beams.push({kind:'prism',weapon:w.id,slot:0,start,damageEnd:start+600,end:start+1000,last:start,tx:end.x,tz:end.z,base:true,damage:n,targets:line.map(e=>e.id)});return;}

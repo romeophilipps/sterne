@@ -1,5 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarTactics=api;})(globalThis,()=>{
+ const Arena=typeof module==='object'&&module.exports?require('./storm-arena.js'):globalThis.StarArena;
  const ABILITIES={
  shadow:{name:'Duellhieb',role:'Frontduellant',style:'duel',color:'#ff567d',cooldown:10000,delay:1100,targets:1,power:1.15,counter:'Schildfront hält den markierten Hieb ab.'},
  guard:{name:'Deckungsformation',role:'Leibwächter',style:'brace',color:'#bc9bff',cooldown:11000,delay:1100,targets:0,counter:'Beschützt höchstens zwei Begleiter. Den Wächter mit Sniper/Plasma ausschalten.'},
@@ -69,7 +70,7 @@
   if(style==='duel'&&e.boss&&!base)t.fractureUntil=r.elapsed+1800;
   if(style==='frost')e.hp=Math.min(e.max,e.hp+Math.min(e.max*.02,Math.max(0,before-t.hp)*.4));
  }
- if(['ambush','rift','mirror','leap','dive'].includes(style)&&marked&&marked!==r.base&&Math.max(e.netUntil||0,e.dimensionUntil||0)<=r.elapsed){e.x=clamp(h.x,.08,.92);e.z=clamp(Math.min(e.z+.16,h.z-.055),.03,.88);e.vx=e.vz=0;}
+ if(['ambush','rift','mirror','leap','dive'].includes(style)&&marked&&marked!==r.base&&Math.max(e.netUntil||0,e.dimensionUntil||0)<=r.elapsed){e.x=clamp(h.x,.08,.92);e.z=Arena.clampZ(Math.min(e.z+.16,h.z-.055),.88);e.vx=e.vz=0;}
  if(style==='mirror'&&h.index===0){for(let i=0;i<2;i++)if(r.enemies.filter(a=>a.hp>0).length<12&&r.enemies.filter(a=>a.hp>0&&a.illusion).length<2){const illusion=r.spawnLegion(L.byId.shadow,{x:clamp(e.x+(i?-.14:.14),.1,.9),z:e.z,summoned:true,illusion:true});if(illusion){illusion.expiresAt=r.elapsed+5500;illusion.reward=0;illusion.stars=0;illusion.damage*=.35;}}}
  if(style==='crystal'){e.abilityShield=0;e.shieldUntil=0;e.exposedUntil=r.elapsed+3500;}
  if(style==='reactor'&&h.index===h.total-1){e.detonated=true;r.hit(e,e.max*2,-1,true);}
