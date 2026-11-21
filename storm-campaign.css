@@ -15,3 +15,5 @@ body[data-game=storm] #storm-roster-dialog #campaign-roster-forge{border:7px sol
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.storm-mode.storm-campaign-run{grid-template-rows:82px minmax(120px,1fr) clamp(170px,23dvh,230px)}
 body[data-game=storm]:has(#game.storm-mode:not([hidden])) #game.storm-mode.storm-campaign-run #storm-shop-items .army-loadout-row{grid-template-rows:1fr}
 @media(max-height:650px){body[data-game=storm]:has(#game.storm-mode:not([hidden])) .app .screen#game.storm-mode.storm-campaign-run{grid-template-rows:76px minmax(95px,1fr) 170px}}
+
+.campaign-coming{opacity:.38;filter:grayscale(1);pointer-events:none}.campaign-coming-note{grid-column:1/-1;text-align:center;margin:-4px 0 8px;color:var(--su-muted);font-size:var(--su-text-ui)}
