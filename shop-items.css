@@ -1,0 +1,17 @@
+#storm-armory-dialog .market-item-daily{box-sizing:border-box;margin:12px 0;border:12px solid transparent;border-image:url('./solo-panel.png?v=154') 34 28 40 fill /12px stretch;padding:10px 4px;background:#090e24bd}
+#storm-armory-dialog .market-item-daily .market-section-heading{flex-wrap:wrap;gap:8px;margin-bottom:6px}#storm-armory-dialog .market-item-daily h3{font-size:16px}#storm-armory-dialog .market-item-daily .armory-note{font-size:11px}
+.item-daily-timer{text-align:right;font:400 10px/1.4 var(--su-font-body);color:var(--su-text-secondary)}
+.item-daily-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 7px}
+.item-sale-card{display:grid;grid-template-rows:auto 36px 18px 24px 44px;gap:3px;min-width:0;align-items:center;text-align:center}
+#storm-armory-dialog .item-sale-art{display:block;width:100%;aspect-ratio:1;padding:0;min-height:0;border:0;background:none;box-shadow:none;border-radius:0}
+.item-sale-art .item-picture{width:100%;height:100%;margin:0;max-width:100%}.item-sale-art img{max-width:100%;object-fit:contain;image-rendering:pixelated}
+.item-sale-card h4{font:600 10px/1.2 var(--su-font-heading);color:var(--su-text);margin:0;overflow:hidden;overflow-wrap:anywhere;max-height:36px}.item-sale-card>small{font:500 9px/1.2 var(--su-font-heading);color:var(--su-text-secondary)}
+.item-sale-card[data-rarity=legendary]>small{color:#efd080}.item-sale-card[data-rarity=epic]>small{color:#c298ed}.item-sale-card[data-rarity=rare]>small{color:#79d9ef}
+.item-sale-price{display:flex;justify-content:center;font-size:11px;white-space:nowrap}
+#storm-armory-dialog .item-sale-buy{min-width:0;min-height:44px;padding:3px 0;border-width:5px;font:600 10px/1.2 var(--su-font-heading);overflow-wrap:anywhere}
+@media(max-width:350px){.item-daily-grid{gap:12px 4px}#storm-armory-dialog .market-item-daily{padding:8px 1px;border-width:10px}.item-sale-card h4{font-size:9px}.item-sale-card>small{font-size:8px}.item-sale-price{font-size:10px}}
+.item-sale-art .item-picture{display:block;position:relative;width:100%;height:auto;aspect-ratio:1}
+.item-sale-art .item-frame{inset:0}
+.item-sale-card h4{font-size:11px;line-height:13px;letter-spacing:0;max-height:39px}
+.item-sale-card{grid-template-rows:auto 39px 18px 24px 44px}
+@media(max-width:350px){.item-sale-card h4{font-size:10px;line-height:12px;max-height:36px}}

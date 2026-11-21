@@ -18,6 +18,11 @@
  const DROP_WEIGHTS=Object.freeze({rare:77,epic:20,legendary:3});
  function chances(pool){const counts={rare:0,epic:0,legendary:0};for(const item of pool){if(!(item.rarity in DROP_WEIGHTS))throw Error('Unbekannte Seltenheit.');counts[item.rarity]++;}const total=Object.keys(counts).reduce((n,k)=>n+(counts[k]?DROP_WEIGHTS[k]:0),0);return Object.fromEntries(Object.keys(counts).map(k=>[k,{count:counts[k],probability:counts[k]?DROP_WEIGHTS[k]/total:0}]));}
  function choose(pool,random=Math.random){if(!pool.length)return null;const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');const odds=chances(pool);let start=0;for(const rarity of Object.keys(DROP_WEIGHTS)){const group=pool.filter(s=>s.rarity===rarity),chance=odds[rarity].probability;if(!group.length)continue;if(n<start+chance)return group[Math.min(group.length-1,Math.floor((n-start)/chance*group.length))];start+=chance;}return pool[pool.length-1];}
+ const ITEM_PRICES=Object.freeze({legendary:1000,epic:400,rare:100,common:40});
+ function itemDaily(now=Date.now()){
+  const date=new Date(now);if(!Number.isFinite(date.getTime()))throw Error('Ungültige Zeit.');const key=[date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),next=new Date(date);next.setHours(24,0,0,0);let seed=(Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000)+200)>>>0;
+  const items=[];for(const rarity of Object.keys(ITEM_PRICES)){const pool=Items.CATALOG.filter(item=>item.rarity===rarity);for(let i=pool.length-1;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=Math.floor(seed/4294967296*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}items.push(...pool.slice(0,2));}return {key,next:next.getTime(),items};
+ }
  function bundleMissing(profile){return WINTER_BUNDLE.ids.filter(id=>!profile.skins.owned.includes(id));}
- return {WINTER_START,CHESTS,WINTER_BUNDLE,DROP_WEIGHTS,chances,weaponRarity,seasonInfo,chestAvailable,chestPool,choose,bundleMissing};
+ return {ITEM_PRICES,itemDaily,WINTER_START,CHESTS,WINTER_BUNDLE,DROP_WEIGHTS,chances,weaponRarity,seasonInfo,chestAvailable,chestPool,choose,bundleMissing};
 });
