@@ -5,7 +5,7 @@
  function random(seed=71261){return ()=>((seed=(Math.imul(seed,1664525)+1013904223)>>>0)/4294967296);}
  function targetFor(item,preferred){const allowed=I.allowedTargets(item);return allowed.includes(preferred)?preferred:allowed[0];}
  function createSide(item,target,enabled){
-  const run=S.create(item.number===70?()=>.005:random(),{lootSeed:71261});run.army.energy=100;run.army.coins=150;run.army.stars=150;run.base.hp=run.base.max=1e6;
+  const run=S.create(item.number===70?()=>.005:random(),{lootSeed:71261});run.checkpoints=[];run.army.energy=100;run.army.coins=150;run.army.stars=150;run.base.hp=run.base.max=1e6;
   if(item.number===174)run.wave=4;else if(item.number===19)run.wave=61;else if(item.number===23||item.params.everyWave||item.number===200)run.wave=5;else if(item.number===180)run.wave=3;
   run.remaining=1;run.spawnClock=1e9;run.rest=1e9;
   run.setEquipment({items:enabled?{[target]:item.id}:{}});

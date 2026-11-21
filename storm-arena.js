@@ -1,6 +1,6 @@
 'use strict';
 ((root,factory)=>{const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.StarArena=api;})(globalThis,()=>{
- const CONFIG=Object.freeze({minZ:-2.6,maxZ:.98,spawnZ:-2.57,spawnSpread:.045,panoramaRatio:1280/426,ground:.86,laneDepth:.10,marchMultiplier:3.2,marchDistance:.75});
+ const CONFIG=Object.freeze({minZ:-2.6,maxZ:.98,spawnZ:-2.57,spawnSpread:.045,panoramaRatio:2172/724,ground:.86,laneDepth:.10,marchMultiplier:3.2,marchDistance:.75});
  const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
  const clampZ=(z,max=CONFIG.maxZ)=>clamp(z,CONFIG.minZ,max);
  function geometry(w,h){const width=Math.max(w,h*CONFIG.panoramaRatio);return {x:0,y:0,w:width,h,maxOffset:Math.max(0,width-w)};}
@@ -26,8 +26,8 @@
  }
  function status(binding,run){if(!binding)return;binding.home.hidden=binding.camera.offset<1;const hp=Math.max(0,Math.ceil(run.base.hp)),max=Math.ceil(run.base.max),text='Stern '+hp+'/'+max;if(binding.home.textContent!==text)binding.home.textContent=text;binding.home.dataset.danger=String(hp<max*.35);binding.home.setAttribute('aria-label','Stern '+hp+' von '+max+' Leben · Kamera zum Stern zurücksetzen');}
  let panorama=null,rock=null;function load(src){return new Promise(done=>{const image=new Image();image.onload=()=>done(image);image.onerror=()=>done(null);image.src=src;});}
- const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([load('./storm-arena-wide.jpg?v=194').then(i=>panorama=i),load('./storm-arena-rock.png?v=194').then(i=>rock=i)]);
- function background(c,w,h,offset=0){if(!panorama)return false;const g=geometry(w,h);c.drawImage(panorama,-clamp(offset,0,g.maxOffset),0,g.w,h);return true;}
+ const ready=typeof Image==='undefined'?Promise.resolve():Promise.all([load('./storm-arena-wide-v196.png?v=196').then(i=>panorama=i),load('./storm-arena-rock.png?v=194').then(i=>rock=i)]);
+ function background(c,w,h,offset=0){if(!panorama)return false;const g=geometry(w,h);c.save();c.imageSmoothingEnabled=false;c.drawImage(panorama,-clamp(offset,0,g.maxOffset),0,g.w,h);c.restore();return true;}
  function foreground(c,w,h,offset=0){if(!rock)return false;const g=geometry(w,h),rw=h*.72,rh=rw*rock.height/rock.width;c.save();c.imageSmoothingEnabled=false;c.drawImage(rock,g.w-rw-offset,h-rh,rw,rh);c.restore();return true;}
  return {CONFIG,clampZ,geometry,project,Camera,bind,status,ready,background,foreground};
 });
