@@ -25,7 +25,7 @@
   const key=[date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),next=new Date(date);next.setHours(24,0,0,0);
   let seed=(Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000)+115)>>>0;
   const pool=[...AVAILABLE];for(let i=pool.length-1;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=Math.floor((seed/4294967296)*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}
-  return {key,next:next.getTime(),skins:pool.slice(0,3)};
+  return {key,next:next.getTime(),skins:['rare','epic','legendary'].map(rarity=>pool.find(s=>s.rarity===rarity))};
  }
  function isDailyOffer(id,now=Date.now()){return rotationInfo(now).skins.some(s=>s.id===id);}
  const DAILY_CHEST=false;

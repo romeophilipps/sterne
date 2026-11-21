@@ -1,0 +1,15 @@
+/* Compact daily offer, using the supplied panel and rarity frames. */
+#storm-armory-dialog .market-daily{box-sizing:border-box;border:14px solid transparent;border-image:url('./solo-panel.png?v=154') 34 28 40 fill /14px stretch;padding:10px 6px 12px;margin:18px 0;background:linear-gradient(#0a1224cf,#100b2bd9);box-shadow:0 5px 20px #03051666}
+#storm-armory-dialog .market-daily .skin-featured-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}
+#storm-armory-dialog .market-daily .market-section-heading{gap:6px;flex-wrap:wrap;margin-bottom:8px}
+#storm-armory-dialog .market-daily .market-section-heading h3{font-size:var(--su-text-value,16px)}
+#storm-armory-dialog .market-daily .market-section-heading .armory-note{font-size:var(--su-text-meta,10px);line-height:1.4}
+#storm-armory-dialog .market-daily>.skin-rotation-timer{margin:0 0 10px auto;padding:5px 7px;font-size:11px}
+#storm-armory-dialog .market-daily .skin-album-card{min-width:0;row-gap:4px;grid-template-rows:auto 21px auto 24px 44px;padding:0;background:none;border:0;box-shadow:none}
+#storm-armory-dialog .market-daily .skin-album-card>small{font-size:10px;text-align:center;overflow-wrap:anywhere}
+#storm-armory-dialog .market-daily .skin-rarity-badge{font-size:9px;padding:2px 3px;max-width:100%;box-sizing:border-box;letter-spacing:0}
+#storm-armory-dialog .market-daily .skin-card-name{font-size:10px;min-height:20px;line-height:1.2;padding:2px 0;left:10%;right:10%;bottom:10%;border-radius:2px}
+#storm-armory-dialog .market-daily .skin-price{justify-content:center;gap:2px;font-size:12px;margin:0;min-height:24px}
+#storm-armory-dialog .market-daily .skin-direct-buy{min-width:0;width:100%;min-height:44px;font-size:11px;padding:4px 1px;border-width:6px;overflow-wrap:anywhere}
+@media(max-width:350px){#storm-armory-dialog .market-daily{border-width:11px;padding:8px 2px}#storm-armory-dialog .market-daily .skin-featured-grid{gap:5px}#storm-armory-dialog .market-daily .skin-card-name{font-size:9px}#storm-armory-dialog .market-daily .skin-rarity-badge{font-size:8px}}
+#storm-armory-dialog .market-daily .skin-card-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;overflow-wrap:normal}
