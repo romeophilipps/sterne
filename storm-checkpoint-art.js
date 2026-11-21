@@ -12,5 +12,6 @@
    if(point.phase==='raising'){const img=art[point.capturer==='allies'?'ally':'enemy'],t=Math.max(0,Math.min(1,(r.elapsed-point.animationStart)/StarCheckpoints.CONFIG.raiseMs));if(img&&t){c.save();c.beginPath();c.rect(x+width*.5,y+height*.24,width*.4,height*.48*t);c.clip();c.drawImage(img,x,y,width,height);c.restore();}}
    const color=point.contested?'#caa7ff':point.owner==='allies'||point.capturer==='allies'?'#ffd46c':point.owner==='enemies'||point.capturer==='enemies'?'#ff627a':'#a4b1c5',barW=40,barY=y-9;c.fillStyle='#081225df';c.fillRect(q.x-22,barY-11,44,19);c.font='9px sans-serif';c.textAlign='center';c.fillStyle=color;c.fillText(String(point.id)+(point.contested?' · umkämpft':''),q.x,barY-3);c.fillStyle='#273449';c.fillRect(q.x-barW/2,barY,barW,3);c.fillStyle=color;const ratio=point.phase==='held'?point.hp/Math.max(1,point.max):point.phase==='raising'?1:point.progress/StarCheckpoints.CONFIG.captureMs;c.fillRect(q.x-barW/2,barY,barW*Math.max(0,Math.min(1,ratio)),3);
   }c.restore();}
- window.StarCheckpointArt={ready,draw,mask};
+ function drawFlag(c,q,owner,height=76){const img=art[owner==='allies'?'ally':'enemy'];if(!img)return;c.save();c.imageSmoothingEnabled=false;c.drawImage(img,q.x-height/3,q.y-height,height*2/3,height);c.restore();}
+ window.StarCheckpointArt={ready,draw,mask,drawFlag};
 })();

@@ -11,9 +11,9 @@
   announce(){if(!this.active)return;this.send('online',{name:this.name,available:this.available&&!this.outgoing&&!this.incoming&&!this.pair});this.lastSend=this.clock();}
   setActive(value){this.active=!!value;if(!this.active){this.cancelInvite();if(this.incoming)this.finishIncoming('decline');this.send('offline');}else{this.send('query');this.announce();}this.onchange(this);}
   setAvailable(value){this.available=!!value;this.announce();this.onchange(this);}
-  invite(peerId){const peer=this.peers.get(peerId);if(!this.active||!this.connected||!this.available||this.outgoing||this.incoming||this.pair||!peer?.available)return false;this.outgoing={id:globalThis.crypto.randomUUID(),peer:peerId,name:peer.name,code:O.roomCode(),deadline:this.clock()+10000};this.sendInvite();this.announce();this.onchange(this);return true;}
-  sendInvite(){const i=this.outgoing;if(i){this.send('invite',{to:i.peer,invite:i.id,code:i.code,name:this.name});i.lastSend=this.clock();}}
-  respond(accept){const i=this.incoming;if(!i||!this.connected||!this.active)return false;if(this.clock()>=i.deadline){this.finishIncoming('expired');return false;}const reply={to:i.peer,invite:i.id,code:i.code};this.decisions.set(i.id,{...reply,type:accept?'accept':'decline',time:this.clock()});this.incoming=null;if(accept)this.pair={id:i.id,peer:i.peer};this.send(accept?'accept':'decline',reply);if(accept&&this.pair?.id===i.id){this.onpair({host:false,id:this.id,peer:i.peer,peerName:i.name,code:i.code});}this.announce();this.onchange(this);return true;}
+  invite(peerId,mode='coop'){if(!['coop','pvp'].includes(mode))return false;const peer=this.peers.get(peerId);if(!this.active||!this.connected||!this.available||this.outgoing||this.incoming||this.pair||!peer?.available)return false;this.outgoing={id:globalThis.crypto.randomUUID(),peer:peerId,name:peer.name,mode,code:O.roomCode(),deadline:this.clock()+10000};this.sendInvite();this.announce();this.onchange(this);return true;}
+  sendInvite(){const i=this.outgoing;if(i){this.send('invite',{to:i.peer,invite:i.id,code:i.code,mode:i.mode,name:this.name});i.lastSend=this.clock();}}
+  respond(accept){const i=this.incoming;if(!i||!this.connected||!this.active)return false;if(this.clock()>=i.deadline){this.finishIncoming('expired');return false;}const reply={to:i.peer,invite:i.id,code:i.code};this.decisions.set(i.id,{...reply,type:accept?'accept':'decline',time:this.clock()});this.incoming=null;if(accept)this.pair={id:i.id,peer:i.peer};this.send(accept?'accept':'decline',reply);if(accept&&this.pair?.id===i.id){this.onpair({host:false,id:this.id,peer:i.peer,peerName:i.name,mode:i.mode,code:i.code});}this.announce();this.onchange(this);return true;}
   finishIncoming(reason){const i=this.incoming;if(!i)return;this.send(reason==='expired'?'expired':'decline',{to:i.peer,invite:i.id});this.decisions.set(i.id,{to:i.peer,invite:i.id,type:'decline',time:this.clock()});this.incoming=null;this.oninvite(null);this.announce();this.onchange(this);}
   cancelInvite(){const i=this.outgoing;if(i)this.send('cancel',{to:i.peer,invite:i.id});this.outgoing=null;this.announce();this.onchange(this);}
   release(){this.pair=null;this.outgoing=null;if(this.incoming)this.finishIncoming('decline');this.announce();this.onchange(this);}
@@ -26,11 +26,11 @@
     const decided=this.decisions.get(m.invite);if(decided&&decided.to===m.from){this.send(decided.type,decided);return;}
     if(this.incoming?.id===m.invite)return;
     if(!this.active||!this.available||this.incoming||this.outgoing||this.pair){this.send('decline',{to:m.from,invite:m.invite});return;}
-    this.incoming={id:m.invite,peer:m.from,name:name(m.name),code:m.code,deadline:now+10000};this.oninvite(this.incoming);this.announce();this.onchange(this);return;
+    this.incoming={id:m.invite,peer:m.from,name:name(m.name),mode:m.mode==='pvp'?'pvp':'coop',code:m.code,deadline:now+10000};this.oninvite(this.incoming);this.announce();this.onchange(this);return;
    }
    const i=this.outgoing;
    if(i&&m.from===i.peer&&m.invite===i.id){
-    if(m.type==='accept'){if(now>=i.deadline){this.cancelInvite();return;}this.outgoing=null;this.pair={id:i.id,peer:i.peer};this.onpair({host:true,id:this.id,peer:i.peer,peerName:i.name,code:i.code});this.announce();this.onchange(this);}
+    if(m.type==='accept'){if(now>=i.deadline){this.cancelInvite();return;}this.outgoing=null;this.pair={id:i.id,peer:i.peer};this.onpair({host:true,id:this.id,peer:i.peer,peerName:i.name,mode:i.mode,code:i.code});this.announce();this.onchange(this);}
     else if(['decline','expired'].includes(m.type)){this.outgoing=null;this.notice=m.type==='decline'?'Einladung abgelehnt.':'Einladung abgelaufen. Du kannst erneut einladen.';this.announce();this.onchange(this);}
    }
    if(m.type==='cancel'&&this.pair?.id===m.invite&&this.pair.peer===m.from){this.pair=null;this.oncancel('Die Einladung ist abgelaufen. Bitte erneut einladen.');this.announce();this.onchange(this);}
@@ -58,5 +58,18 @@
   tick(){if(this.closed)return;if(this.clock()-this.lastSend>=700){this.publish();this.maybeLaunch();}if(!this.launched&&this.clock()-this.lastPeer>15000){this.ready=false;this.peerReady=false;this.onleave('Die Verbindung zum Mitspieler wurde unterbrochen.');}}
   close(){if(this.closed)return;this.send('leave');this.closed=true;clearInterval(this.timer);this.channel.close();}
  }
- return {Directory,Lobby,validDraft:draft,sameTeam:same};
+
+ class PvpLobby extends Lobby{
+  constructor(config,options){super(config,options);this.mode='pvp';}
+  publish(){this.send('private-ready',{ready:this.ready,seq:this.seq});this.lastSend=this.clock();}
+  maybeLaunch(){if(this.host&&!this.launched&&this.ready&&this.peerReady)this.send('private-launch',{hostSeq:this.seq,guestSeq:this.peerSeq});}
+  launch(){if(this.launched)return;this.launched=true;this.onlaunch({mode:'pvp',host:this.host,id:this.id,expectedPeer:this.peer,code:this.code,loadout:clone(this.own),equipment:D.normalizeEquipment(this.ownEquipment)});}
+  receive(m){if(this.closed||m?.lobby!==1||m.from!==this.peer||m.to!==this.id)return;this.lastPeer=this.clock();
+   if(m.type==='leave'&&!this.launched){this.ready=this.peerReady=false;this.onleave('Dein Gegner hat das Startmenü verlassen.');return;}
+   if(m.type==='private-ready'&&Number.isSafeInteger(m.seq)&&m.seq>=this.peerSeq){this.peerSeq=m.seq;this.peerReady=m.ready===true;this.onchange(this);this.maybeLaunch();}
+   if(m.type==='private-launch'&&!this.host&&this.ready&&this.peerReady&&m.guestSeq===this.seq&&m.hostSeq===this.peerSeq){this.send('private-launch-ack',{hostSeq:m.hostSeq,guestSeq:m.guestSeq});this.launch();}
+   if(m.type==='private-launch-ack'&&this.host&&this.ready&&this.peerReady&&m.hostSeq===this.seq&&m.guestSeq===this.peerSeq)this.launch();
+  }
+ }
+ return {Directory,Lobby,PvpLobby,validDraft:draft,sameTeam:same};
 });
