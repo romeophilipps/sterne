@@ -279,7 +279,7 @@
  ItemEngine.install(Round,leveledStats);
  const VFX=typeof module==='object'&&module.exports?require('./storm-vfx.js'):globalThis.StarVFX;VFX?.install(Round);
  Core.install(Round);
- const checkpointFront=Round.prototype.frontSpawn;Round.prototype.frontSpawn=function(){const p=checkpointFront.call(this);if(!this.pvp&&this.checkpoints.length===3)p.z=Math.max(this.checkpoints[2].z,p.z);return p;};
+ const checkpointFront=Round.prototype.frontSpawn;Round.prototype.frontSpawn=function(){const p=checkpointFront.call(this);if(Checkpoints.holdsLine(this)&&this.checkpoints.length===3)p.z=Math.max(this.checkpoints[2].z,p.z);return p;};
  const checkpointStep=Round.prototype.step;Round.prototype.step=function(dt){const value=checkpointStep.call(this,dt);Checkpoints.constrain(this);return value;};
  return {Checkpoints,Arena,PACING,earlyPower,upgradeCapFor,canAffordUpgrade,upgradePrice,ENERGY,ECONOMY,incomeForWave,PROGRESSION,growth,troopGrowth,upgradeTerms,HEAL_SEEK,TROOP_LIMITS,troopLimit,troopCount,Core,DEV_TEST_LIMITS,testWaveNumber,ASSASSIN,ARCANE_CAST_DURATION,ItemEngine,Legion,Tactics,Weapons,Armory,CURRENCY_WAVES,Round,TestRound,testEntries,createTest:(r)=>new TestRound(r),create:(r,p)=>new Round(r,p),ANIMATION_FPS,ANIMATION_FRAME_MS,AnimationClock,Renderer,WARRIORS,HEROES,HERO_WAVES,HERO_ARRIVAL_DURATION,HERO_RECALL_COST,validLoadout,profile,DAMAGE,WAVES,unitStats,leveledStats,baseStats,upgradeCost,UPGRADES};
 });
