@@ -1,4 +1,6 @@
 .social-game-modes{margin-block:var(--space-2,8px)}.social-game-modes button{min-height:44px;font-family:var(--su-font-heading);font-size:var(--su-text-ui,13px);color:var(--color-text,#e1edf8)}.social-game-modes button[aria-pressed=true]{background-image:url('./room-tab-active.png?v=154');color:var(--color-gold,#e8cb8d)}.social-game-modes button[aria-pressed=false]{opacity:.75}#storm-duel-dialog[data-pvp=true] .duel-hint{display:none}
 #storm-duel-dialog.duel-playing[data-pvp=true] .duel-hud{grid-template-columns:1fr 1fr;gap:8px;padding:0 6px}#storm-duel-dialog.duel-playing[data-pvp=true] #duel-my-star{position:static;width:auto;height:auto;clip-path:none;overflow:hidden;white-space:nowrap;font:400 12px/16px var(--su-font-body);color:#e8cb8d}#storm-duel-dialog.duel-playing[data-pvp=true] #duel-their-star{color:#ee9ca6}
 
-.social-dialog .pvp-rules{display:block;margin:4px 16px 8px;font:400 11px/1.4 var(--su-font-body);color:#a1b6cc}.social-dialog .pvp-rules[hidden]{display:none}
+
+
+.social-bot select{min-width:0;width:100%;min-height:44px;border:1px solid #82d8ed;border-radius:8px;background:#111c30;color:#e1edf8;font:inherit;padding:4px}#storm-social-dialog .social-player.social-bot{grid-template-columns:minmax(0,1fr) minmax(72px,100px) auto;gap:8px}.social-bot>div{min-width:0}.social-bot strong{overflow-wrap:anywhere}@media(max-width:360px){#storm-social-dialog .social-player.social-bot{grid-template-columns:minmax(0,1fr) 76px 68px;gap:5px}.social-bot button{padding-inline:4px}}
