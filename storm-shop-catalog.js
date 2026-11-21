@@ -2,7 +2,7 @@
 ((root,factory)=>{const api=factory(typeof module==='object'&&module.exports?require('./storm-weapons.js'):root.StarWeapons,typeof module==='object'&&module.exports?require('./storm-skins.js'):root.StarSkins);if(typeof module==='object'&&module.exports)module.exports=api;else root.StarShop=api;})(globalThis,(W,K)=>{
  const Items=typeof module==='object'&&module.exports?require('./storm-items.js'):globalThis.StarItems;
  const WINTER_START=Date.parse('2026-12-01T00:00:00+01:00');
- const CHESTS=Object.freeze({items:Object.freeze({id:'items',name:'Item-Kiste',cost:50,seasonal:false}),standard:Object.freeze({id:'standard',name:'Skin-Truhe',cost:100,seasonal:false}),weapons:Object.freeze({id:'weapons',name:'Item-Kiste',cost:50,seasonal:false}),christmas:Object.freeze({id:'christmas',name:'Weihnachtstruhe',cost:100,seasonal:true})});
+ const CHESTS=Object.freeze({items:Object.freeze({id:'items',name:'Item-Kiste',cost:50,seasonal:false}),standard:Object.freeze({id:'standard',name:'Glücks-Kiste',cost:100,seasonal:false}),weapons:Object.freeze({id:'weapons',name:'Item-Kiste',cost:50,seasonal:false}),christmas:Object.freeze({id:'christmas',name:'Weihnachtstruhe',cost:100,seasonal:true})});
  const WINTER_BUNDLE=Object.freeze({id:'winter-four',name:'Winter-Themen-Set',cost:250,ids:Object.freeze([21,41,51,81])});
  const weaponRarity=id=>['rare','epic','legendary','epic'][id]||'rare';
  function seasonInfo(now=Date.now()){if(!Number.isFinite(Number(now)))throw Error('Ungültige Zeit.');return {active:Number(now)>=WINTER_START,start:WINTER_START,label:'Ab 1. Dezember'};}
@@ -18,11 +18,14 @@
  const DROP_WEIGHTS=Object.freeze({rare:77,epic:20,legendary:3});
  function chances(pool){const counts={rare:0,epic:0,legendary:0};for(const item of pool){if(!(item.rarity in DROP_WEIGHTS))throw Error('Unbekannte Seltenheit.');counts[item.rarity]++;}const total=Object.keys(counts).reduce((n,k)=>n+(counts[k]?DROP_WEIGHTS[k]:0),0);return Object.fromEntries(Object.keys(counts).map(k=>[k,{count:counts[k],probability:counts[k]?DROP_WEIGHTS[k]/total:0}]));}
  function choose(pool,random=Math.random){if(!pool.length)return null;const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');const odds=chances(pool);let start=0;for(const rarity of Object.keys(DROP_WEIGHTS)){const group=pool.filter(s=>s.rarity===rarity),chance=odds[rarity].probability;if(!group.length)continue;if(n<start+chance)return group[Math.min(group.length-1,Math.floor((n-start)/chance*group.length))];start+=chance;}return pool[pool.length-1];}
+ const LUCKY=Object.freeze({cost:100,weights:Object.freeze({...Items.CONFIG.weights}),skinShare:.6,itemShare:.4});
+ function luckyOdds(profile){const skins=chestPool('standard',profile);return Object.fromEntries(Object.entries(LUCKY.weights).map(([rarity,weight])=>{const skinCount=skins.filter(s=>s.rarity===rarity).length,itemCount=Items.CATALOG.filter(i=>i.rarity===rarity).length;return [rarity,{probability:weight/100,skins:skinCount?LUCKY.skinShare:0,items:skinCount?LUCKY.itemShare:1,skinCount,itemCount}];}));}
+ function luckyChoose(profile,random=Math.random){const sample=()=>{const n=Number(random());if(!Number.isFinite(n)||n<0||n>=1)throw Error('Ungültige Ziehung.');return n;};let roll=sample()*Object.values(LUCKY.weights).reduce((a,b)=>a+b,0),rarity='legendary';for(const [key,weight]of Object.entries(LUCKY.weights)){if(roll<weight){rarity=key;break;}roll-=weight;}const skins=chestPool('standard',profile).filter(s=>s.rarity===rarity),items=Items.CATALOG.filter(i=>i.rarity===rarity),pool=skins.length&&sample()<LUCKY.skinShare?skins:items;return pool[Math.floor(sample()*pool.length)];}
  const ITEM_PRICES=Object.freeze({legendary:1000,epic:400,rare:100,common:40});
  function itemDaily(now=Date.now()){
   const date=new Date(now);if(!Number.isFinite(date.getTime()))throw Error('Ungültige Zeit.');const key=[date.getFullYear(),date.getMonth()+1,date.getDate()].join('-'),next=new Date(date);next.setHours(24,0,0,0);let seed=(Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/86400000)+200)>>>0;
   const items=[];for(const rarity of Object.keys(ITEM_PRICES)){const pool=Items.CATALOG.filter(item=>item.rarity===rarity);for(let i=pool.length-1;i>0;i--){seed=(Math.imul(seed,1664525)+1013904223)>>>0;const j=Math.floor(seed/4294967296*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}items.push(...pool.slice(0,2));}return {key,next:next.getTime(),items};
  }
  function bundleMissing(profile){return WINTER_BUNDLE.ids.filter(id=>!profile.skins.owned.includes(id));}
- return {ITEM_PRICES,itemDaily,WINTER_START,CHESTS,WINTER_BUNDLE,DROP_WEIGHTS,chances,weaponRarity,seasonInfo,chestAvailable,chestPool,choose,bundleMissing};
+ return {LUCKY,luckyOdds,luckyChoose,ITEM_PRICES,itemDaily,WINTER_START,CHESTS,WINTER_BUNDLE,DROP_WEIGHTS,chances,weaponRarity,seasonInfo,chestAvailable,chestPool,choose,bundleMissing};
 });

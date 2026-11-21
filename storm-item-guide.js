@@ -200,7 +200,7 @@
  196:'Leben Wächter, Heiler und eine Nahkampfklasse gleichzeitig, erleidet die ausgerüstete Einheit {defense%} weniger Schaden.',
  197:'Feuer, Eis und Blitz innerhalb von 5 Sekunden auf demselben Gegner laden eine Explosion: Der nächste eigene Treffer verursacht zusätzlich {fraction%} Flächenschaden im Radius {areapp}.',
  198:'Jeder {every}. Nahkampftreffer erzeugt einen zusätzlichen gleich starken Treffer. Zusatztreffer lösen keine weitere Kette aus.',
- 199:'Setze eine ausgerüstete Einheit ein und beende die Runde. Die nächste Item-Kiste kostet 50 Sternenstaub und bietet drei Items, mindestens eines episch. Du wählst genau eines.',
+ 199:'Setze eine ausgerüstete Einheit ein und beende die Runde. Die nächste Glücks-Kiste kostet 100 Sternenstaub und bietet drei Items, mindestens eines episch. Du wählst genau eines.',
  200:'Zu Beginn jeder fünften Welle erscheint für {durations} eine Heldenkopie mit {power%} Stärke. Ohne aktiven Helden kommt Solaris. Eine ausgerüstete Einheit und ein freier Einheitenplatz sind nötig.'
  };
  function name(key){return key?.[0]==='h'?HEROES[Number(key.slice(1))]:TROOPS[Number(key?.slice(1))]||'Träger';}
