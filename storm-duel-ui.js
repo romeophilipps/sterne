@@ -48,7 +48,7 @@
  function draw(now){
   frame=0;if(!session||game.hidden||!lastSnapshot)return;frame=requestAnimationFrame(draw);
   if(!renderer){renderer=new StarStorm.Renderer(canvas);if(renderer.camera){renderer.camera.homeSide=session.mode==='pvp'&&!session.host?1:0;renderer.camera.resize(canvas.clientWidth,canvas.clientHeight);if(renderer.camera.homeSide)renderer.camera.pan(renderer.camera.max);}}
-  const view=Object.assign(Object.create(StarStorm.Round.prototype),lastSnapshot.field);view.army=lastSnapshot.rounds[session.host?0:1].army;view.coopSeat=session.host?0:1;if(view.pvp&&!session.host){[view.base,view.opponentBase]=[view.opponentBase,view.base];[view.core,view.opponentCore]=[view.opponentCore,view.core];}view.elapsed=lastSnapshot.elapsed+(session.paused?0:Math.min(220,now-snapshotAt));renderer.draw(view);lastDraw=now;
+  const view=Object.assign(Object.create(StarStorm.Round.prototype),lastSnapshot.field);view.multiplayer=true;view.army=lastSnapshot.rounds[session.host?0:1].army;view.coopSeat=session.host?0:1;if(view.pvp&&!session.host){[view.base,view.opponentBase]=[view.opponentBase,view.base];[view.core,view.opponentCore]=[view.opponentCore,view.core];}view.elapsed=lastSnapshot.elapsed+(session.paused?0:Math.min(220,now-snapshotAt));renderer.draw(view);lastDraw=now;
  }
 
  Promise.all([StarStormArt.ready,globalThis.StarSkinArt?.ready]).then(()=>{for(const {portrait,index,hero}of portraits)StarStormArt.portrait(portrait,index,0,hero);});
