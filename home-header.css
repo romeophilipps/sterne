@@ -1,0 +1,15 @@
+/* Reuse the live balance and leaderboard action with the original supplied artwork. */
+body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app>header .app-brand{display:none}
+body:has(#mode-art[data-mode=storm]) #home #mode-name{display:none}
+.app>header #home-diamonds{display:none!important}
+body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app>header #home-diamonds:not([hidden]){display:flex!important;align-items:center;justify-content:flex-start;flex:1;min-width:0;max-width:none;margin:0;padding:0;border:0;background:none;box-shadow:none;min-height:44px}
+.app>header #home-diamonds .stardust-balance{zoom:1;width:clamp(90px,25vw,140px);max-width:100%;flex-shrink:1}
+.app>header #home-diamonds .stardust-value{font-size:clamp(13px,3.4vw,18px)}
+.app>header #home-diamonds .stardust-balance[data-long=true] .stardust-value{font-size:11px}
+.app>header #open-leaderboard{display:none}
+body:has(#home:not([hidden])) .app>header #open-leaderboard{display:grid;place-items:center;position:relative;isolation:isolate;flex-shrink:0;width:44px;height:44px;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:url('./home-help.png?v=154') center/contain no-repeat}
+.app>header #open-leaderboard:before{content:"";position:absolute;inset:24% 25%;background:#0b1830;z-index:-1}
+.app>header #open-leaderboard>img{display:block;width:52%;height:52%;object-fit:contain;image-rendering:pixelated}
+.app>header #open-leaderboard>span[hidden]{display:none!important}
+body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app>header{gap:4px}
+@media(max-width:350px){body:has(#mode-art[data-mode=storm]):has(#home:not([hidden])) .app>header{gap:2px}.app>header #home-diamonds .stardust-balance{width:90px}}
